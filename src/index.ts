@@ -9,7 +9,7 @@ import { notFoundHandler } from './middleware/notFoundHandler';
 import { setupRoutes } from './routes';
 import { setupDatabase } from './config/database';
 import { logger } from './utils/logger';
-import { web3Routes } from './routes/web3.routes';
+import web3Routes from './routes/web3.routes';
 import authRoutes from './routes/auth';
 import employerRoutes from './routes/employer';
 
@@ -17,7 +17,7 @@ import employerRoutes from './routes/employer';
 config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = parseInt(process.env.PORT || '3000', 10);
 
 // Security middleware
 app.use(helmet());
@@ -62,7 +62,7 @@ const startServer = async () => {
     // Initialize database connection
     await setupDatabase();
     
-    app.listen(port, () => {
+    app.listen(port, '0.0.0.0', () => {
       logger.info(`Server is running on port ${port}`);
       logger.info(`Environment: ${process.env.NODE_ENV}`);
     });
