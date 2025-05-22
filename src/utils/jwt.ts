@@ -1,57 +1,47 @@
 import jwt, { SignOptions, Secret } from 'jsonwebtoken';
 import { UserRole } from '../types';
 import { logger } from './logger';
+import { redisClient } from '../config/redis';
+import { TokenPayload } from '../types';
+import { JWTError } from './errors/index';
 
-export interface TokenPayload {
-  userId: string;
-  role?: UserRole;
-  walletAddress?: string;
-}
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_EXPIRES_IN = '1h'; // 1 hour
+const REFRESH_TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60; // 7 days in seconds
 
 export interface TokenPair {
   accessToken: string;
   refreshToken: string;
 }
 
-export class JWTError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'JWTError';
-  }
-}
-
-export const generateTokenPair = (payload: TokenPayload): TokenPair => {
+export const generateTokenPair = async (payload: TokenPayload): Promise<TokenPair> => {
   try {
     const accessTokenOptions: SignOptions = {
-      expiresIn: '1h' // Default to 1 hour if not specified
+      expiresIn: JWT_EXPIRES_IN
     };
 
     const refreshTokenOptions: SignOptions = {
-      expiresIn: '7d' // Default to 7 days if not specified
+      expiresIn: REFRESH_TOKEN_EXPIRES_IN
     };
 
-    const accessToken = jwt.sign(
-      { ...payload },
-      process.env.JWT_SECRET as Secret,
-      accessTokenOptions
-    );
+    const accessToken = jwt.sign(payload, JWT_SECRET, accessTokenOptions);
+    const refreshToken = jwt.sign({ userId: payload.userId }, JWT_SECRET, refreshTokenOptions);
 
-    const refreshToken = jwt.sign(
-      { userId: payload.userId },
-      process.env.JWT_REFRESH_SECRET as Secret,
-      refreshTokenOptions
-    );
+    // Store refresh token in Redis with expiration
+    await redisClient.set(`refresh_${payload.userId}`, refreshToken, REFRESH_TOKEN_EXPIRES_IN);
 
     return { accessToken, refreshToken };
   } catch (error) {
-    logger.error('Failed to generate token pair:', error);
-    throw new JWTError('Failed to generate tokens');
+    if (error instanceof Error) {
+      throw new JWTError(`Failed to generate token pair: ${error.message}`);
+    }
+    throw new JWTError('Failed to generate token pair');
   }
 };
 
 export const verifyAccessToken = (token: string): TokenPayload => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as Secret) as TokenPayload;
+    const decoded = jwt.verify(token, JWT_SECRET as Secret) as TokenPayload;
     return decoded;
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
@@ -65,19 +55,21 @@ export const verifyAccessToken = (token: string): TokenPayload => {
   }
 };
 
-export const verifyRefreshToken = (token: string): { userId: string } => {
+export const verifyRefreshToken = async (token: string): Promise<{ userId: string }> => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET as Secret) as { userId: string };
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+    const storedToken = await redisClient.get(`refresh_${decoded.userId}`);
+
+    if (!storedToken || storedToken !== token) {
+      throw new JWTError('Invalid refresh token');
+    }
+
     return decoded;
   } catch (error) {
-    if (error instanceof jwt.TokenExpiredError) {
-      throw new JWTError('Refresh token expired');
-    }
     if (error instanceof jwt.JsonWebTokenError) {
       throw new JWTError('Invalid refresh token');
     }
-    logger.error('Failed to verify refresh token:', error);
-    throw new JWTError('Failed to verify refresh token');
+    throw error;
   }
 };
 
@@ -88,4 +80,12 @@ export const decodeToken = (token: string): TokenPayload | null => {
     logger.error('Failed to decode token:', error);
     return null;
   }
+};
+
+export const blacklistToken = async (token: string, expiresIn: number) => {
+  await redisClient.set(`bl_${token}`, '1', expiresIn);
+};
+
+export const revokeRefreshToken = async (userId: string) => {
+  await redisClient.del(`refresh_${userId}`);
 }; 

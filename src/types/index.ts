@@ -1,12 +1,15 @@
+import { Request } from 'express';
+
 export enum UserRole {
   ADMIN = 'ADMIN',
   EMPLOYER = 'EMPLOYER',
   EMPLOYEE = 'EMPLOYEE',
-  WEB3_USER = 'WEB3_USER'
+  WEB3_USER = 'WEB3_USER',
+  REGULAR_USER = 'REGULAR_USER'
 }
 
 export interface TokenPayload {
-  id: string;
+  userId: string;
   role: UserRole;
   walletAddress?: string;
 }
@@ -19,8 +22,8 @@ export interface UserAttributes {
   walletAddress?: string;
   isActive: boolean;
   isWalletVerified: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface EmployerAttributes {
@@ -84,10 +87,19 @@ export interface IStakingContract {
   getTotalRewards(): Promise<string>;
 }
 
+export type CreateUserAttributes = Omit<UserAttributes, 'id' | 'createdAt' | 'updatedAt'>;
+
+// Extend Express Request type
 declare global {
   namespace Express {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface Request {
       user?: TokenPayload;
     }
   }
-} 
+}
+
+// Ensure type compatibility for authenticated requests
+export type AuthenticatedRequest = Omit<Request, 'user'> & {
+  user: TokenPayload;
+}; 

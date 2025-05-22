@@ -75,18 +75,21 @@ export const validateWeb3Request = (req: Request, res: Response, next: NextFunct
   next();
 };
 
-interface WalletAuthHeaders {
+// Define the wallet auth headers type
+type WalletAuthHeaders = {
   'x-wallet-signature': string;
   'x-wallet-message': string;
   'x-wallet-address': string;
   [key: string]: string | undefined;
-}
+};
 
-interface WalletRequestBody {
+// Define the wallet request body type
+type WalletRequestBody = {
   walletAddress: string;
-}
+};
 
-interface CustomRequest extends Request {
+// Define a custom request type that extends the base Request type
+type CustomRequest = Request & {
   body: WalletRequestBody;
   headers: WalletAuthHeaders;
   user?: {
@@ -94,18 +97,10 @@ interface CustomRequest extends Request {
     role: UserRole;
     walletAddress?: string;
   };
-}
+};
 
-function isWalletAuthHeaders(headers: Record<string, string | undefined>): headers is WalletAuthHeaders {
-  return (
-    typeof headers['x-wallet-signature'] === 'string' &&
-    typeof headers['x-wallet-message'] === 'string' &&
-    typeof headers['x-wallet-address'] === 'string'
-  );
-}
-
-export const validateWalletAddress = (req: CustomRequest, res: Response, next: NextFunction): void => {
-  const { walletAddress } = req.body;
+export const validateWalletAddress = (_req: CustomRequest, _res: Response, next: NextFunction): void => {
+  const { walletAddress } = _req.body;
   
   if (!walletAddress) {
     throw new ApiError(400, 'Wallet address is required');
@@ -118,9 +113,15 @@ export const validateWalletAddress = (req: CustomRequest, res: Response, next: N
   next();
 };
 
-export const requireWalletSignature = async (req: CustomRequest, res: Response, next: NextFunction): Promise<void> => {
+export const requireWalletSignature = async (_req: CustomRequest, _res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { 'x-wallet-signature': signature, 'x-wallet-message': message, 'x-wallet-address': walletAddress } = req.headers;
+    const signature = _req.headers['x-wallet-signature'];
+    const message = _req.headers['x-wallet-message'];
+    const walletAddress = _req.headers['x-wallet-address'];
+
+    if (!signature || !message || !walletAddress) {
+      throw new ApiError(400, 'Missing required wallet headers');
+    }
 
     if (!ethers.isAddress(walletAddress)) {
       throw new ApiError(400, 'Invalid wallet address format');
@@ -136,7 +137,7 @@ export const requireWalletSignature = async (req: CustomRequest, res: Response, 
       throw new ApiError(404, 'User not found for this wallet address');
     }
 
-    req.user = {
+    _req.user = {
       id: user.id,
       role: user.role,
       walletAddress: user.walletAddress
@@ -152,15 +153,15 @@ export const requireWalletSignature = async (req: CustomRequest, res: Response, 
   }
 };
 
-export const requireVerifiedWallet = async (req: CustomRequest, res: Response, next: NextFunction): Promise<void> => {
+export const requireVerifiedWallet = async (_req: CustomRequest, _res: Response, next: NextFunction): Promise<void> => {
   try {
-    if (!req.user?.walletAddress) {
+    if (!_req.user?.walletAddress) {
       throw new ApiError(401, 'Wallet address not found in request');
     }
 
     const user = await User.findOne({
       where: {
-        walletAddress: req.user.walletAddress,
+        walletAddress: _req.user.walletAddress,
         isWalletVerified: true
       }
     });

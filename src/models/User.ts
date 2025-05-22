@@ -1,9 +1,9 @@
-import { Model, DataTypes } from 'sequelize';
+import { Model, DataTypes, Optional } from 'sequelize';
 import { sequelize } from '../config/database';
 import bcrypt from 'bcrypt';
-import { UserRole, UserAttributes } from '../types';
+import { UserRole, UserAttributes, CreateUserAttributes } from '../types';
 
-class User extends Model<UserAttributes> implements UserAttributes {
+class User extends Model<UserAttributes, CreateUserAttributes> implements UserAttributes {
   public id!: string;
   public email!: string;
   public password!: string;
