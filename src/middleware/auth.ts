@@ -15,7 +15,7 @@ interface AuthenticatedRequest extends Request {
 }
 
 // Middleware to authenticate JWT token
-export const authenticateToken = async (req: Request, _res: Response, next: NextFunction) => {
+export const authenticateToken = async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader?.split(' ')[1];
@@ -59,7 +59,7 @@ export const authenticateToken = async (req: Request, _res: Response, next: Next
 
 // Middleware to check user role
 export const requireRole = (roles: UserRole[]) => {
-  return (req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
+  return (req: AuthenticatedRequest, _res: Response, next: NextFunction): void => {
     if (!roles.includes(req.user.role)) {
       throw new ApiError(403, 'Insufficient permissions');
     }
@@ -68,7 +68,7 @@ export const requireRole = (roles: UserRole[]) => {
 };
 
 // Middleware to authenticate wallet
-export const authenticateWallet = async (req: Request, res: Response, next: NextFunction) => {
+export const authenticateWallet = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { walletAddress, signature, message } = req.body;
 
@@ -125,7 +125,7 @@ export const authenticateWallet = async (req: Request, res: Response, next: Next
 };
 
 // Middleware to refresh token
-export const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
+export const refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { refreshToken } = req.body;
 
@@ -170,7 +170,7 @@ export const requireAuth = [authenticateToken];
 // Combined middleware for web3 authentication
 export const requireWeb3Auth = [
   authenticateToken,
-  (req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
+  (req: AuthenticatedRequest, _res: Response, next: NextFunction): void => {
     if (!req.user.walletAddress) {
       throw new ApiError(401, 'Web3 authentication required');
     }
@@ -181,7 +181,7 @@ export const requireWeb3Auth = [
 // Combined middleware for wallet authentication
 export const requireWallet = [
   authenticateToken,
-  (req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
+  (req: AuthenticatedRequest, _res: Response, next: NextFunction): void => {
     if (!req.user.walletAddress) {
       throw new ApiError(401, 'Wallet authentication required');
     }
@@ -192,7 +192,7 @@ export const requireWallet = [
 // Combined middleware for verified wallet
 export const requireVerifiedWallet = [
   authenticateToken,
-  async (req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
+  async (req: AuthenticatedRequest, _res: Response, next: NextFunction): Promise<void> => {
     if (!req.user.walletAddress) {
       throw new ApiError(401, 'Wallet authentication required');
     }

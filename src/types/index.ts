@@ -89,6 +89,14 @@ export interface IStakingContract {
 
 export type CreateUserAttributes = Omit<UserAttributes, 'id' | 'createdAt' | 'updatedAt'>;
 
+export interface UserResponse {
+  id: string;
+  email: string;
+  role: UserRole;
+  walletAddress?: string;
+  isWalletVerified: boolean;
+}
+
 // Extend Express Request type
 declare global {
   namespace Express {
