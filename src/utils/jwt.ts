@@ -1,5 +1,5 @@
 import jwt, { SignOptions, Secret } from 'jsonwebtoken';
-import { UserRole } from '../models/User';
+import { UserRole } from '../types';
 import { logger } from './logger';
 
 export interface TokenPayload {

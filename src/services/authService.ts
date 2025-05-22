@@ -7,10 +7,13 @@ import { JWT_SECRET, JWT_EXPIRES_IN } from '../middleware/auth';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { ethers } from 'ethers';
+import { UserRole } from '../types';
+import { CreationAttributes } from 'sequelize';
+import crypto from 'crypto';
 
 export class AuthService {
   // Traditional email/password registration
-  static async register(email: string, password: string, role: string, data: any) {
+  static async register(email: string, password: string, role: UserRole, data: any) {
     try {
       // Check if user already exists
       const existingUser = await User.findOne({ where: { email } });
@@ -27,17 +30,17 @@ export class AuthService {
         password: hashedPassword,
         role,
         isActive: true
-      });
+      } as CreationAttributes<User>);
 
       // Create role-specific profile
-      if (role === 'EMPLOYER') {
+      if (role === UserRole.EMPLOYER) {
         await Employer.create({
           userId: user.id,
           companyName: data.companyName,
           companyAddress: data.companyAddress,
           isVerified: false
         });
-      } else if (role === 'EMPLOYEE') {
+      } else if (role === UserRole.EMPLOYEE) {
         await Employee.create({
           userId: user.id,
           employerId: data.employerId,
@@ -102,11 +105,17 @@ export class AuthService {
       // Find or create user
       let user = await User.findOne({ where: { walletAddress } });
       if (!user) {
+        const email = `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}@web3.user`;
+        const password = crypto.randomBytes(32).toString('hex');
+        const hashedPassword = await bcrypt.hash(password, 10);
+
         user = await User.create({
+          email,
+          password: hashedPassword,
           walletAddress,
-          role: 'WEB3_USER',
+          role: UserRole.WEB3_USER,
           isActive: true
-        });
+        } as CreationAttributes<User>);
       }
 
       const token = jwt.sign(

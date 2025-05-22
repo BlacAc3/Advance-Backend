@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../index';
-import { UserRole } from '../models/User';
+import { UserRole } from '../types';
 import { createTestUser, generateTestTokens } from './utils/testUtils';
 
 describe('Role-Based Access Control', () => {

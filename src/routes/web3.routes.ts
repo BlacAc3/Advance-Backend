@@ -7,9 +7,31 @@ import { validateContractAddress, validateABI, validateWeb3Request } from '../mi
 import contractService from '../services/contractService';
 import { logger } from '../utils/logger';
 import { ethers } from 'ethers';
+import { authenticate, authenticateWeb3 } from '../middleware/authMiddleware';
+import { authorize } from '../middleware/authorize';
+import { UserRole } from '../types';
 
 const router = Router();
 const web3Controller = new Web3Controller();
+
+// Public routes
+router.post('/connect', authenticateWeb3, web3Controller.connectWallet);
+router.post('/verify', authenticateWeb3, web3Controller.verifySignature);
+
+// Protected routes
+router.use(authenticate);
+router.use(authorize([UserRole.WEB3_USER]));
+
+// Wallet management
+router.get('/wallet', web3Controller.getWalletInfo);
+router.post('/wallet/transfer', web3Controller.transferTokens);
+router.get('/wallet/transactions', web3Controller.getTransactions);
+
+// NFT management
+router.get('/nfts', web3Controller.getNFTs);
+router.get('/nfts/:id', web3Controller.getNFTDetails);
+router.post('/nfts/mint', web3Controller.mintNFT);
+router.post('/nfts/:id/transfer', web3Controller.transferNFT);
 
 // All routes require authentication
 router.use(authMiddleware);
@@ -105,9 +127,7 @@ router.post(
 );
 
 // Existing routes
-router.post('/verify-signature', web3Controller.verifySignature);
 router.get('/balance/:walletAddress', web3Controller.getBalance);
-router.post('/transfer', web3Controller.transferTokens);
 
 // Get contract addresses
 router.get('/contracts', async (req, res) => {
@@ -249,4 +269,4 @@ router.post(
   web3Controller.claimRewards
 );
 
-export { router as web3Routes }; 
+export default router; 

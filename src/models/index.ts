@@ -1,4 +1,5 @@
-import { User, UserRole } from './User';
+import { User } from './User';
+import { UserRole } from '../types';
 import { Employer } from './Employer';
 import { Employee } from './Employee';
 import { Advance, AdvanceStatus } from './Advance';

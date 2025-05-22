@@ -2,11 +2,16 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { ApiError } from '../utils/ApiError';
 import { User } from '../models/User';
+import { UserRole } from '../types';
 
 declare global {
   namespace Express {
     interface Request {
-      user?: User;
+      user?: {
+        id: string;
+        role: UserRole;
+        walletAddress?: string;
+      };
     }
   }
 }
@@ -25,15 +30,19 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
       throw new ApiError(401, 'No token provided');
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string; role: UserRole; walletAddress?: string };
     
-    const user = await User.findById(decoded.id);
+    const user = await User.findByPk(decoded.id);
     
     if (!user) {
       throw new ApiError(401, 'User not found');
     }
 
-    req.user = user;
+    req.user = {
+      id: user.id,
+      role: user.role,
+      walletAddress: user.walletAddress
+    };
     next();
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {

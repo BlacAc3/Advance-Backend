@@ -5,6 +5,8 @@ import { logger } from '../utils/logger';
 import { Op } from 'sequelize';
 import { DemoRequest, DemoRequestAttributes } from '../models/DemoRequest';
 import { ApiError } from '../utils/ApiError';
+import { UserRole } from '../types';
+import { CreationAttributes } from 'sequelize';
 
 export class EmployerService {
   // Create or update employer profile
@@ -113,9 +115,9 @@ export class EmployerService {
       const user = await User.create({
         email: employeeData.email,
         password: employeeData.password, // Note: Password should be hashed in the controller
-        role: 'EMPLOYEE',
+        role: UserRole.EMPLOYEE,
         isActive: true
-      });
+      } as CreationAttributes<User>);
 
       // Create employee profile
       const employee = await Employee.create({

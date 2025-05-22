@@ -1,6 +1,8 @@
-import { User, UserRole } from '../../models/User';
+import { User } from '../../models/User';
+import { UserRole } from '../../types';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { Optional } from 'sequelize';
 
 export const createTestUser = async (role: UserRole = UserRole.EMPLOYEE) => {
   const email = `test.${role.toLowerCase()}@example.com`;
@@ -12,7 +14,8 @@ export const createTestUser = async (role: UserRole = UserRole.EMPLOYEE) => {
     email,
     password: hashedPassword,
     role,
-    walletAddress
+    walletAddress,
+    isActive: true
   });
 
   return user;

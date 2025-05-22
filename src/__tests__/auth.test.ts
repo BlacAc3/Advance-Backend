@@ -1,6 +1,7 @@
 import request from 'supertest';
 import app from '../index';
-import { User, UserRole } from '../models/User';
+import { User } from '../models/User';
+import { UserRole } from '../types';
 import { createTestUser, generateTestTokens } from './utils/testUtils';
 
 describe('Authentication', () => {

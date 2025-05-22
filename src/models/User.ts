@@ -1,37 +1,19 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../config/database';
 import bcrypt from 'bcrypt';
-
-export enum UserRole {
-  ADMIN = 'ADMIN',
-  EMPLOYER = 'EMPLOYER',
-  EMPLOYEE = 'EMPLOYEE',
-}
-
-interface UserAttributes {
-  id: string;
-  email: string;
-  password: string;
-  role: string;
-  walletAddress?: string;
-  walletData?: {
-    privateKey: string;
-    address: string;
-  };
-  createdAt?: Date;
-  updatedAt?: Date;
-}
+import { UserRole, UserAttributes } from '../types';
 
 class User extends Model<UserAttributes> implements UserAttributes {
   public id!: string;
   public email!: string;
   public password!: string;
-  public role!: string;
+  public role!: UserRole;
   public walletAddress?: string;
   public walletData?: {
     privateKey: string;
     address: string;
   };
+  public isActive!: boolean;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
@@ -68,13 +50,14 @@ User.init(
       allowNull: false,
     },
     role: {
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM(...Object.values(UserRole)),
       allowNull: false,
-      defaultValue: 'USER',
+      defaultValue: UserRole.WEB3_USER,
     },
     walletAddress: {
       type: DataTypes.STRING,
       allowNull: true,
+      unique: true,
       validate: {
         is: /^0x[a-fA-F0-9]{40}$/,
       },
@@ -82,6 +65,11 @@ User.init(
     walletData: {
       type: DataTypes.JSONB,
       allowNull: true,
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
     },
   },
   {
@@ -110,4 +98,4 @@ User.init(
   }
 );
 
-export { User, UserAttributes }; 
+export { User }; 

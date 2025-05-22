@@ -2,13 +2,13 @@ import { Router } from 'express';
 import { body } from 'express-validator';
 import { validateRequest } from '../middleware/validateRequest';
 import { employerController } from '../controllers/employer.controller';
-import { authenticate } from '../middleware/auth';
+import { authenticate } from '../middleware/authMiddleware';
 import { authorize } from '../middleware/authorize';
-import { UserRole } from '../models/User';
+import { UserRole } from '../types';
 
 const router = Router();
 
-// All routes require authentication and employer role
+// All employer routes require authentication and employer role
 router.use(authenticate);
 router.use(authorize([UserRole.EMPLOYER]));
 
@@ -111,4 +111,4 @@ router.post(
   employerController.requestDemo
 );
 
-export { router as employerRoutes }; 
+export default router; 

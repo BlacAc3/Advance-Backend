@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { UserRole } from '../models/User';
+import { UserRole } from '../types';
 import { logger } from '../utils/logger';
 
 // Define role hierarchy and permissions
