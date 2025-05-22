@@ -3,16 +3,16 @@ import { User } from '../models/User';
 import { UserRole } from '../types';
 
 export const adminController = {
-  async getUsers(req: Request, res: Response) {
+  async getUsers(_req: Request, res: Response) {
     try {
       const users = await User.findAll({
         attributes: ['id', 'email', 'role', 'isActive', 'createdAt'],
         order: [['createdAt', 'DESC']]
       });
-      res.json(users);
+      return res.json(users);
     } catch (error) {
       console.error('Error fetching users:', error);
-      res.status(500).json({ message: 'Error fetching users' });
+      return res.status(500).json({ message: 'Error fetching users' });
     }
   },
 
@@ -35,7 +35,7 @@ export const adminController = {
         isActive: isActive !== undefined ? isActive : user.isActive
       });
 
-      res.json({
+      return res.json({
         id: user.id,
         email: user.email,
         role: user.role,
@@ -43,7 +43,7 @@ export const adminController = {
       });
     } catch (error) {
       console.error('Error updating user:', error);
-      res.status(500).json({ message: 'Error updating user' });
+      return res.status(500).json({ message: 'Error updating user' });
     }
   },
 
@@ -57,10 +57,10 @@ export const adminController = {
       }
 
       await user.destroy();
-      res.status(204).send();
+      return res.status(204).send();
     } catch (error) {
       console.error('Error deleting user:', error);
-      res.status(500).json({ message: 'Error deleting user' });
+      return res.status(500).json({ message: 'Error deleting user' });
     }
   }
 }; 

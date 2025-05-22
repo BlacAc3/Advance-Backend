@@ -1,5 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
+import { ParamsDictionary } from 'express-serve-static-core';
 import { ApiError } from '../utils/ApiError';
+import { ethers } from 'ethers';
+import { User } from '../models/User';
+import { UserRole } from '../types';
 
 const isValidEthereumAddress = (address: string): boolean => {
   return /^0x[a-fA-F0-9]{40}$/.test(address);
@@ -69,4 +73,104 @@ export const validateWeb3Request = (req: Request, res: Response, next: NextFunct
   }
 
   next();
+};
+
+interface WalletAuthHeaders {
+  'x-wallet-signature': string;
+  'x-wallet-message': string;
+  'x-wallet-address': string;
+  [key: string]: string | undefined;
+}
+
+interface WalletRequestBody {
+  walletAddress: string;
+}
+
+interface CustomRequest extends Request {
+  body: WalletRequestBody;
+  headers: WalletAuthHeaders;
+  user?: {
+    id: string;
+    role: UserRole;
+    walletAddress?: string;
+  };
+}
+
+function isWalletAuthHeaders(headers: Record<string, string | undefined>): headers is WalletAuthHeaders {
+  return (
+    typeof headers['x-wallet-signature'] === 'string' &&
+    typeof headers['x-wallet-message'] === 'string' &&
+    typeof headers['x-wallet-address'] === 'string'
+  );
+}
+
+export const validateWalletAddress = (req: CustomRequest, res: Response, next: NextFunction): void => {
+  const { walletAddress } = req.body;
+  
+  if (!walletAddress) {
+    throw new ApiError(400, 'Wallet address is required');
+  }
+
+  if (!ethers.isAddress(walletAddress)) {
+    throw new ApiError(400, 'Invalid wallet address format');
+  }
+
+  next();
+};
+
+export const requireWalletSignature = async (req: CustomRequest, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { 'x-wallet-signature': signature, 'x-wallet-message': message, 'x-wallet-address': walletAddress } = req.headers;
+
+    if (!ethers.isAddress(walletAddress)) {
+      throw new ApiError(400, 'Invalid wallet address format');
+    }
+
+    const recoveredAddress = ethers.verifyMessage(message, signature);
+    if (recoveredAddress.toLowerCase() !== walletAddress.toLowerCase()) {
+      throw new ApiError(401, 'Invalid wallet signature');
+    }
+
+    const user = await User.findOne({ where: { walletAddress } });
+    if (!user) {
+      throw new ApiError(404, 'User not found for this wallet address');
+    }
+
+    req.user = {
+      id: user.id,
+      role: user.role,
+      walletAddress: user.walletAddress
+    };
+
+    next();
+  } catch (error) {
+    if (error instanceof ApiError) {
+      next(error);
+    } else {
+      next(new ApiError(500, 'Error verifying wallet signature'));
+    }
+  }
+};
+
+export const requireVerifiedWallet = async (req: CustomRequest, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    if (!req.user?.walletAddress) {
+      throw new ApiError(401, 'Wallet address not found in request');
+    }
+
+    const user = await User.findOne({
+      where: {
+        walletAddress: req.user.walletAddress,
+        isWalletVerified: true
+      }
+    });
+
+    if (!user) {
+      throw new ApiError(403, 'Wallet not verified');
+    }
+
+    next();
+  } catch (error) {
+    next(error);
+  }
 }; 

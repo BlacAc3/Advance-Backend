@@ -18,6 +18,7 @@ export interface UserAttributes {
   role: UserRole;
   walletAddress?: string;
   isActive: boolean;
+  isWalletVerified: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }

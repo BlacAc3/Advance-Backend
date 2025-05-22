@@ -14,6 +14,7 @@ class User extends Model<UserAttributes> implements UserAttributes {
     address: string;
   };
   public isActive!: boolean;
+  public isWalletVerified!: boolean;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
@@ -70,6 +71,11 @@ User.init(
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true,
+    },
+    isWalletVerified: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {

@@ -1,41 +1,34 @@
 import { Request, Response, NextFunction } from 'express';
 import { UserRole } from '../types';
+import { ApiError } from '../utils/ApiError';
 import { logger } from '../utils/logger';
 
 // Define role hierarchy and permissions
 const roleHierarchy: Record<UserRole, UserRole[]> = {
-  [UserRole.ADMIN]: [UserRole.ADMIN, UserRole.EMPLOYER, UserRole.EMPLOYEE],
-  [UserRole.EMPLOYER]: [UserRole.EMPLOYER],
-  [UserRole.EMPLOYEE]: [UserRole.EMPLOYEE]
+  [UserRole.ADMIN]: [UserRole.ADMIN, UserRole.EMPLOYER, UserRole.EMPLOYEE, UserRole.WEB3_USER],
+  [UserRole.EMPLOYER]: [UserRole.EMPLOYER, UserRole.EMPLOYEE],
+  [UserRole.EMPLOYEE]: [UserRole.EMPLOYEE],
+  [UserRole.WEB3_USER]: [UserRole.WEB3_USER]
 };
 
 // Define role-specific permissions
 const rolePermissions: Record<UserRole, string[]> = {
-  [UserRole.ADMIN]: [
-    'manage_users',
-    'manage_employers',
-    'manage_employees',
-    'manage_advances',
-    'manage_pool',
-    'view_analytics',
-    'manage_settings',
-    'verify_employers',
-    'verify_employees'
-  ],
+  [UserRole.ADMIN]: ['*'],
   [UserRole.EMPLOYER]: [
     'manage_employees',
-    'request_advances',
-    'view_employee_advances',
-    'manage_company_details',
-    'manage_liquidity', // Employers can manage liquidity pool
-    'view_pool_analytics',
-    'withdraw_funds',
-    'verify_employees'
+    'view_advances',
+    'approve_advances',
+    'manage_company'
   ],
   [UserRole.EMPLOYEE]: [
+    'view_advances',
     'request_advances',
-    'view_own_advances',
-    'update_profile'
+    'view_profile'
+  ],
+  [UserRole.WEB3_USER]: [
+    'view_wallet',
+    'manage_nfts',
+    'stake_tokens'
   ]
 };
 
