@@ -10,7 +10,8 @@
     "test": "jest",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
-    "migrate:add-wallet-data": "ts-node src/scripts/run-migration.ts"
+    "migrate:add-wallet-data": "ts-node src/scripts/run-migration.ts",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.2",
