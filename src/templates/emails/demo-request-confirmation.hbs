@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .logo {
+      max-width: 200px;
+      margin-bottom: 20px;
+    }
+    .content {
+      background-color: #f9f9f9;
+      padding: 30px;
+      border-radius: 5px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 12px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="{{logoUrl}}" alt="AdvancePay Logo" class="logo">
+  </div>
+
+  <div class="content">
+    <h2>Thank You for Your Interest in AdvancePay!</h2>
+
+    <p>Dear {{contactName}},</p>
+
+    <p>Thank you for requesting a demo of AdvancePay for {{companyName}}. We're excited to show you how our blockchain-powered payroll solution can streamline your business operations.</p>
+
+    <p>Our team will review your request and contact you within 24 hours to schedule a personalized demo that fits your schedule.</p>
+
+    <p>During the demo, we'll cover:</p>
+    <ul>
+      <li>Automated payroll processing</li>
+      <li>Employee salary advances</li>
+      <li>Blockchain-powered transactions</li>
+      <li>Integration with your existing systems</li>
+      <li>Security and compliance features</li>
+    </ul>
+
+    <p>If you have any immediate questions, please don't hesitate to reply to this email or contact our support team.</p>
+
+    <p>Best regards,<br>
+    The AdvancePay Team</p>
+  </div>
+
+  <div class="footer">
+    <p>This email was sent to {{email}}. If you did not request a demo, please ignore this email.</p>
+    <p>&copy; {{currentYear}} AdvancePay. All rights reserved.</p>
+  </div>
+</body>
+</html> 

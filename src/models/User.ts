@@ -8,14 +8,30 @@ export enum UserRole {
   EMPLOYEE = 'EMPLOYEE',
 }
 
-export class User extends Model {
-  public id!: number;
+interface UserAttributes {
+  id: string;
+  email: string;
+  password: string;
+  role: string;
+  walletAddress?: string;
+  walletData?: {
+    privateKey: string;
+    address: string;
+  };
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+class User extends Model<UserAttributes> implements UserAttributes {
+  public id!: string;
   public email!: string;
   public password!: string;
-  public role!: UserRole;
-  public walletAddress!: string;
-  public isActive!: boolean;
-  public lastLogin?: Date;
+  public role!: string;
+  public walletAddress?: string;
+  public walletData?: {
+    privateKey: string;
+    address: string;
+  };
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
@@ -35,8 +51,8 @@ export class User extends Model {
 User.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
     email: {
@@ -52,33 +68,25 @@ User.init(
       allowNull: false,
     },
     role: {
-      type: DataTypes.ENUM(...Object.values(UserRole)),
+      type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: 'USER',
     },
     walletAddress: {
-      type: DataTypes.STRING(42),
-      allowNull: false,
-      unique: true,
+      type: DataTypes.STRING,
+      allowNull: true,
       validate: {
-        isEthereumAddress(value: string) {
-          if (!/^0x[a-fA-F0-9]{40}$/.test(value)) {
-            throw new Error('Invalid Ethereum address');
-          }
-        },
+        is: /^0x[a-fA-F0-9]{40}$/,
       },
     },
-    isActive: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: true,
-    },
-    lastLogin: {
-      type: DataTypes.DATE,
+    walletData: {
+      type: DataTypes.JSONB,
       allowNull: true,
     },
   },
   {
     sequelize,
+    modelName: 'User',
     tableName: 'users',
     timestamps: true,
     hooks: {
@@ -100,4 +108,6 @@ User.init(
       },
     ],
   }
-); 
+);
+
+export { User, UserAttributes }; 

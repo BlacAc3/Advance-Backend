@@ -96,4 +96,19 @@ router.post(
   employerController.withdrawFromPool
 );
 
+// Demo request route (public)
+router.post(
+  '/request-demo',
+  [
+    body('companyName').trim().notEmpty().withMessage('Company name is required'),
+    body('contactName').trim().notEmpty().withMessage('Contact name is required'),
+    body('email').isEmail().withMessage('Valid email is required'),
+    body('phone').trim().notEmpty().withMessage('Phone number is required'),
+    body('companySize').isInt({ min: 1 }).withMessage('Company size must be a positive number'),
+    body('message').optional().trim()
+  ],
+  validateRequest,
+  employerController.requestDemo
+);
+
 export { router as employerRoutes }; 
