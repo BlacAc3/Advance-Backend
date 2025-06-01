@@ -1,12 +1,12 @@
-import { Employer } from '../models/Employer';
-import { User } from '../models/User';
-import { Employee } from '../models/Employee';
-import { logger } from '../utils/logger';
-import { Op } from 'sequelize';
-import { DemoRequest, DemoRequestAttributes } from '../models/DemoRequest';
-import { ApiError } from '../utils/ApiError';
-import { UserRole } from '../types';
-import { CreationAttributes } from 'sequelize';
+import { Employer } from "../models/Employer";
+import { User } from "../models/User";
+import { Employee } from "../models/Employee";
+import { logger } from "../utils/logger";
+import { Op } from "sequelize";
+import { DemoRequest, DemoRequestAttributes } from "../models/DemoRequest";
+import { ApiError } from "../utils/ApiError";
+import { UserRole } from "../types";
+import { CreationAttributes } from "sequelize";
 
 export class EmployerService {
   // Create or update employer profile
@@ -14,19 +14,19 @@ export class EmployerService {
     try {
       const user = await User.findByPk(userId);
       if (!user) {
-        throw new Error('User not found');
+        throw new Error("User not found");
       }
 
-      if (user.role !== 'EMPLOYER') {
-        throw new Error('User is not an employer');
+      if (user.role !== "EMPLOYER") {
+        throw new Error("User is not an employer");
       }
 
       const [employer, created] = await Employer.findOrCreate({
         where: { userId },
         defaults: {
           ...data,
-          isVerified: false
-        }
+          isVerified: false,
+        },
       });
 
       if (!created) {
@@ -35,7 +35,7 @@ export class EmployerService {
 
       return employer;
     } catch (error) {
-      logger.error('Employer profile update error:', error);
+      logger.error("Employer profile update error:", error);
       throw error;
     }
   }
@@ -45,19 +45,21 @@ export class EmployerService {
     try {
       const employer = await Employer.findOne({
         where: { userId },
-        include: [{
-          model: User,
-          attributes: ['email', 'role', 'isActive', 'lastLoginAt']
-        }]
+        include: [
+          {
+            model: User,
+            attributes: ["email", "role", "isActive", "lastLoginAt"],
+          },
+        ],
       });
 
       if (!employer) {
-        throw new Error('Employer profile not found');
+        throw new Error("Employer profile not found");
       }
 
       return employer;
     } catch (error) {
-      logger.error('Get employer profile error:', error);
+      logger.error("Get employer profile error:", error);
       throw error;
     }
   }
@@ -67,29 +69,31 @@ export class EmployerService {
     try {
       const employer = await Employer.findOne({ where: { userId } });
       if (!employer) {
-        throw new Error('Employer not found');
+        throw new Error("Employer not found");
       }
 
       const offset = (page - 1) * limit;
       const { count, rows: employees } = await Employee.findAndCountAll({
         where: { employerId: employer.id },
-        include: [{
-          model: User,
-          attributes: ['email', 'isActive', 'lastLoginAt']
-        }],
+        include: [
+          {
+            model: User,
+            attributes: ["email", "isActive", "lastLoginAt"],
+          },
+        ],
         limit,
         offset,
-        order: [['createdAt', 'DESC']]
+        order: [["createdAt", "DESC"]],
       });
 
       return {
         employees,
         total: count,
         page,
-        totalPages: Math.ceil(count / limit)
+        totalPages: Math.ceil(count / limit),
       };
     } catch (error) {
-      logger.error('Get employer employees error:', error);
+      logger.error("Get employer employees error:", error);
       throw error;
     }
   }
@@ -99,16 +103,16 @@ export class EmployerService {
     try {
       const employer = await Employer.findOne({ where: { userId } });
       if (!employer) {
-        throw new Error('Employer not found');
+        throw new Error("Employer not found");
       }
 
       // Check if employee email already exists
       const existingUser = await User.findOne({
-        where: { email: employeeData.email }
+        where: { email: employeeData.email },
       });
 
       if (existingUser) {
-        throw new Error('Employee email already registered');
+        throw new Error("Employee email already registered");
       }
 
       // Create user account for employee
@@ -116,7 +120,7 @@ export class EmployerService {
         email: employeeData.email,
         password: employeeData.password, // Note: Password should be hashed in the controller
         role: UserRole.EMPLOYEE,
-        isActive: true
+        isActive: true,
       } as CreationAttributes<User>);
 
       // Create employee profile
@@ -127,12 +131,12 @@ export class EmployerService {
         payFrequency: employeeData.payFrequency,
         nextPayDate: employeeData.nextPayDate,
         employmentStartDate: employeeData.employmentStartDate,
-        isApproved: true // Auto-approve if added by employer
+        isApproved: true, // Auto-approve if added by employer
       });
 
       return employee;
     } catch (error) {
-      logger.error('Add employee error:', error);
+      logger.error("Add employee error:", error);
       throw error;
     }
   }
@@ -142,24 +146,24 @@ export class EmployerService {
     try {
       const employer = await Employer.findOne({ where: { userId } });
       if (!employer) {
-        throw new Error('Employer not found');
+        throw new Error("Employer not found");
       }
 
       const employee = await Employee.findOne({
         where: {
           id: employeeId,
-          employerId: employer.id
-        }
+          employerId: employer.id,
+        },
       });
 
       if (!employee) {
-        throw new Error('Employee not found');
+        throw new Error("Employee not found");
       }
 
       await employee.update(data);
       return employee;
     } catch (error) {
-      logger.error('Update employee error:', error);
+      logger.error("Update employee error:", error);
       throw error;
     }
   }
@@ -169,24 +173,24 @@ export class EmployerService {
     try {
       const employer = await Employer.findOne({ where: { userId } });
       if (!employer) {
-        throw new Error('Employer not found');
+        throw new Error("Employer not found");
       }
 
       const employee = await Employee.findOne({
         where: {
           id: employeeId,
-          employerId: employer.id
-        }
+          employerId: employer.id,
+        },
       });
 
       if (!employee) {
-        throw new Error('Employee not found');
+        throw new Error("Employee not found");
       }
 
       // Set employment end date
       await employee.update({
         employmentEndDate: new Date(),
-        isApproved: false
+        isApproved: false,
       });
 
       // Deactivate user account
@@ -197,7 +201,7 @@ export class EmployerService {
 
       return true;
     } catch (error) {
-      logger.error('Remove employee error:', error);
+      logger.error("Remove employee error:", error);
       throw error;
     }
   }
@@ -207,16 +211,16 @@ export class EmployerService {
     try {
       const employer = await Employer.findOne({ where: { userId } });
       if (!employer) {
-        throw new Error('Employer not found');
+        throw new Error("Employer not found");
       }
 
       return {
         isVerified: employer.isVerified,
-        verificationDocuments: employer.verificationDocuments,
-        verificationDate: employer.updatedAt
+        // verificationDocuments: employer.verificationDocuments,
+        verificationDate: employer.updatedAt,
       };
     } catch (error) {
-      logger.error('Get verification status error:', error);
+      logger.error("Get verification status error:", error);
       throw error;
     }
   }
@@ -226,27 +230,29 @@ export class EmployerService {
     try {
       const employer = await Employer.findOne({ where: { userId } });
       if (!employer) {
-        throw new Error('Employer not found');
+        throw new Error("Employer not found");
       }
 
       await employer.update({
         verificationDocuments: documents,
-        isVerified: false // Reset verification status when new documents are submitted
+        isVerified: false, // Reset verification status when new documents are submitted
       });
 
       return employer;
     } catch (error) {
-      logger.error('Submit verification documents error:', error);
+      logger.error("Submit verification documents error:", error);
       throw error;
     }
   }
 
-  async createDemoRequest(data: Omit<DemoRequestAttributes, 'id' | 'createdAt' | 'updatedAt'>): Promise<DemoRequest> {
+  async createDemoRequest(
+    data: Omit<DemoRequestAttributes, "id" | "createdAt" | "updatedAt">,
+  ): Promise<DemoRequest> {
     try {
       const demoRequest = await DemoRequest.create(data);
       return demoRequest;
     } catch (error) {
-      throw new ApiError(500, 'Failed to create demo request');
+      throw new ApiError(500, "Failed to create demo request");
     }
   }
 
@@ -254,55 +260,55 @@ export class EmployerService {
     try {
       const demoRequest = await DemoRequest.findByPk(id);
       if (!demoRequest) {
-        throw new ApiError(404, 'Demo request not found');
+        throw new ApiError(404, "Demo request not found");
       }
       return demoRequest;
     } catch (error) {
       if (error instanceof ApiError) {
         throw error;
       }
-      throw new ApiError(500, 'Failed to fetch demo request');
+      throw new ApiError(500, "Failed to fetch demo request");
     }
   }
 
   async updateDemoRequestStatus(
     id: number,
-    status: DemoRequestAttributes['status'],
+    status: DemoRequestAttributes["status"],
     notes?: string,
-    scheduledDate?: Date
+    scheduledDate?: Date,
   ): Promise<DemoRequest> {
     try {
       const demoRequest = await this.getDemoRequest(id);
       await demoRequest.update({
         status,
         notes: notes || demoRequest.notes,
-        scheduledDate: scheduledDate || demoRequest.scheduledDate
+        scheduledDate: scheduledDate || demoRequest.scheduledDate,
       });
       return demoRequest;
     } catch (error) {
       if (error instanceof ApiError) {
         throw error;
       }
-      throw new ApiError(500, 'Failed to update demo request status');
+      throw new ApiError(500, "Failed to update demo request status");
     }
   }
 
   async listDemoRequests(
     page: number = 1,
     limit: number = 10,
-    status?: DemoRequestAttributes['status']
+    status?: DemoRequestAttributes["status"],
   ): Promise<{ rows: DemoRequest[]; count: number }> {
     try {
       const where = status ? { status } : {};
       const { rows, count } = await DemoRequest.findAndCountAll({
         where,
-        order: [['createdAt', 'DESC']],
+        order: [["createdAt", "DESC"]],
         limit,
-        offset: (page - 1) * limit
+        offset: (page - 1) * limit,
       });
       return { rows, count };
     } catch (error) {
-      throw new ApiError(500, 'Failed to fetch demo requests');
+      throw new ApiError(500, "Failed to fetch demo requests");
     }
   }
-} 
+}

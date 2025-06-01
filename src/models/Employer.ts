@@ -1,6 +1,6 @@
-import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../config/database';
-import { User } from './User';
+import { Model, DataTypes } from "sequelize";
+import { sequelize } from "../config/database";
+import { User } from "./User";
 
 export class Employer extends Model {
   public id!: number;
@@ -30,8 +30,8 @@ Employer.init(
       allowNull: false,
       unique: true,
       references: {
-        model: 'users',
-        key: 'id',
+        model: "users",
+        key: "id",
       },
     },
     companyName: {
@@ -63,7 +63,7 @@ Employer.init(
       validate: {
         isEthereumAddress(value: string) {
           if (value && !/^0x[a-fA-F0-9]{40}$/.test(value)) {
-            throw new Error('Invalid Ethereum address');
+            throw new Error("Invalid Ethereum address");
           }
         },
       },
@@ -71,13 +71,13 @@ Employer.init(
   },
   {
     sequelize,
-    tableName: 'employers',
+    tableName: "employers",
     timestamps: true,
-  }
+  },
 );
 
 // Define associations
 Employer.belongsTo(User, {
-  foreignKey: 'userId',
-  as: 'user',
-}); 
+  foreignKey: "userId",
+  as: "user",
+});

@@ -1,9 +1,12 @@
-import { Model, DataTypes, Optional } from 'sequelize';
-import { sequelize } from '../config/database';
-import bcrypt from 'bcrypt';
-import { UserRole, UserAttributes, CreateUserAttributes } from '../types';
+import { Model, DataTypes, Optional } from "sequelize";
+import { sequelize } from "../config/database";
+import bcrypt from "bcrypt";
+import { UserRole, UserAttributes, CreateUserAttributes } from "../types";
 
-class User extends Model<UserAttributes, CreateUserAttributes> implements UserAttributes {
+class User
+  extends Model<UserAttributes, CreateUserAttributes>
+  implements UserAttributes
+{
   public id!: string;
   public email!: string;
   public password!: string;
@@ -24,7 +27,7 @@ class User extends Model<UserAttributes, CreateUserAttributes> implements UserAt
   }
 
   public async hashPassword(): Promise<void> {
-    if (this.changed('password')) {
+    if (this.changed("password")) {
       const salt = await bcrypt.genSalt(10);
       this.password = await bcrypt.hash(this.password, salt);
     }
@@ -63,10 +66,6 @@ User.init(
         is: /^0x[a-fA-F0-9]{40}$/,
       },
     },
-    walletData: {
-      type: DataTypes.JSONB,
-      allowNull: true,
-    },
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -77,11 +76,19 @@ User.init(
       allowNull: false,
       defaultValue: false,
     },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
   },
   {
     sequelize,
-    modelName: 'User',
-    tableName: 'users',
+    modelName: "User",
+    tableName: "users",
     timestamps: true,
     hooks: {
       beforeSave: async (user: User) => {
@@ -90,18 +97,18 @@ User.init(
     },
     indexes: [
       {
-        fields: ['email'],
+        fields: ["email"],
         unique: true,
       },
       {
-        fields: ['walletAddress'],
+        fields: ["walletAddress"],
         unique: true,
       },
       {
-        fields: ['role'],
+        fields: ["role"],
       },
     ],
-  }
+  },
 );
 
-export { User }; 
+export { User };
