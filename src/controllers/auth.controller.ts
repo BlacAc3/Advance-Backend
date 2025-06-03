@@ -1,36 +1,39 @@
-import { Request, Response, NextFunction } from 'express';
-import { User } from '../models/User';
-import { ApiError } from '../utils/errors/index';
-import { UserRole, TokenPayload, UserResponse } from '../types';
-import bcrypt from 'bcrypt';
-import { generateTokenPair, verifyRefreshToken } from '../utils/jwt';
-import { hashPassword, comparePassword } from '../utils/password';
-import { CreationAttributes } from 'sequelize';
-import { redisClient } from '../config/redis';
+import { Request, Response, NextFunction } from "express";
+import { User } from "../models/User";
+import { ApiError } from "../utils/errors/index";
+import { UserRole, TokenPayload, UserResponse } from "../types";
+import bcrypt from "bcrypt";
+import { generateTokenPair, verifyRefreshToken } from "../utils/jwt";
+import { hashPassword, comparePassword } from "../utils/password";
+import { CreationAttributes } from "sequelize";
+import { redisClient } from "../config/redis";
 
 export const authController = {
-  async register(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async register(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const { email, password, role } = req.body;
 
       const existingUser = await User.findOne({ where: { email } });
       if (existingUser) {
-        throw new ApiError(400, 'Email already registered');
+        throw new ApiError(400, "Email already registered");
       }
 
-      const hashedPassword = await hashPassword(password);
       const user = await User.create({
         email,
-        password: hashedPassword,
+        password,
         role: role || UserRole.REGULAR_USER,
         isActive: true,
-        isWalletVerified: false
+        isWalletVerified: false,
       } as CreationAttributes<User>);
 
       const tokens = await generateTokenPair({
         userId: user.id,
         role: user.role,
-        walletAddress: user.walletAddress
+        walletAddress: user.walletAddress,
       });
 
       const userResponse: UserResponse = {
@@ -38,12 +41,12 @@ export const authController = {
         email: user.email,
         role: user.role,
         walletAddress: user.walletAddress,
-        isWalletVerified: user.isWalletVerified
+        isWalletVerified: user.isWalletVerified,
       };
 
       res.status(201).json({
         user: userResponse,
-        ...tokens
+        ...tokens,
       });
     } catch (error) {
       next(error);
@@ -56,22 +59,23 @@ export const authController = {
 
       const user = await User.findOne({ where: { email } });
       if (!user) {
-        throw new ApiError(401, 'Invalid credentials');
+        throw new ApiError(401, "Invalid email");
       }
 
-      const isValidPassword = await comparePassword(password, user.password);
+      // const isValidPassword = await comparePassword(password, user.password);
+      const isValidPassword = await user.validatePassword(password);
       if (!isValidPassword) {
-        throw new ApiError(401, 'Invalid credentials');
+        throw new ApiError(401, "Invalid password");
       }
 
       if (!user.isActive) {
-        throw new ApiError(401, 'Account is deactivated');
+        throw new ApiError(401, "Account is deactivated");
       }
 
       const tokens = await generateTokenPair({
         userId: user.id,
         role: user.role,
-        walletAddress: user.walletAddress
+        walletAddress: user.walletAddress,
       });
 
       const userResponse: UserResponse = {
@@ -79,31 +83,35 @@ export const authController = {
         email: user.email,
         role: user.role,
         walletAddress: user.walletAddress,
-        isWalletVerified: user.isWalletVerified
+        isWalletVerified: user.isWalletVerified,
       };
 
-      res.json({
+      res.status(200).json({
         user: userResponse,
-        ...tokens
+        ...tokens,
       });
     } catch (error) {
       next(error);
     }
   },
 
-  async getProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async getProfile(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const userId = req.user?.userId;
       if (!userId) {
-        throw new ApiError(401, 'Unauthorized');
+        throw new ApiError(401, "Unauthorized");
       }
 
       const user = await User.findByPk(userId, {
-        attributes: ['id', 'email', 'role', 'walletAddress', 'createdAt']
+        attributes: ["id", "email", "role", "walletAddress", "createdAt"],
       });
 
       if (!user) {
-        throw new ApiError(404, 'User not found');
+        throw new ApiError(404, "User not found");
       }
 
       const userResponse: UserResponse = {
@@ -111,33 +119,37 @@ export const authController = {
         email: user.email,
         role: user.role,
         walletAddress: user.walletAddress,
-        isWalletVerified: user.isWalletVerified
+        isWalletVerified: user.isWalletVerified,
       };
 
-      res.json(userResponse);
+      res.status(200).json(userResponse);
     } catch (error) {
       next(error);
     }
   },
 
-  async updateProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async updateProfile(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const userId = req.user?.userId;
       if (!userId) {
-        throw new ApiError(401, 'Unauthorized');
+        throw new ApiError(401, "Unauthorized");
       }
 
       const { email, password } = req.body;
       const user = await User.findByPk(userId);
 
       if (!user) {
-        throw new ApiError(404, 'User not found');
+        throw new ApiError(404, "User not found");
       }
 
       if (email) {
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser && existingUser.id !== userId) {
-          throw new ApiError(400, 'Email already in use');
+          throw new ApiError(400, "Email already in use");
         }
         user.email = email;
       }
@@ -153,7 +165,7 @@ export const authController = {
         email: user.email,
         role: user.role,
         walletAddress: user.walletAddress,
-        isWalletVerified: user.isWalletVerified
+        isWalletVerified: user.isWalletVerified,
       };
 
       res.json(userResponse);
@@ -164,11 +176,11 @@ export const authController = {
 
   async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const token = req.headers.authorization?.split(' ')[1];
+      const token = req.headers.authorization?.split(" ")[1];
       if (token) {
-        await redisClient.set(`bl_${token}`, '1', 24 * 60 * 60); // 24 hours
+        await redisClient.set(`bl_${token}`, "1", 24 * 60 * 60); // 24 hours
       }
-      res.json({ message: 'Logged out successfully' });
+      res.json({ message: "Logged out successfully" });
     } catch (error) {
       next(error);
     }
@@ -177,38 +189,42 @@ export const authController = {
   async getUsers(req: Request, res: Response) {
     try {
       const users = await User.findAll({
-        attributes: ['id', 'email', 'role', 'walletAddress', 'createdAt'],
-        order: [['createdAt', 'DESC']]
+        attributes: ["id", "email", "role", "walletAddress", "createdAt"],
+        order: [["createdAt", "DESC"]],
       });
       res.json(users);
     } catch (error) {
-      console.error('Error fetching users:', error);
-      res.status(500).json({ message: 'Error fetching users' });
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Error fetching users" });
     }
   },
 
-  async refreshToken(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async refreshToken(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const { refreshToken } = req.body;
       if (!refreshToken) {
-        throw new ApiError(400, 'Refresh token is required');
+        throw new ApiError(400, "Refresh token is required");
       }
 
       const payload = await verifyRefreshToken(refreshToken);
       const user = await User.findByPk(payload.userId);
 
       if (!user) {
-        throw new ApiError(401, 'User not found');
+        throw new ApiError(401, "User not found");
       }
 
       if (!user.isActive) {
-        throw new ApiError(401, 'Account is deactivated');
+        throw new ApiError(401, "Account is deactivated");
       }
 
       const tokens = await generateTokenPair({
         userId: user.id,
         role: user.role,
-        walletAddress: user.walletAddress
+        walletAddress: user.walletAddress,
       });
 
       res.json(tokens);
@@ -217,31 +233,35 @@ export const authController = {
     }
   },
 
-  async changePassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async changePassword(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const { currentPassword, newPassword } = req.body;
       const userId = req.user?.userId;
 
       if (!userId) {
-        throw new ApiError(401, 'User not authenticated');
+        throw new ApiError(401, "User not authenticated");
       }
 
       const user = await User.findByPk(userId);
       if (!user) {
-        throw new ApiError(404, 'User not found');
+        throw new ApiError(404, "User not found");
       }
 
       const isValidPassword = await user.validatePassword(currentPassword);
       if (!isValidPassword) {
-        throw new ApiError(401, 'Current password is incorrect');
+        throw new ApiError(401, "Current password is incorrect");
       }
 
       user.password = newPassword;
       await user.save();
 
-      res.json({ message: 'Password changed successfully' });
+      res.json({ message: "Password changed successfully" });
     } catch (error) {
       next(error);
     }
-  }
-}; 
+  },
+};

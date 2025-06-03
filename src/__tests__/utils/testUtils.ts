@@ -1,21 +1,27 @@
 import { User } from "../../models/User";
 import { UserRole } from "../../types";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-import { Optional } from "sequelize";
+import { hashPassword } from "../../utils/password";
 
 export const createTestUser = async (
+  email: string = "testuser@example.com",
+  password: string,
   role: UserRole = UserRole.EMPLOYEE,
   isWalletVerified: boolean = false,
 ) => {
-  const email = `test.${role.toLowerCase()}@example.com`;
-  const password = "testPassword123";
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const walletAddress = "0x" + "1".repeat(40);
+  let randomHex = "";
+  const characters = "0123456789abcdef";
+  for (let i = 0; i < 40; i++) {
+    randomHex += characters.charAt(
+      Math.floor(Math.random() * characters.length),
+    );
+  }
+  const walletAddress = "0x" + randomHex;
+  randomHex;
 
   const user = await User.create({
     email,
-    password: hashedPassword,
+    password,
     role,
     walletAddress,
     isActive: true,
