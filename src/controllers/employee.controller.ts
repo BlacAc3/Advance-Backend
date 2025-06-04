@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { User } from "../models/User";
+import { Invitation } from "../models/Invitation";
 // import { ApiError } from "../utils/errors/index"; // Removed ApiError import
 import { UserRole, TokenPayload, UserResponse } from "../types";
 

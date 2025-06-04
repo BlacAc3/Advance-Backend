@@ -10,6 +10,8 @@ const router = Router();
 // 2.1. Onboarding & KYC - Accept Employer Invitation
 router.post(
   "/api/v1/employees/invitations/:invitationId/accept",
+  authenticate,
+  authorize([UserRole.EMPLOYEE]),
   employeeController.invite,
 );
 
