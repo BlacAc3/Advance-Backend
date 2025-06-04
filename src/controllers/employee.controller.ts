@@ -24,10 +24,61 @@ export const employeeController = {
         console.log(`Acceptance timestamp: ${timestampAccepted}`);
       }
 
+      const invitation = await Invitation.findOne({
+        where: { invitationId: invitationId },
+      });
+
+      // Check if the invitation exists
+      if (!invitation) {
+        console.error(`Invitation with ID ${invitationId} not found.`);
+        res.status(404).json({ message: "Invitation not found." });
+        return;
+      }
+      // Check if the invitation has expired
+      const now = new Date();
+      if (invitation.expiresAt < now) {
+        console.error(`Invitation with ID ${invitationId} has expired.`);
+        await invitation.update({ status: "expired" }); // Update status
+        res.status(400).json({ message: "Invitation has expired." });
+        return;
+      }
+      // Check if the invitation is linked to the authenticated employee
+      const payload = req.user as TokenPayload; // Assuming auth middleware attaches user info to req.user
+      const authenticatedUser = await User.findOne({
+        where: { id: payload.userId },
+      });
+
+      if (
+        !authenticatedUser ||
+        authenticatedUser.email !== invitation.targetEmail
+      ) {
+        console.error(
+          `Invitation target email ${invitation.targetEmail} does not match authenticated user email ${authenticatedUser?.email}.`,
+        );
+        res.status(403).json({ message: "This invitation is not for you." });
+        return;
+      }
+
+      // Check if the invitation has already been accepted or rejected
+      if (invitation.status !== "pending") {
+        console.warn(
+          `Invitation with ID ${invitationId} is already in status: ${invitation.status}.`,
+        );
+        res
+          .status(400)
+          .json({
+            message: `Invitation has already been ${invitation.status}.`,
+          });
+        return;
+      }
+
+      // Update invitation status to accepted
+      await invitation.update({ status: "accepted" });
+
       // --- Business Logic Placeholder ---
       // In a real application, you would perform the following steps:
-      // 1. Verify the employee's authentication status (handled by middleware typically).
-      // 2. Validate the 'invitationId': Check if it exists, is valid, and hasn't expired.
+      // 1. Verify the employee's authentication status (handled by middleware typically). Done!!!
+      // 2. Validate the 'invitationId': Check if it exists, is valid, and hasn't expired. Done!!!
       // 3. Check if the invitation is linked to the authenticated employee.
       // 4. Update the invitation status in the database (e.g., from 'sent' to 'accepted').
       // 5. Link the employee record to the employer record associated with the invitation.

@@ -66,6 +66,14 @@ Invitation.init(
     sequelize,
     tableName: "invitations",
     timestamps: true,
+    indexes: [
+      {
+        fields: ["id"],
+      },
+      {
+        fields: ["invitationId"],
+      },
+    ],
   },
 );
 
