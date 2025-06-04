@@ -1,10 +1,10 @@
 import { Express } from "express";
 import authRoutes from "./auth.routes";
+import { employeeRoutes } from "./employee.routes";
+import { healthCheckRoutes } from "./health.routes";
 // import { employerRoutes } from "./employer.routes";
-// import { employeeRoutes } from "./employee.routes";
 // import { web3Routes } from "./web3.routes";
 // import { adminRoutes } from "./admin.routes";
-import { healthCheckRoutes } from "./health.routes";
 
 export const setupRoutes = (app: Express) => {
   const apiPrefix = `/api/${process.env.API_VERSION || "v1"}`;
@@ -14,8 +14,8 @@ export const setupRoutes = (app: Express) => {
 
   // API routes
   app.use(`${apiPrefix}/auth`, authRoutes);
+  app.use(`${apiPrefix}/employee`, employeeRoutes);
   // app.use(`${apiPrefix}/employer`, employerRoutes);
-  // app.use(`${apiPrefix}/employee`, employeeRoutes);
   // app.use(`${apiPrefix}/web3`, web3Routes);
   // app.use(`${apiPrefix}/admin`, adminRoutes);
 
