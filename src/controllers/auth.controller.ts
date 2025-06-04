@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { User } from "../models/User";
-import { ApiError } from "../utils/errors/index";
+// import { ApiError } from "../utils/errors/index"; // Removed ApiError import
 import { UserRole, TokenPayload, UserResponse } from "../types";
 import bcrypt from "bcrypt";
 import { generateTokenPair, verifyRefreshToken } from "../utils/jwt";
@@ -19,7 +19,8 @@ export const authController = {
 
       const existingUser = await User.findOne({ where: { email } });
       if (existingUser) {
-        throw new ApiError(400, "Email already registered");
+        res.status(400).json({ message: "Email already registered" });
+        return; // Add return here to prevent further execution
       }
 
       const user = await User.create({
@@ -48,8 +49,9 @@ export const authController = {
         user: userResponse,
         ...tokens,
       });
+      // No explicit return needed here as res.json() sends the response
     } catch (error) {
-      next(error);
+      next(error); // Still pass unexpected errors to the error handling middleware
     }
   },
 
@@ -59,17 +61,20 @@ export const authController = {
 
       const user = await User.findOne({ where: { email } });
       if (!user) {
-        throw new ApiError(401, "Invalid email");
+        res.status(401).json({ message: "Invalid email or password" }); // Combine messages for security
+        return;
       }
 
       // const isValidPassword = await comparePassword(password, user.password);
       const isValidPassword = await user.validatePassword(password);
       if (!isValidPassword) {
-        throw new ApiError(401, "Invalid password");
+        res.status(401).json({ message: "Invalid email or password" }); // Combine messages for security
+        return;
       }
 
       if (!user.isActive) {
-        throw new ApiError(401, "Account is deactivated");
+        res.status(401).json({ message: "Account is deactivated" });
+        return;
       }
 
       const tokens = await generateTokenPair({
@@ -90,6 +95,7 @@ export const authController = {
         user: userResponse,
         ...tokens,
       });
+      return;
     } catch (error) {
       next(error);
     }
@@ -103,7 +109,8 @@ export const authController = {
     try {
       const userId = req.user?.userId;
       if (!userId) {
-        throw new ApiError(401, "Unauthorized");
+        res.status(401).json({ message: "Unauthorized" });
+        return;
       }
 
       const user = await User.findByPk(userId, {
@@ -111,7 +118,8 @@ export const authController = {
       });
 
       if (!user) {
-        throw new ApiError(404, "User not found");
+        res.status(404).json({ message: "User not found" });
+        return;
       }
 
       const userResponse: UserResponse = {
@@ -136,20 +144,23 @@ export const authController = {
     try {
       const userId = req.user?.userId;
       if (!userId) {
-        throw new ApiError(401, "Unauthorized");
+        res.status(401).json({ message: "Unauthorized" });
+        return;
       }
 
       const { email, password } = req.body;
       const user = await User.findByPk(userId);
 
       if (!user) {
-        throw new ApiError(404, "User not found");
+        res.status(404).json({ message: "User not found" });
+        return;
       }
 
       if (email) {
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser && existingUser.id !== userId) {
-          throw new ApiError(400, "Email already in use");
+          res.status(400).json({ message: "Email already in use" });
+          return;
         }
         user.email = email;
       }
@@ -195,6 +206,7 @@ export const authController = {
       res.json(users);
     } catch (error) {
       console.error("Error fetching users:", error);
+      // This catch block already uses res.status, keeping it as is
       res.status(500).json({ message: "Error fetching users" });
     }
   },
@@ -207,18 +219,27 @@ export const authController = {
     try {
       const { refreshToken } = req.body;
       if (!refreshToken) {
-        throw new ApiError(400, "Refresh token is required");
+        res.status(400).json({ message: "Refresh token is required" });
+        return;
       }
 
       const payload = await verifyRefreshToken(refreshToken);
+      // Check if payload exists (verification failed)
+      if (!payload || !payload.userId) {
+        res.status(401).json({ message: "Invalid or expired refresh token" });
+        return;
+      }
+
       const user = await User.findByPk(payload.userId);
 
       if (!user) {
-        throw new ApiError(401, "User not found");
+        res.status(401).json({ message: "User not found" });
+        return;
       }
 
       if (!user.isActive) {
-        throw new ApiError(401, "Account is deactivated");
+        res.status(401).json({ message: "Account is deactivated" });
+        return;
       }
 
       const tokens = await generateTokenPair({
@@ -229,7 +250,17 @@ export const authController = {
 
       res.json(tokens);
     } catch (error) {
-      next(error);
+      // If verifyRefreshToken throws an error (e.g., invalid signature), it will land here
+      // We can check if the error is related to token verification
+      if (
+        error instanceof Error &&
+        (error.message.includes("invalid signature") ||
+          error.message.includes("jwt expired"))
+      ) {
+        res.status(401).json({ message: "Invalid or expired refresh token" });
+        return;
+      }
+      next(error); // Pass other unexpected errors
     }
   },
 
@@ -243,19 +274,23 @@ export const authController = {
       const userId = req.user?.userId;
 
       if (!userId) {
-        throw new ApiError(401, "User not authenticated");
+        res.status(401).json({ message: "User not authenticated" });
+        return;
       }
 
       const user = await User.findByPk(userId);
       if (!user) {
-        throw new ApiError(404, "User not found");
+        res.status(404).json({ message: "User not found" });
+        return;
       }
 
       const isValidPassword = await user.validatePassword(currentPassword);
       if (!isValidPassword) {
-        throw new ApiError(401, "Current password is incorrect");
+        res.status(401).json({ message: "Current password is incorrect" });
+        return;
       }
 
+      // Note: User model should handle hashing password on save/update hook
       user.password = newPassword;
       await user.save();
 
