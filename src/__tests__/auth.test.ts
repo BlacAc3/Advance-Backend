@@ -1,8 +1,7 @@
 import request from "supertest";
 import app from "../index";
-import { User } from "../models/User";
-import { UserRole, TokenPayload } from "../types";
-import { createTestUser, generateTestTokens } from "./utils/testUtils";
+import { User, UserRole } from "../models/index";
+import { createTestUser } from "./utils/testUtils";
 import { generateTokenPair } from "../utils/jwt";
 
 describe("Authentication", () => {
@@ -131,12 +130,7 @@ describe("Authentication", () => {
     // Generate and STORE tokens (specifically refresh token in Redis) before EACH test
     // This ensures the token exists in Redis after beforeEach in setup.ts flushes it
     beforeEach(async () => {
-      const payload: TokenPayload = {
-        userId: user.id,
-        role: user.role,
-        walletAddress: user.walletAddress, // Include walletAddress as per generateTokenPair payload
-      };
-      const tokens = await generateTokenPair(payload); // generateTokenPair stores refresh token in Redis
+      const tokens = await generateTokenPair(user); // generateTokenPair stores refresh token in Redis
       refreshToken = tokens.refreshToken;
     });
 
@@ -183,19 +177,15 @@ describe("Authentication", () => {
         `user_test_profile_${Date.now()}@example.com`,
         "testPassword123",
       );
+
+      const tokens = await generateTokenPair(user); // generateTokenPair stores refresh token in Redis
+      accessToken = tokens.accessToken; // Keep accessToken if needed for other tests in this block
     });
 
     // Generate tokens (specifically refresh token in Redis) before EACH test
     // This ensures the token exists in Redis after beforeEach in setup.ts flushes it
-    beforeEach(async () => {
-      const payload: TokenPayload = {
-        userId: String(user.id),
-        role: user.role,
-        walletAddress: user.walletAddress, // Include walletAddress as per generateTokenPair payload
-      };
-      const tokens = await generateTokenPair(payload); // generateTokenPair stores refresh token in Redis
-      accessToken = tokens.accessToken; // Keep accessToken if needed for other tests in this block
-    });
+    // beforeEach(async () => {
+    // });
     it("should get current user profile", async () => {
       const response = await request(app)
         .get("/api/v1/auth/me")
@@ -203,6 +193,7 @@ describe("Authentication", () => {
 
       // console.log("-------------------------------------");
       // console.log(response.body); // Keep console log for debugging if needed
+
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty("id");
       expect(response.body).toHaveProperty("email");
@@ -226,6 +217,7 @@ describe("Authentication", () => {
         .set("Authorization", "Bearer invalid-token");
 
       // Invalid tokens are typically handled by auth middleware returning 401
+      // console.log(response.body); // Keep console log for debugging if needed
       expect(response.status).toBe(401);
       // The controller itself returns 401 with "Unauthorized" if the auth middleware fails to attach user
       expect(response.body).toHaveProperty("message");

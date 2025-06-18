@@ -26,7 +26,10 @@ Employer.init(
       primaryKey: true,
     },
     userId: {
-      type: DataTypes.INTEGER,
+      // This references the User model's primary key.
+      // Since the User model uses DataTypes.UUID for its id,
+      // this foreign key should also be DataTypes.UUID to match.
+      type: DataTypes.UUID,
       allowNull: false,
       unique: true,
       references: {
@@ -77,7 +80,3 @@ Employer.init(
 );
 
 // Define associations
-Employer.belongsTo(User, {
-  foreignKey: "userId",
-  as: "user",
-});

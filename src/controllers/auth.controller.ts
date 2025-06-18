@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { User } from "../models/User";
+import { User } from "../models/index";
 // import { ApiError } from "../utils/errors/index"; // Removed ApiError import
 import { UserRole, TokenPayload, UserResponse } from "../types";
 import bcrypt from "bcrypt";
@@ -31,11 +31,7 @@ export const authController = {
         isWalletVerified: false,
       } as CreationAttributes<User>);
 
-      const tokens = await generateTokenPair({
-        userId: user.id,
-        role: user.role,
-        walletAddress: user.walletAddress,
-      });
+      const tokens = await generateTokenPair(user);
 
       const userResponse: UserResponse = {
         id: user.id,
@@ -77,11 +73,7 @@ export const authController = {
         return;
       }
 
-      const tokens = await generateTokenPair({
-        userId: user.id,
-        role: user.role,
-        walletAddress: user.walletAddress,
-      });
+      const tokens = await generateTokenPair(user);
 
       const userResponse: UserResponse = {
         id: user.id,
@@ -242,11 +234,7 @@ export const authController = {
         return;
       }
 
-      const tokens = await generateTokenPair({
-        userId: user.id,
-        role: user.role,
-        walletAddress: user.walletAddress,
-      });
+      const tokens = await generateTokenPair(user);
 
       res.json(tokens);
     } catch (error) {

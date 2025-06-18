@@ -1,12 +1,12 @@
-import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../config/database';
-import { Employer } from './Employer';
+import { Model, DataTypes } from "sequelize";
+import { sequelize } from "../config/database";
+import { Employer } from "./Employer";
 
 export enum PoolTransactionType {
-  CONTRIBUTION = 'CONTRIBUTION',
-  WITHDRAWAL = 'WITHDRAWAL',
-  ADVANCE_FUNDING = 'ADVANCE_FUNDING',
-  REPAYMENT = 'REPAYMENT',
+  CONTRIBUTION = "CONTRIBUTION",
+  WITHDRAWAL = "WITHDRAWAL",
+  ADVANCE_FUNDING = "ADVANCE_FUNDING",
+  REPAYMENT = "REPAYMENT",
 }
 
 export class LiquidityPool extends Model {
@@ -34,8 +34,8 @@ LiquidityPool.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'employers',
-        key: 'id',
+        model: "employers",
+        key: "id",
       },
     },
     amount: {
@@ -52,7 +52,7 @@ LiquidityPool.init(
       validate: {
         isTransactionHash(value: string) {
           if (!/^0x[a-fA-F0-9]{64}$/.test(value)) {
-            throw new Error('Invalid transaction hash');
+            throw new Error("Invalid transaction hash");
           }
         },
       },
@@ -65,28 +65,24 @@ LiquidityPool.init(
   },
   {
     sequelize,
-    tableName: 'liquidity_pool',
+    tableName: "liquidity_pool",
     timestamps: true,
     indexes: [
       {
-        fields: ['employerId'],
+        fields: ["employerId"],
       },
       {
-        fields: ['transactionType'],
+        fields: ["transactionType"],
       },
       {
-        fields: ['timestamp'],
+        fields: ["timestamp"],
       },
       {
-        fields: ['transactionHash'],
+        fields: ["transactionHash"],
         unique: true,
       },
     ],
-  }
+  },
 );
 
 // Define associations
-LiquidityPool.belongsTo(Employer, {
-  foreignKey: 'employerId',
-  as: 'employer',
-}); 

@@ -40,6 +40,9 @@ User.init(
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
+      // Using UUID as a primary key means that relationships referencing this
+      // model (e.g., userId in Employee or Employer) should also use
+      // DataTypes.UUID instead of DataTypes.INTEGER to maintain data integrity.
     },
     email: {
       type: DataTypes.STRING,

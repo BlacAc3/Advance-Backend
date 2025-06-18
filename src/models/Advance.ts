@@ -1,19 +1,19 @@
-import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../config/database';
-import { Employee } from './Employee';
+import { Model, DataTypes } from "sequelize";
+import { sequelize } from "../config/database";
+import { Employee } from "./Employee";
 
 export enum AdvanceStatus {
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED',
-  PAID = 'PAID',
-  REPAID = 'REPAID',
-  DEFAULTED = 'DEFAULTED',
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+  PAID = "PAID",
+  REPAID = "REPAID",
+  DEFAULTED = "DEFAULTED",
 }
 
 export class Advance extends Model {
-  public id!: number;
-  public employeeId!: number;
+  public id!: string;
+  public employeeId!: string;
   public amount!: bigint;
   public repaymentAmount!: bigint;
   public requestDate!: Date;
@@ -33,16 +33,16 @@ export class Advance extends Model {
 Advance.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
     employeeId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: 'employees',
-        key: 'id',
+        model: "employees",
+        key: "id",
       },
     },
     amount: {
@@ -81,7 +81,7 @@ Advance.init(
       validate: {
         isTransactionHash(value: string) {
           if (value && !/^0x[a-fA-F0-9]{64}$/.test(value)) {
-            throw new Error('Invalid transaction hash');
+            throw new Error("Invalid transaction hash");
           }
         },
       },
@@ -92,7 +92,7 @@ Advance.init(
       validate: {
         isTransactionHash(value: string) {
           if (value && !/^0x[a-fA-F0-9]{64}$/.test(value)) {
-            throw new Error('Invalid transaction hash');
+            throw new Error("Invalid transaction hash");
           }
         },
       },
@@ -100,24 +100,18 @@ Advance.init(
   },
   {
     sequelize,
-    tableName: 'advances',
+    tableName: "advances",
     timestamps: true,
     indexes: [
       {
-        fields: ['employeeId'],
+        fields: ["employeeId"],
       },
       {
-        fields: ['status'],
+        fields: ["status"],
       },
       {
-        fields: ['dueDate'],
+        fields: ["dueDate"],
       },
     ],
-  }
+  },
 );
-
-// Define associations
-Advance.belongsTo(Employee, {
-  foreignKey: 'employeeId',
-  as: 'employee',
-}); 

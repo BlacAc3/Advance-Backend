@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "../utils/jwt";
 import { ethers } from "ethers";
 import { User } from "../models/User";
 import { TokenPayload, UserRole } from "../types";
@@ -10,7 +11,7 @@ export const authenticate = async (
   req: Request,
   res: Response,
   next: NextFunction,
-): Promise<void> => {
+): Promise<any> => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader?.startsWith("Bearer ")) {
@@ -19,7 +20,8 @@ export const authenticate = async (
     }
 
     const token = authHeader.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as TokenPayload;
+    const decoded = jwt.verify(token, JWT_SECRET) as TokenPayload;
+    console.log(decoded);
 
     const user = await User.findByPk(decoded.userId);
     if (!user) {
@@ -35,10 +37,8 @@ export const authenticate = async (
     req.user = {
       userId: user.id,
       role: user.role,
-      walletAddress: user.walletAddress,
     };
-
-    next();
+    return next();
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
       console.log(error);
@@ -47,6 +47,7 @@ export const authenticate = async (
     }
     console.error("Auth middleware error:", error);
     res.status(500).json({ message: "Internal server error" });
+    return;
   }
 };
 

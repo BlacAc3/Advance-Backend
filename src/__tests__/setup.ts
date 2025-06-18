@@ -1,51 +1,45 @@
-import { sequelize } from "../config/database";
-import { redisClient } from "../config/redis";
+import { sequelize } from "../config/database"; // Assuming sequelize instance
+import { redisClient as redisWrapper } from "../config/redis"; // Assuming redisClient is a node-redis v4+ client instance
+// Models are not strictly needed here if using sequelize.sync or iterating sequelize.models
+// import { User, Invitation, Employer, Employee } from "../models/index";
 
-process.env.JWT_SECRET = process.env.JWT_SECRET || "your_test_jwt_secret_key";
-process.env.JWT_REFRESH_SECRET =
-  process.env.JWT_REFRESH_SECRET || "your_test_jwt_refresh_secret_key";
+// Get the raw Redis client instance from the wrapper
+const redisClient = redisWrapper.getClient();
 
-// Global setup before all tests
+// Optional: Ensure connections are ready before any tests run
 beforeAll(async () => {
-  // Sync database with test schema
-  await sequelize.sync({ force: true });
-});
+  try {
+    // Authenticate Sequelize connection
+    sequelize.authenticate();
+    // Sync database, forcing recreation for a clean test environment
+    sequelize.sync({ force: true });
+    console.log("Database connection authenticated and synced for tests.");
 
-// Global teardown after all tests
-// Note: Closing connections (DB and Redis) should typically be handled
-// by Jest's globalTeardown, not here if this file is run per test suite.
-// Removing close/quit from here prevents "client is closed" errors
-// when moving between test suites.
-afterAll(async () => {
-  // Close database connection (handled globally)
-  // await sequelize.close();
-  // Close Redis connection (handled globally)
-  await redisClient.quit();
-});
-
-// Reset database and Redis between tests
-beforeEach(async () => {
-  // Clear Redis cache
-  // Ensure the client is connected and ready before flushing.
-  const redis = redisClient.getClient();
-
-  if (!redis.isOpen) {
-    try {
-      // Await connection. If Redis is unavailable or slow, this could time out.
-      await redis.connect();
-    } catch (error) {
-      // Log connection errors. A connection failure here will prevent flushing.
-      console.error("Failed to connect to Redis in beforeEach:", error);
+    // Ensure Redis client is connected (for node-redis v4+)
+    // The `redisClient` variable holds the raw client instance
+    if (!redisClient.isOpen) {
+      // Check if the client is already open before attempting to connect
+      redisClient.connect();
+      console.log("Redis client connected for tests.");
     }
+  } catch (error) {
+    console.error("Failed to setup connections for testing:", error);
+    // Exit the process if essential connections fail, as tests cannot run
+    process.exit(1);
   }
+});
 
-  if (redis.isOpen) {
-    await redis.flushAll();
-  } else {
-    console.warn(
-      "Redis client not open after attempted connection in beforeEach. Skipping flushAll.",
-    );
+beforeEach(async () => {
+  try {
+    // Clear Redis data before each test to ensure test isolation
+    await redisClient.flushAll();
+  } catch (error) {
+    console.error("Error during beforeEach cleanup:", error);
+    // Re-throw the error to fail the current test if cleanup fails
+    throw error;
   }
+});
 
-  // No other operations that might cause timeouts within this hook.
+afterAll(async () => {
+  console.log("finished tests");
 });

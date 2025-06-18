@@ -111,11 +111,7 @@ export const authenticateWallet = async (
     }
 
     // Generate tokens
-    const tokens = await generateTokenPair({
-      userId: user.id,
-      role: user.role,
-      walletAddress: user.walletAddress,
-    });
+    const tokens = await generateTokenPair(user);
 
     res.json({
       user: {
@@ -161,11 +157,7 @@ export const refreshToken = async (
       throw new ApiError(401, "User account is inactive");
     }
 
-    const tokens = await generateTokenPair({
-      userId: user.id,
-      role: user.role,
-      walletAddress: user.walletAddress,
-    });
+    const tokens = await generateTokenPair(user);
 
     res.json(tokens);
   } catch (error) {

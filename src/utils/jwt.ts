@@ -4,9 +4,10 @@ import { logger } from "./logger";
 import { redisClient } from "../config/redis"; // Assuming redisClient is correctly initialized elsewhere
 import { TokenPayload } from "../types"; // Assuming TokenPayload type is correctly defined elsewhere
 import { JWTError } from "./errors/index"; // Assuming JWTError is correctly defined and imported
+import { User } from "../models";
 
 // Constants for JWT configuration
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"; // Should ideally be a strong, secret key from environment
+export const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"; // Should ideally be a strong, secret key from environment
 const JWT_EXPIRES_IN = "1h"; // Access token expiration
 const REFRESH_TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60; // Refresh token expiration in seconds (7 days)
 
@@ -24,9 +25,7 @@ export interface TokenPair {
  * @returns A promise resolving to an object containing the access token and refresh token.
  * @throws {JWTError} If token generation or storage fails.
  */
-export const generateTokenPair = async (
-  payload: TokenPayload,
-): Promise<TokenPair> => {
+export const generateTokenPair = async (user: User): Promise<TokenPair> => {
   try {
     // Define options for access and refresh tokens
     const accessTokenOptions: SignOptions = {
@@ -41,19 +40,19 @@ export const generateTokenPair = async (
 
     // Sign the tokens
     const accessToken = jwt.sign(
-      payload,
+      { userId: user.id, role: user.role },
       JWT_SECRET as Secret,
       accessTokenOptions,
     );
     // Refresh token typically only contains minimal info like userId
     const refreshToken = jwt.sign(
-      { userId: payload.userId },
+      { userId: user.id, role: user.role },
       JWT_SECRET as Secret,
       refreshTokenOptions,
     );
 
     await redisClient.set(
-      `refresh_${payload.userId}`,
+      `refresh_${user.id}`,
       refreshToken,
       REFRESH_TOKEN_EXPIRES_IN,
     );

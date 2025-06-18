@@ -9,9 +9,11 @@ import { notFoundHandler } from "./middleware/notFoundHandler";
 import { setupRoutes } from "./routes";
 import { setupDatabase } from "./config/database";
 import { logger } from "./utils/logger";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "./swagger-output.json";
 // import web3Routes from "./routes/web3.routes";
 import authRoutes from "./routes/auth.routes";
-// import employerRoutes from "./routes/employer";
+import employeeRoutes from "./routes/employee.routes";
 
 // Load environment variables
 config();
@@ -47,8 +49,11 @@ app.use(limiter);
 // API routes
 setupRoutes(app);
 // app.use("/api/v1/web3", web3Routes);
-app.use("/api/v1/auth", authRoutes);
+// app.use("/api/v1/auth", authRoutes);
 // app.use("/api/v1/employer", employerRoutes);
+
+// Serve Swagger documentation
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Health check endpoint
 app.get("/api/v1/public/health", (_req, res) => {
@@ -60,7 +65,7 @@ app.get("/api/v1/public/health", (_req, res) => {
 
 // Error handling
 app.use(notFoundHandler);
-app.use(errorHandler);
+// app.use("/", errorHandler);
 
 // Start server
 const startServer = async () => {
