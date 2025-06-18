@@ -14,6 +14,7 @@ import swaggerDocument from "./swagger-output.json";
 // import web3Routes from "./routes/web3.routes";
 import authRoutes from "./routes/auth.routes";
 import employeeRoutes from "./routes/employee.routes";
+import { connectRedis } from "./config/redis";
 
 // Load environment variables
 config();
@@ -72,6 +73,7 @@ const startServer = async () => {
   try {
     // Initialize database connection
     await setupDatabase();
+    await connectRedis();
 
     app.listen(port, "0.0.0.0", () => {
       logger.info(`Server is running on port ${port}`);
