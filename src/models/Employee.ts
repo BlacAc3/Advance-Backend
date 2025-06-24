@@ -25,7 +25,6 @@ export class Employee extends Model {
   public id!: string;
   public userId!: number;
   public employerId!: number;
-  public employeeId!: string;
   public registrationDate!: Date;
 
   // KYC Verification Fields (Modular concept: ideally these would be in a separate KycVerification model linked to User)

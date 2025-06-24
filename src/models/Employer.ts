@@ -1,12 +1,13 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
 import { User } from "./User";
+import { Marketer } from "./Marketer";
 
 export class Employer extends Model {
   public id!: number;
-  public userId!: number;
+  public userId!: string;
   public companyName!: string;
-  public companyId!: string;
+  // public companyId!: string;
   public registrationDate!: Date;
   public isVerified!: boolean;
   public verificationDate?: Date;
@@ -16,6 +17,7 @@ export class Employer extends Model {
 
   // Associations
   public readonly user?: User;
+  public readonly marketerId?: Marketer;
 }
 
 Employer.init(
@@ -26,9 +28,6 @@ Employer.init(
       primaryKey: true,
     },
     userId: {
-      // This references the User model's primary key.
-      // Since the User model uses DataTypes.UUID for its id,
-      // this foreign key should also be DataTypes.UUID to match.
       type: DataTypes.UUID,
       allowNull: false,
       unique: true,
@@ -76,6 +75,11 @@ Employer.init(
     sequelize,
     tableName: "employers",
     timestamps: true,
+    indexes: [
+      {
+        fields: ["companyName", "userId"],
+      },
+    ],
   },
 );
 

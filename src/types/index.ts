@@ -1,11 +1,12 @@
-import { Request } from 'express';
+import { Request } from "express";
 
 export enum UserRole {
-  ADMIN = 'ADMIN',
-  EMPLOYER = 'EMPLOYER',
-  EMPLOYEE = 'EMPLOYEE',
-  WEB3_USER = 'WEB3_USER',
-  REGULAR_USER = 'REGULAR_USER'
+  ADMIN = "ADMIN",
+  EMPLOYER = "EMPLOYER",
+  EMPLOYEE = "EMPLOYEE",
+  WEB3_USER = "WEB3_USER",
+  REGULAR_USER = "REGULAR_USER",
+  MARKETER = "MARKETER",
 }
 
 export interface TokenPayload {
@@ -30,7 +31,7 @@ export interface EmployerAttributes {
   id: string;
   userId: string;
   companyName: string;
-  verificationStatus: 'PENDING' | 'VERIFIED' | 'REJECTED';
+  verificationStatus: "PENDING" | "VERIFIED" | "REJECTED";
   verificationDocuments?: string[];
   createdAt?: Date;
   updatedAt?: Date;
@@ -53,7 +54,7 @@ export interface AdvanceRequestAttributes {
   employeeId: string;
   amount: number;
   reason: string;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'PAID' | 'REPAID';
+  status: "PENDING" | "APPROVED" | "REJECTED" | "PAID" | "REPAID";
   approvedAt?: Date;
   paidAt?: Date;
   repaidAt?: Date;
@@ -70,7 +71,7 @@ export interface DemoRequestAttributes {
   companySize: string;
   industry: string;
   message: string;
-  status: 'PENDING' | 'CONTACTED' | 'CONVERTED' | 'REJECTED';
+  status: "PENDING" | "CONTACTED" | "CONVERTED" | "REJECTED";
   notes?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -87,7 +88,10 @@ export interface IStakingContract {
   getTotalRewards(): Promise<string>;
 }
 
-export type CreateUserAttributes = Omit<UserAttributes, 'id' | 'createdAt' | 'updatedAt'>;
+export type CreateUserAttributes = Omit<
+  UserAttributes,
+  "id" | "createdAt" | "updatedAt"
+>;
 
 export interface UserResponse {
   id: string;
@@ -108,6 +112,6 @@ declare global {
 }
 
 // Ensure type compatibility for authenticated requests
-export type AuthenticatedRequest = Omit<Request, 'user'> & {
+export type AuthenticatedRequest = Omit<Request, "user"> & {
   user: TokenPayload;
-}; 
+};

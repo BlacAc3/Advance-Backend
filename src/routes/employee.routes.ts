@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { employeeController } from "../controllers/employee.controller";
-import { authenticate, authenticateWeb3 } from "../middleware/authMiddleware";
+import { authenticate } from "../middleware/authMiddleware";
 import { authorize } from "../middleware/authorize";
 import { UserRole } from "../types";
 

@@ -1,6 +1,8 @@
 import { Express } from "express";
 import authRoutes from "./auth.routes";
 import employeeRoutes from "./employee.routes";
+import employerRoutes from "./employer.routes";
+import marketerRoutes from "./marketer.routes";
 import { healthCheckRoutes } from "./health.routes";
 // import { employerRoutes } from "./employer.routes";
 // import { web3Routes } from "./web3.routes";
@@ -15,6 +17,8 @@ export const setupRoutes = (app: Express) => {
   // API routes
   app.use(`/api/v1/auth`, authRoutes);
   app.use(`/api/v1/employee`, employeeRoutes);
+  app.use(`/api/v1/employer`, employerRoutes);
+  app.use(`/api/v1/marketer`, marketerRoutes);
 
   // Root route
   app.get("/", (req, res) => {
