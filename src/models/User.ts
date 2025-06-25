@@ -8,6 +8,7 @@ class User
   implements UserAttributes
 {
   public id!: string;
+  public username?: string;
   public email!: string;
   public password!: string;
   public role!: UserRole;
@@ -43,6 +44,12 @@ User.init(
       // Using UUID as a primary key means that relationships referencing this
       // model (e.g., userId in Employee or Employer) should also use
       // DataTypes.UUID instead of DataTypes.INTEGER to maintain data integrity.
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true,
+      defaultValue: null,
     },
     email: {
       type: DataTypes.STRING,

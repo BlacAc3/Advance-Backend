@@ -1,6 +1,4 @@
-import { Invitation } from "../models/Invitation";
-import { Employer } from "../models/Employer";
-import { Employee } from "../models/Employee";
+import { Invitation } from "../models";
 import { Op } from "sequelize";
 
 // Function to create an invitation
@@ -105,3 +103,5 @@ async function expireInvitations() {
     throw error;
   }
 }
+
+export { createInvitation, rejectInvitation, acceptInvitation };

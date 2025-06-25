@@ -17,6 +17,7 @@ export interface TokenPayload {
 
 export interface UserAttributes {
   id: string;
+  username?: string;
   email: string;
   password: string;
   role: UserRole;

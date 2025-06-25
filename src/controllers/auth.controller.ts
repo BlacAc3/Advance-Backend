@@ -17,6 +17,10 @@ export const authController = {
     try {
       const { email, password, role } = req.body;
 
+      if (role === UserRole.EMPLOYER) {
+        res.status(400).json({ message: "Cannot register an employer" });
+      }
+
       const existingUser = await User.findOne({ where: { email } });
       if (existingUser) {
         res.status(400).json({ message: "Email already registered" });
@@ -47,6 +51,7 @@ export const authController = {
       });
       // No explicit return needed here as res.json() sends the response
     } catch (error) {
+      res.status(400).json({ error: error });
       next(error); // Still pass unexpected errors to the error handling middleware
     }
   },

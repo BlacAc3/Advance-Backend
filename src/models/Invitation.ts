@@ -20,7 +20,6 @@ class Invitation extends Model {
 Invitation.init(
   {
     id: {
-      // Changed to DataTypes.UUID to match other models and consistency
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       allowNull: false,
@@ -35,7 +34,7 @@ Invitation.init(
     senderUserId: {
       // Corrected to DataTypes.UUID to match User model's id
       type: DataTypes.UUID,
-      allowNull: true, // Allow system-sent invitations or if sender isn\'t tracked
+      allowNull: false, // Allow system-sent invitations or if sender isn\'t tracked
       references: {
         model: "users", // Corrected table name to lowercase plural
         key: "id",
@@ -71,24 +70,6 @@ Invitation.init(
     sequelize,
     tableName: "invitations", // Corrected table name to lowercase plural
     timestamps: true,
-    indexes: [
-      {
-        fields: ["invitationId"],
-        unique: true, // Ensure invitationId is unique index
-      },
-      {
-        fields: ["senderUserId"], // Add index for foreign key
-      },
-      {
-        fields: ["recipientUserId"], // Add index for recipient user id
-      },
-      {
-        fields: ["targetEmail"], // Add index for frequent lookups
-      },
-      {
-        fields: ["status"], // Add index for status lookups
-      },
-    ],
   },
 );
 

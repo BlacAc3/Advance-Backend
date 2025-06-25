@@ -11,9 +11,9 @@ router.use(authenticate);
 router.use(authorize([UserRole.ADMIN]));
 
 // User management
-router.get("/users", adminController.getUsers);
-router.put("/users/:id", adminController.updateUser);
-router.delete("/users/:id", adminController.deleteUser);
+// router.get("/users", adminController.getUsers);
+// router.put("/users/:id", adminController.updateUser);
+// router.delete("/users/:id", adminController.deleteUser);
 
 // Employer management
 // router.get('/employers', adminController.getEmployers);

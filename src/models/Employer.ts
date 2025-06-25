@@ -4,7 +4,7 @@ import { User } from "./User";
 import { Marketer } from "./Marketer";
 
 export class Employer extends Model {
-  public id!: number;
+  public id!: string;
   public userId!: string;
   public companyName!: string;
   // public companyId!: string;
@@ -23,7 +23,7 @@ export class Employer extends Model {
 Employer.init(
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       autoIncrement: true,
       primaryKey: true,
     },

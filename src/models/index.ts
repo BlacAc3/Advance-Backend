@@ -66,24 +66,26 @@ import { Invitation } from "./Invitation";
  *    - onDelete/onUpdate:  Consider using `onDelete` and `onUpdate` options to define cascading behaviors (e.g., what happens when you delete a User that has related Employers).  This helps maintain data integrity.
  */
 
-// Define model associations
+// One to one relationship between Employer and User
 User.hasOne(Employer, {
   foreignKey: "userId",
   as: "employer",
 });
 
-User.hasOne(Employee, {
+Employer.belongsTo(User, {
   foreignKey: "userId",
-  as: "employee",
+  as: "user",
 });
+//--------------------------------------------------
 
 Employer.hasOne(Marketer, {
   foreignKey: "marketerId",
   as: "invitedBy",
 });
+
 Employer.hasMany(Employee, {
   foreignKey: "employerId",
-  as: "employees",
+  as: "employer",
 });
 
 Employer.hasMany(LiquidityPool, {
@@ -91,24 +93,21 @@ Employer.hasMany(LiquidityPool, {
   as: "poolTransactions",
 });
 
-Employee.hasMany(Advance, {
-  foreignKey: "employeeId",
-  as: "advances",
-});
-
-Marketer.hasMany(Invitation, {
-  foreignKey: "senderUserId",
-  as: "invitations",
-});
-
-Employer.belongsTo(User, {
+// One to one relationship between Employee and User
+User.hasOne(Employee, {
   foreignKey: "userId",
-  as: "user",
+  as: "employee",
 });
 
 Employee.belongsTo(User, {
   foreignKey: "userId",
   as: "user",
+});
+//--------------------------------------------------
+
+Employee.hasMany(Advance, {
+  foreignKey: "employeeId",
+  as: "advances",
 });
 
 Employee.belongsTo(Employer, {
@@ -119,6 +118,21 @@ Employee.belongsTo(Employer, {
 Employee.belongsTo(User, {
   foreignKey: "kycReviewerId",
   as: "kycReviewer",
+});
+
+// One to one relationship for Marketer and User
+User.hasOne(Marketer, {
+  foreignKey: "userId",
+  as: "marketer",
+});
+
+Marketer.belongsTo(User, {
+  foreignKey: "userId",
+  as: "user",
+});
+User.hasMany(Invitation, {
+  foreignKey: "senderUserId",
+  as: "invitations",
 });
 
 Advance.belongsTo(Employee, {

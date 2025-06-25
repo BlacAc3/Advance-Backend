@@ -85,12 +85,12 @@ export const employeeController = {
       // Note: Assumes invitation.sentByUserId links directly to an Employer's userId
       // A more robust system might have the invitation link directly to an employerId
       const employer = await Employer.findOne({
-        where: { userId: invitation.sentByUserId },
+        where: { userId: invitation.senderUserId },
       });
 
       if (!employer) {
         console.error(
-          `Employer not found for sending user ID: ${invitation.sentByUserId}. Invitation ID: ${invitationId}`,
+          `Employer not found for sending user ID: ${invitation.senderUserId}. Invitation ID: ${invitationId}`,
         );
         // This indicates an internal data issue or invalid invitation data
         res.status(500).json({

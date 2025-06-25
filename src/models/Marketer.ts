@@ -1,15 +1,17 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
 import { Invitation } from "./Invitation";
+import { User } from "./User";
 
 class Marketer extends Model {
   public id!: number;
-  public invitationId!: string;
+  public userId!: string;
   public registrationDate!: Date;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
   // Associations
+  public user?: User;
 }
 
 Marketer.init(
@@ -18,15 +20,6 @@ Marketer.init(
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
-    },
-    invitationId: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      unique: true,
-      references: {
-        model: "invitations",
-        key: "id",
-      },
     },
     registrationDate: {
       type: DataTypes.DATE,

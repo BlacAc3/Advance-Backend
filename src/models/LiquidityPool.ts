@@ -10,8 +10,8 @@ export enum PoolTransactionType {
 }
 
 export class LiquidityPool extends Model {
-  public id!: number;
-  public employerId!: number;
+  public id!: string;
+  public employerId!: string;
   public amount!: bigint;
   public transactionType!: PoolTransactionType;
   public transactionHash!: string;
@@ -26,12 +26,12 @@ export class LiquidityPool extends Model {
 LiquidityPool.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
     employerId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: "employers",

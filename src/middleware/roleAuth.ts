@@ -10,25 +10,13 @@ const roleHierarchy: Record<UserRole, UserRole[]> = {
     UserRole.EMPLOYER,
     UserRole.EMPLOYEE,
     UserRole.WEB3_USER,
+    UserRole.MARKETER,
   ],
   [UserRole.EMPLOYER]: [UserRole.EMPLOYER, UserRole.EMPLOYEE],
+  [UserRole.MARKETER]: [UserRole.EMPLOYER],
   [UserRole.EMPLOYEE]: [UserRole.EMPLOYEE],
   [UserRole.WEB3_USER]: [UserRole.WEB3_USER],
   [UserRole.REGULAR_USER]: [UserRole.REGULAR_USER],
-};
-
-// Define role-specific permissions
-const rolePermissions: Record<UserRole, string[]> = {
-  [UserRole.ADMIN]: ["*"],
-  [UserRole.EMPLOYER]: [
-    "manage_employees",
-    "view_advances",
-    "approve_advances",
-    "manage_company",
-  ],
-  [UserRole.EMPLOYEE]: ["view_advances", "request_advances", "view_profile"],
-  [UserRole.WEB3_USER]: ["view_wallet", "manage_nfts", "stake_tokens"],
-  [UserRole.REGULAR_USER]: ["view_profile"],
 };
 
 // Custom error for authorization
@@ -74,68 +62,5 @@ export const requireRole = (allowedRoles: UserRole[]) => {
 };
 
 // Middleware to check if user has required permission
-export const requirePermission = (requiredPermission: string) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      if (!req.user) {
-        throw new AuthorizationError("User not authenticated");
-      }
-
-      const userRole = req.user.role;
-      const hasPermission =
-        rolePermissions[userRole]?.includes(requiredPermission);
-
-      if (!hasPermission) {
-        throw new AuthorizationError("Insufficient permissions");
-      }
-
-      return next();
-    } catch (error) {
-      if (error instanceof AuthorizationError) {
-        return res.status(403).json({
-          status: "error",
-          message: error.message,
-        });
-      }
-      logger.error("Permission authorization error:", error);
-      res.status(500).json({
-        status: "error",
-        message: "Internal server error during authorization",
-      });
-    }
-  };
-};
 
 // Helper function to check if user has any of the required permissions
-export const requireAnyPermission = (requiredPermissions: string[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      if (!req.user) {
-        throw new AuthorizationError("User not authenticated");
-      }
-
-      const userRole = req.user.role;
-      const hasAnyPermission = requiredPermissions.some((permission) =>
-        rolePermissions[userRole]?.includes(permission),
-      );
-
-      if (!hasAnyPermission) {
-        throw new AuthorizationError("Insufficient permissions");
-      }
-
-      return next();
-    } catch (error) {
-      if (error instanceof AuthorizationError) {
-        return res.status(403).json({
-          status: "error",
-          message: error.message,
-        });
-      }
-      logger.error("Permission authorization error:", error);
-      res.status(500).json({
-        status: "error",
-        message: "Internal server error during authorization",
-      });
-    }
-  };
-};
