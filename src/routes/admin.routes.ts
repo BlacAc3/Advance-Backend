@@ -11,12 +11,15 @@ router.use(authenticate);
 router.use(authorize([UserRole.ADMIN]));
 
 // User management
-// router.get("/users", adminController.getUsers);
-// router.put("/users/:id", adminController.updateUser);
-// router.delete("/users/:id", adminController.deleteUser);
+router.get("/users", adminController.getUsers);
+router.put("/users/:id", adminController.updateUser);
+router.delete("/users/:id", adminController.deleteUser);
+
+// Invitations Management
+router.get("/invitations", adminController.getInvitations);
 
 // Employer management
-// router.get('/employers', adminController.getEmployers);
+router.get("/employers", adminController.getEmployers);
 // router.put('/employers/:id/verify', adminController.verifyEmployer);
 
 // // Employee management

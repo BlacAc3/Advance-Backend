@@ -74,11 +74,11 @@ User.hasOne(Employer, {
 
 Employer.belongsTo(User, {
   foreignKey: "userId",
-  as: "user",
+  as: "owner",
 });
 //--------------------------------------------------
 
-Employer.hasOne(Marketer, {
+Employer.belongsTo(Marketer, {
   foreignKey: "marketerId",
   as: "invitedBy",
 });
@@ -130,9 +130,13 @@ Marketer.belongsTo(User, {
   foreignKey: "userId",
   as: "user",
 });
-User.hasMany(Invitation, {
+Invitation.belongsTo(User, {
   foreignKey: "senderUserId",
-  as: "invitations",
+  as: "sender",
+});
+Invitation.belongsTo(User, {
+  foreignKey: "recipientUserId",
+  as: "receiver",
 });
 
 Advance.belongsTo(Employee, {
@@ -155,4 +159,5 @@ export {
   Invitation,
   LiquidityPool,
   PoolTransactionType,
+  Marketer,
 };

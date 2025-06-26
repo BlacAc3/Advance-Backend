@@ -5,7 +5,7 @@ import { Op } from "sequelize";
 async function createInvitation(
   targetEmail: string,
   senderUserId: string,
-  role: "employer" | "employee",
+  role: "EMPLOYER" | "EMPLOYEE",
   expiresAt: Date,
 ) {
   try {

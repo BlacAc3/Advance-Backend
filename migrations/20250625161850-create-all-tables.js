@@ -117,7 +117,7 @@ module.exports = {
       companyId: {
         // Assuming this should be unique based on common practice, though not explicitly unique in Employer model indexes
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: true,
       },
       registrationDate: {
@@ -365,7 +365,7 @@ module.exports = {
         allowNull: false,
       },
       role: {
-        type: Sequelize.ENUM("employer", "employee"), // Match model enum
+        type: Sequelize.ENUM("EMPLOYER", "EMPLOYEE"), // Match model enum
         allowNull: false,
       },
       createdAt: { type: Sequelize.DATE, allowNull: false },

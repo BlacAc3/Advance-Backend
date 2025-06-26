@@ -12,5 +12,11 @@ router.post(
   authorize([UserRole.MARKETER]),
   marketerController.sendInvite,
 );
+router.get(
+  "/invitations",
+  authenticate,
+  authorize([UserRole.MARKETER]),
+  marketerController.get_invites,
+);
 
 export default router;

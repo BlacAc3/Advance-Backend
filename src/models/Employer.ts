@@ -7,7 +7,6 @@ export class Employer extends Model {
   public id!: string;
   public userId!: string;
   public companyName!: string;
-  // public companyId!: string;
   public registrationDate!: Date;
   public isVerified!: boolean;
   public verificationDate?: Date;
@@ -24,8 +23,9 @@ Employer.init(
   {
     id: {
       type: DataTypes.UUID,
-      autoIncrement: true,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
+      allowNull: false,
     },
     userId: {
       type: DataTypes.UUID,
@@ -40,11 +40,6 @@ Employer.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    companyId: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
     registrationDate: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -58,10 +53,12 @@ Employer.init(
     verificationDate: {
       type: DataTypes.DATE,
       allowNull: true,
+      defaultValue: null,
     },
     verifiedBy: {
       type: DataTypes.STRING(42),
       allowNull: true,
+      defaultValue: null,
       validate: {
         isEthereumAddress(value: string) {
           if (value && !/^0x[a-fA-F0-9]{40}$/.test(value)) {

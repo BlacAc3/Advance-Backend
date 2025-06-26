@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { User, Invitation, Employer } from "../models/index";
+import { User, Invitation, Employer, Marketer } from "../models/index";
 import { UserRole, TokenPayload, UserResponse } from "../types";
 import { generateTokenPair } from "../utils/jwt";
 import { CreationAttributes } from "sequelize";
@@ -49,7 +49,9 @@ export const employerController = {
       // Prevent duplicate registration
       const existingUser = await User.findOne({ where: { email } });
       if (existingUser) {
-        res.status(400).json({ message: "Email already registered" });
+        res
+          .status(400)
+          .json({ message: "Email already registered in our system" });
         return;
       }
 
@@ -57,14 +59,23 @@ export const employerController = {
       invitation = await Invitation.findOne({
         where: {
           id: invitationId,
+          role: "EMPLOYER",
           status: "pending",
-          role: "employer",
         },
       });
 
       //Verify invitation exists
       if (!invitation) {
-        res.status(400).json({ message: "The Invitation link does not exist" });
+        res.status(400).json({ message: "The Invitation link is expired" });
+        return;
+      }
+
+      //Verify if invitation has expired
+      if (invitation.expiresAt < new Date()) {
+        await invitation.update({ status: "expired" });
+        res.status(400).json({
+          message: "This invitation has expired",
+        });
         return;
       }
 
@@ -95,12 +106,21 @@ export const employerController = {
         status: "accepted",
         recipientUserId: user.id,
       });
-      await Employer.create({
+      const employer = await Employer.create({
         userId: user.id,
         companyName: companyName,
         registrationDate: new Date(),
         isVerified: false,
       });
+      // Find the marketer who sent the invitation
+      const senderMarketer = await Marketer.findOne({
+        where: { userId: invitation.senderUserId },
+      });
+
+      // If the sender was a marketer, link the new employer to them
+      if (senderMarketer) {
+        await employer.update({ marketerId: senderMarketer.id as any }); // Use 'as any' to bypass potential TypeScript type mismatch for now
+      }
 
       const tokens = await generateTokenPair(user);
 
@@ -117,6 +137,7 @@ export const employerController = {
       });
       // No explicit return needed here as res.json() sends the response
     } catch (error) {
+      res.status(400).json({ error: error });
       next(error); // Still pass unexpected errors to the error handling middleware
     }
   },
