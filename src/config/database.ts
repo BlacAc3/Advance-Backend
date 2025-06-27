@@ -1,5 +1,7 @@
 import { Sequelize, Dialect } from "sequelize";
 import { logger } from "../utils/logger";
+import "dotenv/config";
+import { drizzle } from "drizzle-orm/node-postgres";
 
 const sequelize = new Sequelize(
   process.env.DB_NAME_DEV || "advance",
@@ -25,3 +27,5 @@ export const setupDatabase = async () => {
     throw error;
   }
 };
+
+export const db = drizzle(process.env.DATABASE_URL!);

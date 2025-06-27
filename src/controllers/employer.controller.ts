@@ -3,6 +3,16 @@ import { User, Invitation, Employer, Marketer } from "../models/index";
 import { UserRole, TokenPayload, UserResponse } from "../types";
 import { generateTokenPair } from "../utils/jwt";
 import { CreationAttributes } from "sequelize";
+import {
+  createUser,
+  expireInvitation,
+  getEmployerByCompanyName,
+  getPendingEmployerInvitationById,
+  getUserByEmail,
+  db,
+} from "../db/services";
+import { eq, and } from "drizzle-orm";
+import { users, employers, marketers, invitations } from "../db/schema";
 
 export const employerController = {
   async employerRegister(
@@ -12,7 +22,8 @@ export const employerController = {
   ): Promise<void> {
     try {
       var invitation;
-      const { email, password, role, invitationId, companyName } = req.body;
+      const { email, username, password, role, invitationId, companyName } =
+        req.body;
 
       // Validations
       if (!email || !password) {
@@ -47,7 +58,8 @@ export const employerController = {
       }
 
       // Prevent duplicate registration
-      const existingUser = await User.findOne({ where: { email } });
+      // const existingUser = await User.findOne({ where: { email } });
+      const existingUser = await getUserByEmail(email);
       if (existingUser) {
         res
           .status(400)
@@ -56,13 +68,14 @@ export const employerController = {
       }
 
       //Confirm Invitation existence
-      invitation = await Invitation.findOne({
-        where: {
-          id: invitationId,
-          role: "EMPLOYER",
-          status: "pending",
-        },
-      });
+      // invitation = await Invitation.findOne({
+      //   where: {
+      //     id: invitationId,
+      //     role: "EMPLOYER",
+      //     status: "pending",
+      //   },
+      // });
+      invitation = await getPendingEmployerInvitationById(invitationId);
 
       //Verify invitation exists
       if (!invitation) {
@@ -71,8 +84,8 @@ export const employerController = {
       }
 
       //Verify if invitation has expired
-      if (invitation.expiresAt < new Date()) {
-        await invitation.update({ status: "expired" });
+      if (new Date(invitation.expiresAt) < new Date()) {
+        await expireInvitation(invitation.id);
         res.status(400).json({
           message: "This invitation has expired",
         });
@@ -86,7 +99,8 @@ export const employerController = {
         });
         return;
       }
-      const companyExists = await Employer.findOne({ where: { companyName } });
+      // const companyExists = await Employer.findOne({ where: { companyName } });
+      const companyExists = await getEmployerByCompanyName(companyName);
       if (companyExists) {
         res.status(400).json({
           message: "This company/employer has already been registered",
@@ -94,32 +108,55 @@ export const employerController = {
         return;
       }
 
-      const user = await User.create({
-        email,
-        password,
-        role: role,
-        isActive: true,
-        isWalletVerified: false,
-      } as CreationAttributes<User>);
+      // const user = await User.create({
+      //   email,
+      //   password,
+      //   role: role,
+      //   isActive: true,
+      //   isWalletVerified: false,
+      // } as CreationAttributes<User>);
 
-      await invitation.update({
-        status: "accepted",
-        recipientUserId: user.id,
-      });
-      const employer = await Employer.create({
-        userId: user.id,
-        companyName: companyName,
-        registrationDate: new Date(),
-        isVerified: false,
-      });
+      const user = await createUser(email, password, role, username);
+
+      //Update invitation table
+      await db
+        .update(invitations)
+        .set({
+          status: "accepted", // Use literal string from enum
+          recipientUserId: user.id,
+        })
+        .where(eq(invitations.id, invitation.id));
+
+      //
+      const [employer] = await db
+        .insert(employers)
+        // Wrap employerData in an array to match Drizzle's values overload for single inserts
+        .values({
+          userId: user.id,
+          companyName: companyName,
+          registrationDate: new Date(),
+          isVerified: false,
+        })
+        .returning();
+
       // Find the marketer who sent the invitation
-      const senderMarketer = await Marketer.findOne({
-        where: { userId: invitation.senderUserId },
-      });
+      // const senderMarketer = await Marketer.findOne({
+      //   where: { userId: invitation.senderUserId },
+      // });
 
-      // If the sender was a marketer, link the new employer to them
+      const senderMarketerList = await db
+        .select()
+        .from(marketers)
+        .where(eq(marketers.userId, invitation.senderUserId))
+        .limit(1);
+      const senderMarketer = senderMarketerList[0];
+
+      // If the sender was a marketer, Update the marketerId field
       if (senderMarketer) {
-        await employer.update({ marketerId: senderMarketer.id as any }); // Use 'as any' to bypass potential TypeScript type mismatch for now
+        await db
+          .update(employers)
+          .set({ marketerId: senderMarketer.id })
+          .where(eq(employers.id, employer.id));
       }
 
       const tokens = await generateTokenPair(user);

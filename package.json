@@ -14,12 +14,13 @@
     "migrate:add-wallet-data": "ts-node src/scripts/run-migration.ts",
     "prepare": "[ \"$NODE_ENV\" != \"production\" ] && husky install || echo 'Skipping husky in production'",
     "swagger": "ts-node src/swagger.ts",
-    "db:migrate": "npm run build && sequelize db:migrate",
-    "db:seed": "npm run build && sequelize db:seed:all",
-    "db:migrate:undo": "npm run build && sequelize db:migrate:undo",
-    "db:migrate:undo:all": "npm run build && sequelize db:migrate:undo:all",
-    "db:create": "npm run build && sequelize db:create",
-    "db:drop": "npm run build && sequelize db:drop"
+    "db:generate": "npm run build && drizzle-kit generate",
+    "db:check": "npm run build && drizzle-kit check",
+    "db:studio": "drizzle-kit studio --port=3233",
+    "db:migrate": "npm run build && drizzle-kit migrate",
+    "db:push": "npm run build && drizzle-kit push",
+    "db:pull": "npm run build && drizzle-kit pull",
+    "db:drop": "npm run build && "
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.2",

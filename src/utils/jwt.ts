@@ -25,7 +25,7 @@ export interface TokenPair {
  * @returns A promise resolving to an object containing the access token and refresh token.
  * @throws {JWTError} If token generation or storage fails.
  */
-export const generateTokenPair = async (user: User): Promise<TokenPair> => {
+export const generateTokenPair = async (user: any): Promise<TokenPair> => {
   try {
     // Define options for access and refresh tokens
     const accessTokenOptions: SignOptions = {
