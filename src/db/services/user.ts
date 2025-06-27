@@ -35,6 +35,10 @@ class UserService {
 
     return result;
   }
+  async getAll() {
+    const result = await this.db.select().from(this.user);
+    return result;
+  }
 
   async create(
     data: Omit<

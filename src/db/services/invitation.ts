@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { drizzle } from "drizzle-orm/node-postgres";
+import { alias } from "drizzle-orm/pg-core";
 import { eq, and, SQL, Placeholder, InferInsertModel } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import * as schema from "../schema"; // Import all schema for type inference
@@ -33,6 +34,7 @@ class InvitationService {
 
     return result.length > 0 ? result[0] : null;
   }
+
   async getPending(data: { senderId: string; email: string }) {
     const { senderId, email: targetEmail } = data;
     const status = "pending";
@@ -82,12 +84,12 @@ class InvitationService {
       .where(eq(this.invitations.id, id));
   }
 
-  async getAll(data: {
+  async getAll(data?: {
     senderId?: string;
     email?: string;
     status?: "pending" | "accepted" | "rejected" | "expired";
   }) {
-    const { senderId, email: targetEmail, status } = data;
+    const { senderId, email: targetEmail, status } = data || {};
     const whereClauses = [];
 
     if (senderId) {
@@ -101,17 +103,19 @@ class InvitationService {
     if (status) {
       whereClauses.push(eq(this.invitations.status, status));
     }
-
+    const senderUsers = alias(schema.users, "sender_users");
+    const recipientUsers = alias(schema.users, "recipient_users");
     const invitations = await this.db
-      .select()
+      .select({
+        invitation: this.invitations,
+        sender: senderUsers,
+        recipient: recipientUsers,
+      })
       .from(this.invitations)
+      .leftJoin(senderUsers, eq(senderUsers.id, this.invitations.senderUserId))
       .leftJoin(
-        schema.users,
-        eq(schema.users.id, this.invitations.senderUserId),
-      )
-      .leftJoin(
-        schema.users,
-        eq(schema.users.id, this.invitations.recipientUserId),
+        recipientUsers,
+        eq(recipientUsers.id, this.invitations.recipientUserId),
       )
       .where(and(...whereClauses));
 

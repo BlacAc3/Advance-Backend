@@ -1,6 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { User, Invitation, Employer, Marketer } from "../models/index";
 import { UserRole } from "../types";
+import invitationModel from "../db/services/invitation";
+import userModel from "../db/services/user";
+import { eq, and, SQL, Placeholder, InferInsertModel } from "drizzle-orm";
+import { db } from "../db/config";
+import * as schema from "../db/schema";
 
 export const adminController = {
   async getUsers(
@@ -9,10 +14,7 @@ export const adminController = {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const users = await User.findAll({
-        attributes: ["id", "email", "role", "isActive", "createdAt"],
-        order: [["createdAt", "DESC"]],
-      });
+      const users = await userModel.getAll();
       res.json(users);
       return;
     } catch (error) {
@@ -29,33 +31,12 @@ export const adminController = {
   ): Promise<void> {
     try {
       // Admin should be able to see all invitations, optionally filtered by status
-      const statusFilter = req.query.status as string | undefined; // Get status from query params
+      const statusFilter = req.query.status as any; // Get status from query params
 
-      // Build the where clause
-      const whereClause: any = {};
+      let status: "pending" | "accepted" | "rejected" | "expired" =
+        statusFilter;
 
-      // Add status filter if provided and is a valid status (matching Invitation model enum)
-      const validStatuses = ["pending", "accepted", "rejected", "expired"];
-      if (statusFilter && validStatuses.includes(statusFilter)) {
-        whereClause.status = statusFilter;
-      }
-
-      const invitations = await Invitation.findAll({
-        where: whereClause, // Use the built where clause
-        include: [
-          {
-            model: User,
-            as: "sender",
-            attributes: ["id", "username", "email"], // Specify the attributes you want to retrieve
-          },
-          {
-            model: User,
-            as: "receiver",
-            attributes: ["id", "username", "email", "role"],
-          },
-        ],
-        order: [["createdAt", "DESC"]], // Order by creation date, newest first
-      });
+      const invitations = await invitationModel.getAll();
       res.status(200).json(invitations);
       return;
     } catch (error) {
@@ -72,7 +53,7 @@ export const adminController = {
       const { id } = req.params;
       const { role, isActive } = req.body;
 
-      const user = await User.findByPk(id);
+      const user = await userModel.get({ id });
       if (!user) {
         res.status(404).json({ message: "User not found" });
         return;
@@ -83,16 +64,28 @@ export const adminController = {
         return;
       }
 
-      await user.update({
-        role: role || user.role,
-        isActive: isActive !== undefined ? isActive : user.isActive,
-      });
+      // Update the user using the userService
+      await db
+        .update(schema.users)
+        .set({
+          role: role || user.role,
+          isActive: isActive !== undefined ? isActive : user.isActive,
+        })
+        .where(eq(schema.users.id, id));
+
+      // Fetch the updated user
+      const updatedUser = await userModel.get({ id });
+
+      if (!updatedUser) {
+        res.status(500).json({ message: "Failed to retrieve updated user" });
+        return;
+      }
 
       res.json({
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        isActive: user.isActive,
+        id: updatedUser.id,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        isActive: updatedUser.isActive,
       });
       return;
     } catch (error) {
@@ -109,14 +102,13 @@ export const adminController = {
   ): Promise<void> {
     try {
       const { id } = req.params;
-      const user = await User.findByPk(id);
-
+      const user = await userModel.get({ id });
       if (!user) {
         res.status(404).json({ message: "User not found" });
         return;
       }
 
-      await user.destroy();
+      await db.delete(schema.users).where(eq(schema.users.id, id));
       res.status(204).send();
       return;
     } catch (error) {
