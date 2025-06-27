@@ -76,11 +76,11 @@ export const users = pgTable(
     id: uuid("id")
       .primaryKey()
       .default(sql`gen_random_uuid()`), // For PostgreSQL
-    username: varchar("username", { length: 255 }),
-    email: varchar("email", { length: 255 }).notNull(),
+    username: varchar("username", { length: 255 }).unique(),
+    email: varchar("email", { length: 255 }).notNull().unique(),
     password: varchar("password", { length: 255 }).notNull(),
     role: enumUsersRole("role").default("WEB3_USER").notNull(),
-    walletAddress: varchar("wallet_address", { length: 255 }),
+    walletAddress: varchar("wallet_address", { length: 255 }).unique(),
     isActive: boolean("is_active").default(true).notNull(),
     isWalletVerified: boolean("is_wallet_verified").default(false).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
@@ -101,7 +101,7 @@ export const marketers = pgTable(
   "marketers",
   {
     id: serial("id").primaryKey().notNull(),
-    userId: uuid("user_id").notNull(),
+    userId: uuid("user_id").notNull().unique(),
     registrationDate: timestamp("registration_date", {
       withTimezone: true,
       mode: "date",
@@ -131,9 +131,9 @@ export const employers = pgTable(
     id: uuid("id")
       .primaryKey()
       .default(sql`gen_random_uuid()`), // For PostgreSQL
-    userId: uuid("user_id").notNull(),
+    userId: uuid("user_id").notNull().unique(),
     marketerId: integer("marketer_id"),
-    companyName: varchar("company_name", { length: 255 }).notNull(),
+    companyName: varchar("company_name", { length: 255 }).notNull().unique(),
     registrationDate: timestamp("registration_date", {
       withTimezone: true,
       mode: "date",
@@ -183,7 +183,7 @@ export const employees = pgTable(
     id: uuid("id")
       .primaryKey()
       .default(sql`gen_random_uuid()`), // For PostgreSQL
-    userId: uuid("user_id").notNull(),
+    userId: uuid("user_id").notNull().unique(),
     employerId: uuid("employer_id").notNull(),
     kycStage: enumEmployeesKycStage("kyc_stage").default("none").notNull(),
     kycStatus: enumEmployeesKycStatus("kyc_status")

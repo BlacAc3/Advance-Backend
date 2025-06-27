@@ -1,18 +1,15 @@
 import { Request, Response, NextFunction } from "express";
-import { User, Invitation, Employer, Marketer } from "../models/index";
 import { UserRole, TokenPayload, UserResponse } from "../types";
 import { generateTokenPair } from "../utils/jwt";
 import { CreationAttributes } from "sequelize";
-import {
-  createUser,
-  expireInvitation,
-  getEmployerByCompanyName,
-  getPendingEmployerInvitationById,
-  getUserByEmail,
-  db,
-} from "../db/services";
 import { eq, and } from "drizzle-orm";
 import { users, employers, marketers, invitations } from "../db/schema";
+
+//DB services
+import { db } from "../db/config";
+import userModel from "../db/services/user";
+import employerModel from "../db/services/employer";
+import invitationModel from "../db/services/invitation";
 
 export const employerController = {
   async employerRegister(
@@ -58,8 +55,7 @@ export const employerController = {
       }
 
       // Prevent duplicate registration
-      // const existingUser = await User.findOne({ where: { email } });
-      const existingUser = await getUserByEmail(email);
+      const existingUser = await userModel.get({ email });
       if (existingUser) {
         res
           .status(400)
@@ -68,14 +64,7 @@ export const employerController = {
       }
 
       //Confirm Invitation existence
-      // invitation = await Invitation.findOne({
-      //   where: {
-      //     id: invitationId,
-      //     role: "EMPLOYER",
-      //     status: "pending",
-      //   },
-      // });
-      invitation = await getPendingEmployerInvitationById(invitationId);
+      invitation = await invitationModel.get({ id: invitationId });
 
       //Verify invitation exists
       if (!invitation) {
@@ -85,7 +74,7 @@ export const employerController = {
 
       //Verify if invitation has expired
       if (new Date(invitation.expiresAt) < new Date()) {
-        await expireInvitation(invitation.id);
+        await invitationModel.expire(invitation.id);
         res.status(400).json({
           message: "This invitation has expired",
         });
@@ -100,7 +89,7 @@ export const employerController = {
         return;
       }
       // const companyExists = await Employer.findOne({ where: { companyName } });
-      const companyExists = await getEmployerByCompanyName(companyName);
+      const companyExists = await employerModel.get({ companyName });
       if (companyExists) {
         res.status(400).json({
           message: "This company/employer has already been registered",
@@ -108,15 +97,7 @@ export const employerController = {
         return;
       }
 
-      // const user = await User.create({
-      //   email,
-      //   password,
-      //   role: role,
-      //   isActive: true,
-      //   isWalletVerified: false,
-      // } as CreationAttributes<User>);
-
-      const user = await createUser(email, password, role, username);
+      const user = await userModel.create({ email, password, role, username });
 
       //Update invitation table
       await db
@@ -139,17 +120,12 @@ export const employerController = {
         })
         .returning();
 
-      // Find the marketer who sent the invitation
-      // const senderMarketer = await Marketer.findOne({
-      //   where: { userId: invitation.senderUserId },
-      // });
-
-      const senderMarketerList = await db
+      const [senderMarketer] = await db
         .select()
         .from(marketers)
         .where(eq(marketers.userId, invitation.senderUserId))
         .limit(1);
-      const senderMarketer = senderMarketerList[0];
+      console.log(senderMarketer);
 
       // If the sender was a marketer, Update the marketerId field
       if (senderMarketer) {

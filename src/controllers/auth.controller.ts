@@ -1,12 +1,17 @@
 import { Request, Response, NextFunction } from "express";
-import { User } from "../models/index";
 // import { ApiError } from "../utils/errors/index"; // Removed ApiError import
-import { UserRole, TokenPayload, UserResponse } from "../types";
+import { UserRole, TokenPayload } from "../types";
 import bcrypt from "bcrypt";
 import { generateTokenPair, verifyRefreshToken } from "../utils/jwt";
 import { hashPassword, comparePassword } from "../utils/password";
-import { CreationAttributes } from "sequelize";
 import { redisClient } from "../config/redis";
+import userModel from "../db/services/user";
+import marketerModel from "../db/services/marketer";
+import { eq } from "drizzle-orm";
+import * as schema from "../db/schema";
+import { db } from "../db/config";
+
+const users = schema.users;
 
 export const authController = {
   async register(
@@ -21,23 +26,27 @@ export const authController = {
         res.status(400).json({ message: "Cannot register an employer" });
       }
 
-      const existingUser = await User.findOne({ where: { email } });
+      const existingUser = await userModel.get(email);
       if (existingUser) {
         res.status(400).json({ message: "Email already registered" });
         return; // Add return here to prevent further execution
       }
 
-      const user = await User.create({
+      const user = await userModel.create({
         email,
         password,
         role: role || UserRole.REGULAR_USER,
-        isActive: true,
-        isWalletVerified: false,
-      } as CreationAttributes<User>);
+      });
+      if (user.role === UserRole.MARKETER) {
+        marketerModel.create({
+          userId: user.id,
+          registrationDate: new Date(),
+        });
+      }
 
       const tokens = await generateTokenPair(user);
 
-      const userResponse: UserResponse = {
+      const userResponse = {
         id: user.id,
         email: user.email,
         role: user.role,
@@ -60,14 +69,14 @@ export const authController = {
     try {
       const { email, password } = req.body;
 
-      const user = await User.findOne({ where: { email } });
+      const user = await userModel.get({ email });
       if (!user) {
         res.status(401).json({ message: "Invalid email or password" }); // Combine messages for security
         return;
       }
 
       // const isValidPassword = await comparePassword(password, user.password);
-      const isValidPassword = await user.validatePassword(password);
+      const isValidPassword = await comparePassword(password, user.password); // Assuming you add this function to userModel
       if (!isValidPassword) {
         res.status(401).json({ message: "Invalid email or password" }); // Combine messages for security
         return;
@@ -80,7 +89,7 @@ export const authController = {
 
       const tokens = await generateTokenPair(user);
 
-      const userResponse: UserResponse = {
+      const userResponse = {
         id: user.id,
         email: user.email,
         role: user.role,
@@ -110,21 +119,27 @@ export const authController = {
         return;
       }
 
-      const user = await User.findByPk(userId, {
-        attributes: ["id", "email", "role", "walletAddress", "createdAt"],
-      });
+      const [user] = await db
+        .select({
+          id: users.id,
+          email: users.email,
+          role: users.role,
+          walletAddress: users.walletAddress,
+          createdAt: users.createdAt,
+        })
+        .from(users)
+        .where(eq(users.id, userId));
 
       if (!user) {
         res.status(404).json({ message: "User not found" });
         return;
       }
 
-      const userResponse: UserResponse = {
+      const userResponse = {
         id: user.id,
         email: user.email,
         role: user.role,
         walletAddress: user.walletAddress,
-        isWalletVerified: user.isWalletVerified,
       };
 
       res.status(200).json(userResponse);
@@ -146,34 +161,43 @@ export const authController = {
       }
 
       const { email, password } = req.body;
-      const user = await User.findByPk(userId);
-
+      const user = userModel.get({ id: userId });
       if (!user) {
         res.status(404).json({ message: "User not found" });
         return;
       }
 
       if (email) {
-        const existingUser = await User.findOne({ where: { email } });
+        const existingUser = await userModel.get(email);
         if (existingUser && existingUser.id !== userId) {
           res.status(400).json({ message: "Email already in use" });
           return;
         }
-        user.email = email;
+        await db.update(users).set({ email }).where(eq(users.id, userId));
       }
 
       if (password) {
-        user.password = await hashPassword(password);
+        const hashedPassword = await hashPassword(password);
+        // user.password = await hashPassword(password);
+        await db
+          .update(users)
+          .set({ password: hashedPassword })
+          .where(eq(users.id, userId));
       }
 
-      await user.save();
+      // await user.save();
 
-      const userResponse: UserResponse = {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        walletAddress: user.walletAddress,
-        isWalletVerified: user.isWalletVerified,
+      const [updatedUser] = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, userId));
+
+      const userResponse = {
+        id: updatedUser.id,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        walletAddress: updatedUser.walletAddress,
+        isWalletVerified: updatedUser.isWalletVerified,
       };
 
       res.json(userResponse);
@@ -196,11 +220,12 @@ export const authController = {
 
   async getUsers(req: Request, res: Response) {
     try {
-      const users = await User.findAll({
-        attributes: ["id", "email", "role", "walletAddress", "createdAt"],
-        order: [["createdAt", "DESC"]],
-      });
-      res.json(users);
+      // const users = await User.findAll({
+      //   attributes: ["id", "email", "role", "walletAddress", "createdAt"],
+      //   order: [["createdAt", "DESC"]],
+      // });
+      const allUsers = await db.select().from(users).orderBy(users.createdAt);
+      res.json(allUsers);
     } catch (error) {
       console.error("Error fetching users:", error);
       // This catch block already uses res.status, keeping it as is
@@ -227,7 +252,11 @@ export const authController = {
         return;
       }
 
-      const user = await User.findByPk(payload.userId);
+      // const user = await User.findByPk(payload.userId);
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, payload.userId));
 
       if (!user) {
         res.status(401).json({ message: "User not found" });
@@ -271,21 +300,28 @@ export const authController = {
         return;
       }
 
-      const user = await User.findByPk(userId);
+      // const user = await User.findByPk(userId);
+      const [user] = await db.select().from(users).where(eq(users.id, userId));
       if (!user) {
         res.status(404).json({ message: "User not found" });
         return;
       }
 
-      const isValidPassword = await user.validatePassword(currentPassword);
+      const isValidPassword = await comparePassword(
+        currentPassword,
+        user.password,
+      ); //Assuming comparePassword function is added to userModel or utils
+
       if (!isValidPassword) {
         res.status(401).json({ message: "Current password is incorrect" });
         return;
       }
 
       // Note: User model should handle hashing password on save/update hook
-      user.password = newPassword;
-      await user.save();
+      // user.password = newPassword;
+      const hashedPassword = await hashPassword(newPassword);
+      await db.update(users).set({ password: hashedPassword });
+      // await user.save();
 
       res.json({ message: "Password changed successfully" });
     } catch (error) {

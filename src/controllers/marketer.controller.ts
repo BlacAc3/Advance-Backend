@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createInvitation } from "../services/invitationService";
-import { Invitation, User, Employer } from "../models/index";
+import invitationModel from "../db/services/invitation";
 import { UserRole, TokenPayload } from "../types";
 import { Next } from "koa";
 
@@ -16,15 +15,12 @@ export const marketerController = {
   ): Promise<void> {
     try {
       const { email } = req.body;
-      const senderUserId = (req.user as TokenPayload).userId;
+      const senderId = (req.user as TokenPayload).userId;
       const role = "EMPLOYER"; // Assuming default role is employee
       const expiresAt = new Date(Date.now() + 12 * 60 * 60 * 1000);
-      const existingInvitation = await Invitation.findOne({
-        where: {
-          targetEmail: email,
-          senderUserId: senderUserId,
-          status: "pending",
-        },
+      const existingInvitation = await invitationModel.getPending({
+        email,
+        senderId,
       });
       if (existingInvitation) {
         res.status(400).json({
@@ -33,12 +29,12 @@ export const marketerController = {
         return;
       }
 
-      const invitation = await createInvitation(
+      const invitation = await invitationModel.create({
         email,
-        senderUserId,
+        senderId,
         role,
         expiresAt,
-      );
+      });
       res.status(200).json({ message: invitation, inviteLink: invitation.id });
       return;
     } catch (error) {
@@ -49,33 +45,15 @@ export const marketerController = {
     try {
       //TODO: add functionality to filter by accepted invite
       const senderUserId = (req.user as TokenPayload).userId;
-      const statusFilter = req.query.status as string | undefined; // Get status from query params
+      const statusFilter = req.query.status as any; // Get status from query params
 
       // Build the where clause
       const whereClause: any = {
         senderUserId: senderUserId,
       };
 
-      // Add status filter if provided and is a valid status
-      const validStatuses = ["pending", "accepted", "rejected", "expired"];
-      if (statusFilter && validStatuses.includes(statusFilter)) {
-        whereClause.status = statusFilter;
-      }
-
-      const invitations = await Invitation.findAll({
-        where: whereClause, // Use the built where clause
-        include: [
-          {
-            model: User,
-            as: "sender",
-            attributes: ["id", "username", "email"], // Specify the attributes you want to retrieve
-          },
-          {
-            model: User,
-            as: "receiver",
-            attributes: ["id", "username", "email", "role"],
-          },
-        ],
+      const invitations = await invitationModel.getAll({
+        status: statusFilter,
       });
       res.status(200).json(invitations);
       return;

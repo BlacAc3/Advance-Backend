@@ -2,10 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../utils/jwt";
 import { ethers } from "ethers";
-import { User } from "../models/User";
 import { TokenPayload, UserRole } from "../types";
-import { CreationAttributes } from "sequelize";
 import crypto from "crypto";
+import userModel from "../db/services/user";
 
 export const authenticate = async (
   req: Request,
@@ -23,7 +22,7 @@ export const authenticate = async (
     const decoded = jwt.verify(token, JWT_SECRET) as TokenPayload;
     console.log(decoded);
 
-    const user = await User.findByPk(decoded.userId);
+    const user = await userModel.get({ id: decoded.userId });
     if (!user) {
       res.status(401).json({ message: "User not found" });
       return;
@@ -36,7 +35,7 @@ export const authenticate = async (
 
     req.user = {
       userId: user.id,
-      role: user.role,
+      role: user.role as UserRole,
     };
     return next();
   } catch (error) {
@@ -70,17 +69,16 @@ export const authenticateWeb3 = async (
       return;
     }
 
-    let user = await User.findOne({ where: { walletAddress: address } });
+    let user = await userModel.get({ walletAddress: address });
 
     if (!user) {
       // Create new user if not exists
-      user = await User.create({
+      user = await userModel.create({
         walletAddress: address,
         role: UserRole.WEB3_USER,
         email: `${address.slice(0, 6)}...${address.slice(-4)}@web3.user`,
         password: crypto.randomBytes(32).toString("hex"),
-        isActive: true,
-      } as CreationAttributes<User>);
+      });
     }
 
     if (!user.isActive) {
@@ -100,8 +98,8 @@ export const authenticateWeb3 = async (
 
     req.user = {
       userId: user.id,
-      role: user.role,
-      walletAddress: user.walletAddress,
+      role: user.role as UserRole,
+      walletAddress: user.walletAddress ?? undefined,
     };
 
     res.json({
