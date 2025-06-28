@@ -34,6 +34,15 @@ class EmployerService {
 
     return result.length > 0 ? result[0] : null;
   }
+
+  async create(data: InferInsertModel<typeof schema.employers>) {
+    const [result] = await this.db
+      .insert(this.employers)
+      .values(data)
+      .returning();
+
+    return result;
+  }
 }
 
 const employerService = new EmployerService(db);

@@ -10,148 +10,109 @@ import { db } from "../db/config";
 import userModel from "../db/services/user";
 import employerModel from "../db/services/employer";
 import invitationModel from "../db/services/invitation";
+import { register } from "../utils/register";
 
 export const employerController = {
+  async sendInvite(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { email } = req.body;
+      const senderId = (req.user as TokenPayload).userId;
+      const role = "EMPLOYEE"; // Assuming default role is employee
+      const expiresAt = new Date(Date.now() + 12 * 60 * 60 * 1000);
+      const existingInvitation = await invitationModel.getPending({
+        email,
+        senderId,
+        role,
+      });
+      if (existingInvitation) {
+        res.status(400).json({
+          message: "Invitation for the target user already exists",
+        });
+        return;
+      }
+
+      const invitation = await invitationModel.create({
+        email,
+        senderId,
+        role,
+        expiresAt,
+      });
+      res.status(200).json({ message: invitation, inviteLink: invitation.id });
+      return;
+    } catch (error) {
+      res.json({ error: error });
+      next(error);
+    }
+  },
   async employerRegister(
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<void> {
     try {
-      var invitation;
-      const { email, username, password, role, invitationId, companyName } =
-        req.body;
+      await register({
+        req,
+        res,
+        role: UserRole.EMPLOYER,
+        additionalValidations: (req, res) => {
+          const { companyName } = req.body;
+          if (!companyName) {
+            res.status(400).json({ message: "companyName field required" });
+            return false;
+          }
+          return true;
+        },
+        additionalUserCreation: async (user, req, res) => {
+          const { companyName } = req.body;
+          //
+          const employer = await employerModel.create({
+            userId: user.id,
+            companyName: companyName,
+            registrationDate: new Date(),
+            isVerified: false,
+          });
 
-      // Validations
-      if (!email || !password) {
-        res
-          .status(400)
-          .json({ message: "Email and password are required fields" });
-        return;
-      }
+          const { invitationId } = req.body;
+          const invitation = await invitationModel.get({ id: invitationId });
 
-      if (password.length < 6) {
-        res
-          .status(400)
-          .json({ message: "Password must be at least 6 characters long" });
-        return;
-      }
+          const [senderMarketer] = await db
+            .select()
+            .from(marketers)
+            .where(eq(marketers.userId, invitation.senderUserId))
+            .limit(1);
+          console.log(senderMarketer);
 
-      if (role != UserRole.EMPLOYER) {
-        res
-          .status(400)
-          .json({ message: "User must be registering as an employer" });
-        return;
-      }
-      if (!companyName) {
-        res.status(400).json({ message: "companyName field required" });
-      }
+          // If the sender was a marketer, Update the marketerId field
+          if (senderMarketer) {
+            await db
+              .update(employers)
+              .set({ marketerId: senderMarketer.id })
+              .where(eq(employers.id, employer.id));
+          }
 
-      if (!invitationId) {
-        res.status(400).json({
-          message: "You need an invitation id to signin as an employer",
-        });
-        return;
-      }
+          const tokens = await generateTokenPair(user);
 
-      // Prevent duplicate registration
-      const existingUser = await userModel.get({ email });
-      if (existingUser) {
-        res
-          .status(400)
-          .json({ message: "Email already registered in our system" });
-        return;
-      }
+          const userResponse = {
+            id: user.id,
+            email: user.email,
+            role: user.role,
+            walletAddress: user.walletAddress,
+            isWalletVerified: user.isWalletVerified,
+          };
 
-      //Confirm Invitation existence
-      invitation = await invitationModel.get({ id: invitationId });
-
-      //Verify invitation exists
-      if (!invitation) {
-        res.status(400).json({ message: "The Invitation link is expired" });
-        return;
-      }
-
-      //Verify if invitation has expired
-      if (new Date(invitation.expiresAt) < new Date()) {
-        await invitationModel.expire(invitation.id);
-        res.status(400).json({
-          message: "This invitation has expired",
-        });
-        return;
-      }
-
-      // Prevent registration when the invitation target does not match the email used to registered
-      if (invitation?.targetEmail != email) {
-        res.status(400).json({
-          message: "The invited email must match the email used to register",
-        });
-        return;
-      }
-      // const companyExists = await Employer.findOne({ where: { companyName } });
-      const companyExists = await employerModel.get({ companyName });
-      if (companyExists) {
-        res.status(400).json({
-          message: "This company/employer has already been registered",
-        });
-        return;
-      }
-
-      const user = await userModel.create({ email, password, role, username });
-
-      //Update invitation table
-      await db
-        .update(invitations)
-        .set({
-          status: "accepted", // Use literal string from enum
-          recipientUserId: user.id,
-        })
-        .where(eq(invitations.id, invitation.id));
-
-      //
-      const [employer] = await db
-        .insert(employers)
-        // Wrap employerData in an array to match Drizzle's values overload for single inserts
-        .values({
-          userId: user.id,
-          companyName: companyName,
-          registrationDate: new Date(),
-          isVerified: false,
-        })
-        .returning();
-
-      const [senderMarketer] = await db
-        .select()
-        .from(marketers)
-        .where(eq(marketers.userId, invitation.senderUserId))
-        .limit(1);
-      console.log(senderMarketer);
-
-      // If the sender was a marketer, Update the marketerId field
-      if (senderMarketer) {
-        await db
-          .update(employers)
-          .set({ marketerId: senderMarketer.id })
-          .where(eq(employers.id, employer.id));
-      }
-
-      const tokens = await generateTokenPair(user);
-
-      const userResponse = {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        walletAddress: user.walletAddress,
-        isWalletVerified: user.isWalletVerified,
-      };
-
-      res.status(201).json({
-        ...tokens,
+          res.status(201).json({
+            ...tokens,
+          });
+        },
       });
       // No explicit return needed here as res.json() sends the response
     } catch (error) {
       res.status(400).json({ error: error });
-      next(error); // Still pass unexpected errors to the error handling middleware
+      next(error);
     }
   },
   async setupApiIntegration(

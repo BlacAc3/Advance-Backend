@@ -35,7 +35,11 @@ class InvitationService {
     return result.length > 0 ? result[0] : null;
   }
 
-  async getPending(data: { senderId: string; email: string }) {
+  async getPending(data: {
+    senderId: string;
+    email: string;
+    role?: "EMPLOYER" | "EMPLOYEE";
+  }) {
     const { senderId, email: targetEmail } = data;
     const status = "pending";
     const whereClauses = [eq(this.invitations.id, senderId)];
@@ -77,6 +81,12 @@ class InvitationService {
     return newInvitation;
   }
 
+  async accept(id: string, recipientId: string) {
+    await this.db
+      .update(this.invitations)
+      .set({ status: "accepted", recipientUserId: recipientId })
+      .where(eq(this.invitations.id, id));
+  }
   async expire(id: string) {
     await this.db
       .update(this.invitations)

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import invitationModel from "../db/services/invitation";
+import userModel from "../db/services/user";
 import { UserRole, TokenPayload } from "../types";
 import { Next } from "koa";
 
@@ -18,13 +19,24 @@ export const marketerController = {
       const senderId = (req.user as TokenPayload).userId;
       const role = "EMPLOYER"; // Assuming default role is employee
       const expiresAt = new Date(Date.now() + 12 * 60 * 60 * 1000);
+      //Verfiy Invitation existence
       const existingInvitation = await invitationModel.getPending({
         email,
         senderId,
+        role,
       });
       if (existingInvitation) {
         res.status(400).json({
           message: "Invitation for the target user already exists",
+        });
+        return;
+      }
+
+      //Verify user is not registered
+      const invitedUser = await userModel.get({ email });
+      if (invitedUser) {
+        res.status(400).json({
+          message: "Cannot invite an existing user",
         });
         return;
       }

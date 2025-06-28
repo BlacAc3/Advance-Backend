@@ -7,6 +7,7 @@ import { hashPassword, comparePassword } from "../utils/password";
 import { redisClient } from "../config/redis";
 import userModel from "../db/services/user";
 import marketerModel from "../db/services/marketer";
+import invitationModel from "../db/services/invitation";
 import { eq } from "drizzle-orm";
 import * as schema from "../db/schema";
 import { db } from "../db/config";
@@ -20,16 +21,26 @@ export const authController = {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const { email, password, role } = req.body;
+      const { email, password, role, invitationId } = req.body;
 
       if (role === UserRole.EMPLOYER) {
         res.status(400).json({ message: "Cannot register an employer" });
+      } else if (role === UserRole.EMPLOYEE) {
+        res.status(400).json({ message: "Cannot register an employee" });
       }
 
+      // Verify User Existence
       const existingUser = await userModel.get(email);
       if (existingUser) {
         res.status(400).json({ message: "Email already registered" });
-        return; // Add return here to prevent further execution
+        return;
+      }
+
+      // Verify invitation existence
+      const invitation = await invitationModel.get({ id: invitationId });
+      if (!invitation) {
+        res.status(400).json({ message: "The Invitation link is expired" });
+        return;
       }
 
       const user = await userModel.create({
@@ -37,6 +48,7 @@ export const authController = {
         password,
         role: role || UserRole.REGULAR_USER,
       });
+
       if (user.role === UserRole.MARKETER) {
         marketerModel.create({
           userId: user.id,

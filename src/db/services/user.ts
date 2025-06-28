@@ -33,6 +33,9 @@ class UserService {
       .where(and(...whereClauses))
       .limit(1);
 
+    if (!result) {
+      return null;
+    }
     return result;
   }
   async getAll() {
