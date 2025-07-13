@@ -3,6 +3,7 @@ import invitationModel from "../db/services/invitation";
 import userModel from "../db/services/user";
 import { TokenPayload } from "../types";
 import { sendError, sendSuccess } from "../utils/responseWrapper";
+import { stat } from "node:fs/promises";
 
 interface SendInviteRequestBody {
   email?: string;
@@ -19,6 +20,19 @@ export const marketerController = {
       const senderId = (req.user as TokenPayload).userId;
       const role = "EMPLOYER"; // Assuming default role is employee
       const expiresAt = new Date(Date.now() + 12 * 60 * 60 * 1000);
+
+      if (!email) {
+        sendError(res, 400, "Email field required");
+        return;
+      }
+
+      // Basic email format validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        sendError(res, 400, "Invalid email format");
+        return;
+      }
+
       //Verfiy Invitation existence
       const existingInvitation = await invitationModel.getPending({
         email,
@@ -34,6 +48,10 @@ export const marketerController = {
       const invitedUser = await userModel.get({ email });
       if (invitedUser) {
         sendError(res, 400, "Cannot invite an existing user");
+        return;
+      }
+      if (!email) {
+        sendError(res, 400, "Email is required");
         return;
       }
 
@@ -56,18 +74,15 @@ export const marketerController = {
       const senderUserId = (req.user as TokenPayload).userId;
       const statusFilter = req.query.status as any; // Get status from query params
 
-      // Build the where clause
-      const whereClause: any = {
-        senderUserId: senderUserId,
-      };
-
-      const invitations = await invitationModel.getAll({
+      const invitations = await invitationModel.getMany({
+        senderId: senderUserId,
         status: statusFilter,
       });
       sendSuccess(res, invitations, "Invitations retrieved successfully", 200);
       return;
     } catch (error) {
       sendError(res, 400, "An error occured while getting invites");
+      console.error(error);
       next(error);
     }
   },

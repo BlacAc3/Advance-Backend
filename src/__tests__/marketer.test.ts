@@ -184,7 +184,7 @@ describe("Marketer Controller", () => {
       const createdInvitation = await invitationService.invitationExists({
         email: targetEmail,
       });
-      expect(createdInvitation).toBeNull();
+      expect(createdInvitation).toBe(false);
     });
 
     it("should return 400 with a generic error message if an invalid email format is provided", async () => {
@@ -197,15 +197,13 @@ describe("Marketer Controller", () => {
 
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
-      expect(response.body.message).toEqual(
-        "An Error occured while sending invite",
-      );
+      expect(response.body.message).toEqual("Invalid email format");
 
       // Verify no invitation was created with this invalid email
       const createdInvitation = await invitationService.invitationExists({
         email: invalidEmail,
       });
-      expect(createdInvitation).toBeNull();
+      expect(createdInvitation).toBe(false);
     });
 
     it("should return 400 with generic error message if email is missing in request body", async () => {
@@ -216,9 +214,7 @@ describe("Marketer Controller", () => {
 
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
-      expect(response.body.message).toEqual(
-        "An Error occured while sending invite",
-      );
+      expect(response.body.message).toEqual("Email field required");
 
       // No invitation should be created for this invalid request.
     });
