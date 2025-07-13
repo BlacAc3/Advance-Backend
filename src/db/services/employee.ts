@@ -1,70 +1,106 @@
 import "dotenv/config";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { eq, and, SQL, Placeholder, InferInsertModel } from "drizzle-orm";
-import type { NodePgDatabase } from "drizzle-orm/node-postgres";
-import * as schema from "../schema"; // Import all schema for type inference
-
-export const db = drizzle(process.env.DATABASE_URL!, { schema }); // Pass schema for type inference
-
-type DbType = NodePgDatabase<typeof schema>;
+import { prisma } from "../database";
+import { EnumEmployeesKycStage, EnumEmployeesKycStatus } from "../../generated/prisma";
 
 class EmployeeService {
-  constructor(private db: DbType) {}
-  private employees = schema.employees;
-
   async get(data: { id?: string; userId?: string }) {
     const { id, userId } = data;
-    const whereClauses = [];
 
     if (id) {
-      whereClauses.push(eq(this.employees.id, id));
+      return await prisma.employee.findUnique({
+        where: { id },
+        include: {
+          user: true,
+          employer: true,
+          kycReviewer: true,
+        },
+      });
     } else if (userId) {
-      whereClauses.push(eq(this.employees.userId, userId));
+      return await prisma.employee.findUnique({
+        where: { userId },
+        include: {
+          user: true,
+          employer: true,
+          kycReviewer: true,
+        },
+      });
     } else {
       throw new Error("Either id or userId must be provided");
     }
-
-    const [result] = await this.db
-      .select()
-      .from(this.employees)
-      .where(and(...whereClauses))
-      .limit(1);
-
-    return result;
   }
 
-  async create(
-    data: Omit<
-      InferInsertModel<typeof schema.employees>,
-      "id" | "createdAt" | "updatedAt"
-    >,
-  ) {
-    const [newEmployee] = await this.db
-      .insert(this.employees)
-      .values(data)
-      .returning();
-
-    return newEmployee;
+  async create(data: {
+    userId: string;
+    employerId: string;
+    kycStage?: EnumEmployeesKycStage;
+    kycStatus?: EnumEmployeesKycStatus;
+    kycSubmittedAt?: Date;
+    kycReviewedAt?: Date;
+    kycReviewerId?: string;
+    kycNotes?: string;
+    salary?: number;
+    registrationDate: Date;
+  }) {
+    return await prisma.employee.create({
+      data,
+      include: {
+        user: true,
+        employer: true,
+        kycReviewer: true,
+      },
+    });
   }
 
   async update(
     id: string,
-    data: Partial<
-      Omit<
-        InferInsertModel<typeof schema.employees>,
-        "id" | "createdAt" | "updatedAt" | "userId" | "employerId"
-      >
-    >,
+    data: Partial<{
+      kycStage: EnumEmployeesKycStage;
+      kycStatus: EnumEmployeesKycStatus;
+      kycSubmittedAt: Date;
+      kycReviewedAt: Date;
+      kycReviewerId: string;
+      kycNotes: string;
+      salary: number;
+    }>,
   ) {
-    const [updatedEmployee] = await this.db
-      .update(this.employees)
-      .set(data)
-      .where(eq(this.employees.id, id))
-      .returning();
+    return await prisma.employee.update({
+      where: { id },
+      data,
+      include: {
+        user: true,
+        employer: true,
+        kycReviewer: true,
+      },
+    });
+  }
 
-    return updatedEmployee;
+  async delete(id: string) {
+    return await prisma.employee.delete({
+      where: { id },
+    });
+  }
+
+  async getAll() {
+    return await prisma.employee.findMany({
+      include: {
+        user: true,
+        employer: true,
+        kycReviewer: true,
+      },
+    });
+  }
+
+  async getByEmployerId(employerId: string) {
+    return await prisma.employee.findMany({
+      where: { employerId },
+      include: {
+        user: true,
+        employer: true,
+        kycReviewer: true,
+      },
+    });
   }
 }
 
-const employeeService = new EmployeeService(db);
+const employeeService = new EmployeeService();
 export default employeeService;

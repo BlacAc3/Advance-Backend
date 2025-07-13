@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { generateTokenPair } from "../utils/jwt";
 import { TokenPayload, UserRole } from "../types";
-import { invitations, employees, employers } from "../db/schema";
-import { db } from "../db/config";
-import { eq, and } from "drizzle-orm";
+import { prisma } from "../db/database";
 import invitationModel from "../db/services/invitation";
 import employeeModel from "../db/services/employee";
 import userModel from "../db/services/user";
@@ -24,6 +22,10 @@ export const employeeController = {
           const { invitationId } = req.body;
           const invitation = await invitationModel.get({ id: invitationId });
 
+          if (!invitation) {
+            throw new Error("Invitation not found");
+          }
+
           const employee = await employeeModel.create({
             userId: user.id,
             employerId: invitation.senderUserId,
@@ -31,16 +33,15 @@ export const employeeController = {
           });
 
           //TODO: add the following functionality to the employer class
-          const [senderEmployer] = await db
-            .select()
-            .from(employers)
-            .where(eq(employers.userId, invitation.senderUserId))
-            .limit(1);
+          const senderEmployer = await prisma.employer.findUnique({
+            where: { userId: invitation.senderUserId },
+          });
+
           if (senderEmployer) {
-            await db
-              .update(employees)
-              .set({ employerId: senderEmployer.id })
-              .where(eq(employees.id, employee.id));
+            await prisma.employee.update({
+              where: { id: employee.id },
+              data: { employerId: senderEmployer.id },
+            });
           }
         },
       });

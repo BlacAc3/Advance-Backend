@@ -1,18 +1,14 @@
 import { Request, Response, NextFunction } from "express";
-// import { ApiError } from "../utils/errors/index"; // Removed ApiError import
 import { UserRole, TokenPayload } from "../types";
-import bcrypt from "bcrypt";
 import { generateTokenPair, verifyRefreshToken } from "../utils/jwt";
 import { hashPassword, comparePassword } from "../utils/password";
 import { redisClient } from "../config/redis";
 import userModel from "../db/services/user";
 import marketerModel from "../db/services/marketer";
 import invitationModel from "../db/services/invitation";
-import { eq } from "drizzle-orm";
-import * as schema from "../db/schema";
-import { db } from "../db/config";
-
-const users = schema.users;
+import { prisma } from "../db/database";
+import { register } from "../utils/register";
+import { sendSuccess, sendError } from "../utils/responseWrapper";
 
 export const authController = {
   async register(
@@ -21,59 +17,50 @@ export const authController = {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const { email, password, role, invitationId } = req.body;
+      await register({
+        req,
+        res,
+        role: UserRole.REGULAR_USER,
+        additionalValidations: (req, res) => {
+          const { role } = req.body;
+          if (role === UserRole.EMPLOYER) {
+            sendError(res, null, "Cannot register an employer", 400);
+            return false;
+          } else if (role === UserRole.EMPLOYEE) {
+            sendError(res, null, "Cannot register an employee", 400);
+            return false;
+          }
+          return true;
+        },
+        additionalUserCreation: async (user, req, res) => {
+          if (user.role === UserRole.MARKETER) {
+            await marketerModel.create({
+              userId: user.id,
+              registrationDate: new Date(),
+            });
+          }
+          const tokens = await generateTokenPair(user);
 
-      if (role === UserRole.EMPLOYER) {
-        res.status(400).json({ message: "Cannot register an employer" });
-      } else if (role === UserRole.EMPLOYEE) {
-        res.status(400).json({ message: "Cannot register an employee" });
-      }
+          const userResponse = {
+            id: user.id,
+            email: user.email,
+            role: user.role,
+            walletAddress: user.walletAddress,
+            isWalletVerified: user.isWalletVerified,
+          };
 
-      // Verify User Existence
-      const existingUser = await userModel.get(email);
-      if (existingUser) {
-        res.status(400).json({ message: "Email already registered" });
-        return;
-      }
-
-      // Verify invitation existence
-      const invitation = await invitationModel.get({ id: invitationId });
-      if (!invitation) {
-        res.status(400).json({ message: "The Invitation link is expired" });
-        return;
-      }
-
-      const user = await userModel.create({
-        email,
-        password,
-        role: role || UserRole.REGULAR_USER,
+          sendSuccess(
+            res,
+            { user: userResponse, ...tokens },
+            "User registered successfully",
+            201,
+          );
+        },
       });
-
-      if (user.role === UserRole.MARKETER) {
-        marketerModel.create({
-          userId: user.id,
-          registrationDate: new Date(),
-        });
-      }
-
-      const tokens = await generateTokenPair(user);
-
-      const userResponse = {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        walletAddress: user.walletAddress,
-        isWalletVerified: user.isWalletVerified,
-      };
-
-      res.status(201).json({
-        user: userResponse,
-        ...tokens,
-      });
-      // No explicit return needed here as res.json() sends the response
     } catch (error) {
-      res.status(400).json({ error: error });
-      next(error); // Still pass unexpected errors to the error handling middleware
+      sendError(res, error, "Registration failed", 400);
+      console.log(error);
+      next(error);
     }
   },
 
@@ -83,19 +70,18 @@ export const authController = {
 
       const user = await userModel.get({ email });
       if (!user) {
-        res.status(401).json({ message: "Invalid email or password" }); // Combine messages for security
+        sendError(res, null, "Invalid email or password", 401); // Combine messages for security
         return;
       }
 
-      // const isValidPassword = await comparePassword(password, user.password);
       const isValidPassword = await comparePassword(password, user.password); // Assuming you add this function to userModel
       if (!isValidPassword) {
-        res.status(401).json({ message: "Invalid email or password" }); // Combine messages for security
+        sendError(res, null, "Invalid email or password", 401); // Combine messages for security
         return;
       }
 
       if (!user.isActive) {
-        res.status(401).json({ message: "Account is deactivated" });
+        sendError(res, null, "Account is deactivated", 401);
         return;
       }
 
@@ -109,12 +95,14 @@ export const authController = {
         isWalletVerified: user.isWalletVerified,
       };
 
-      res.status(200).json({
-        user: userResponse,
-        ...tokens,
-      });
-      return;
+      sendSuccess(
+        res,
+        { user: userResponse, ...tokens },
+        "Logged in successfully",
+        200,
+      );
     } catch (error) {
+      sendError(res, error, "Login failed");
       next(error);
     }
   },
@@ -127,23 +115,23 @@ export const authController = {
     try {
       const userId = req.user?.userId;
       if (!userId) {
-        res.status(401).json({ message: "Unauthorized" });
+        sendError(res, null, "Unauthorized", 401);
         return;
       }
 
-      const [user] = await db
-        .select({
-          id: users.id,
-          email: users.email,
-          role: users.role,
-          walletAddress: users.walletAddress,
-          createdAt: users.createdAt,
-        })
-        .from(users)
-        .where(eq(users.id, userId));
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          walletAddress: true,
+          createdAt: true,
+        },
+      });
 
       if (!user) {
-        res.status(404).json({ message: "User not found" });
+        sendError(res, null, "User not found", 404);
         return;
       }
 
@@ -154,8 +142,9 @@ export const authController = {
         walletAddress: user.walletAddress,
       };
 
-      res.status(200).json(userResponse);
+      sendSuccess(res, userResponse, "Profile retrieved successfully", 200);
     } catch (error) {
+      sendError(res, error, "Failed to retrieve profile");
       next(error);
     }
   },
@@ -168,52 +157,52 @@ export const authController = {
     try {
       const userId = req.user?.userId;
       if (!userId) {
-        res.status(401).json({ message: "Unauthorized" });
+        sendError(res, null, "Unauthorized", 401);
         return;
       }
 
       const { email, password } = req.body;
-      const user = userModel.get({ id: userId });
+      const user = await userModel.get({ id: userId });
       if (!user) {
-        res.status(404).json({ message: "User not found" });
+        sendError(res, null, "User not found", 404);
         return;
       }
 
       if (email) {
-        const existingUser = await userModel.get(email);
+        const existingUser = await userModel.get({ email });
         if (existingUser && existingUser.id !== userId) {
-          res.status(400).json({ message: "Email already in use" });
+          sendError(res, null, "Email already in use", 400);
           return;
         }
-        await db.update(users).set({ email }).where(eq(users.id, userId));
+        await prisma.user.update({
+          where: { id: userId },
+          data: { email },
+        });
       }
 
       if (password) {
         const hashedPassword = await hashPassword(password);
-        // user.password = await hashPassword(password);
-        await db
-          .update(users)
-          .set({ password: hashedPassword })
-          .where(eq(users.id, userId));
+        await prisma.user.update({
+          where: { id: userId },
+          data: { password: hashedPassword },
+        });
       }
 
-      // await user.save();
-
-      const [updatedUser] = await db
-        .select()
-        .from(users)
-        .where(eq(users.id, userId));
+      const updatedUser = await prisma.user.findUnique({
+        where: { id: userId },
+      });
 
       const userResponse = {
-        id: updatedUser.id,
-        email: updatedUser.email,
-        role: updatedUser.role,
-        walletAddress: updatedUser.walletAddress,
-        isWalletVerified: updatedUser.isWalletVerified,
+        id: updatedUser!.id,
+        email: updatedUser!.email,
+        role: updatedUser!.role,
+        walletAddress: updatedUser!.walletAddress,
+        isWalletVerified: updatedUser!.isWalletVerified,
       };
 
-      res.json(userResponse);
+      sendSuccess(res, userResponse, "Profile updated successfully", 200);
     } catch (error) {
+      sendError(res, error, "Failed to update profile");
       next(error);
     }
   },
@@ -224,24 +213,21 @@ export const authController = {
       if (token) {
         await redisClient.set(`bl_${token}`, "1", 24 * 60 * 60); // 24 hours
       }
-      res.json({ message: "Logged out successfully" });
+      sendSuccess(res, null, "Logged out successfully", 200);
     } catch (error) {
+      sendError(res, error, "Logout failed");
       next(error);
     }
   },
 
-  async getUsers(req: Request, res: Response) {
+  async getUsers(req: Request, res: Response): Promise<void> {
     try {
-      // const users = await User.findAll({
-      //   attributes: ["id", "email", "role", "walletAddress", "createdAt"],
-      //   order: [["createdAt", "DESC"]],
-      // });
-      const allUsers = await db.select().from(users).orderBy(users.createdAt);
-      res.json(allUsers);
+      const allUsers = await prisma.user.findMany({
+        orderBy: { createdAt: 'asc' },
+      });
+      sendSuccess(res, allUsers, "Users fetched successfully", 200);
     } catch (error) {
-      console.error("Error fetching users:", error);
-      // This catch block already uses res.status, keeping it as is
-      res.status(500).json({ message: "Error fetching users" });
+      sendError(res, error, "Error fetching users", 500);
     }
   },
 
@@ -253,36 +239,34 @@ export const authController = {
     try {
       const { refreshToken } = req.body;
       if (!refreshToken) {
-        res.status(400).json({ message: "Refresh token is required" });
+        sendError(res, null, "Refresh token is required", 400);
         return;
       }
 
       const payload = await verifyRefreshToken(refreshToken);
       // Check if payload exists (verification failed)
       if (!payload || !payload.userId) {
-        res.status(401).json({ message: "Invalid or expired refresh token" });
+        sendError(res, null, "Invalid or expired refresh token", 401);
         return;
       }
 
-      // const user = await User.findByPk(payload.userId);
-      const [user] = await db
-        .select()
-        .from(users)
-        .where(eq(users.id, payload.userId));
+      const user = await prisma.user.findUnique({
+        where: { id: payload.userId },
+      });
 
       if (!user) {
-        res.status(401).json({ message: "User not found" });
+        sendError(res, null, "User not found", 401);
         return;
       }
 
       if (!user.isActive) {
-        res.status(401).json({ message: "Account is deactivated" });
+        sendError(res, null, "Account is deactivated", 401);
         return;
       }
 
       const tokens = await generateTokenPair(user);
 
-      res.json(tokens);
+      sendSuccess(res, tokens, "Token refreshed successfully", 200);
     } catch (error) {
       // If verifyRefreshToken throws an error (e.g., invalid signature), it will land here
       // We can check if the error is related to token verification
@@ -291,9 +275,10 @@ export const authController = {
         (error.message.includes("invalid signature") ||
           error.message.includes("jwt expired"))
       ) {
-        res.status(401).json({ message: "Invalid or expired refresh token" });
+        sendError(res, null, "Invalid or expired refresh token", 401);
         return;
       }
+      sendError(res, error, "Failed to refresh token");
       next(error); // Pass other unexpected errors
     }
   },
@@ -308,35 +293,34 @@ export const authController = {
       const userId = req.user?.userId;
 
       if (!userId) {
-        res.status(401).json({ message: "User not authenticated" });
+        sendError(res, null, "User not authenticated", 401);
         return;
       }
 
-      // const user = await User.findByPk(userId);
-      const [user] = await db.select().from(users).where(eq(users.id, userId));
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+      });
+
       if (!user) {
-        res.status(404).json({ message: "User not found" });
+        sendError(res, null, "User not found", 404);
         return;
       }
 
-      const isValidPassword = await comparePassword(
-        currentPassword,
-        user.password,
-      ); //Assuming comparePassword function is added to userModel or utils
-
+      const isValidPassword = await comparePassword(currentPassword, user.password);
       if (!isValidPassword) {
-        res.status(401).json({ message: "Current password is incorrect" });
+        sendError(res, null, "Current password is incorrect", 400);
         return;
       }
 
-      // Note: User model should handle hashing password on save/update hook
-      // user.password = newPassword;
-      const hashedPassword = await hashPassword(newPassword);
-      await db.update(users).set({ password: hashedPassword });
-      // await user.save();
+      const hashedNewPassword = await hashPassword(newPassword);
+      await prisma.user.update({
+        where: { id: userId },
+        data: { password: hashedNewPassword },
+      });
 
-      res.json({ message: "Password changed successfully" });
+      sendSuccess(res, null, "Password changed successfully", 200);
     } catch (error) {
+      sendError(res, error, "Failed to change password");
       next(error);
     }
   },

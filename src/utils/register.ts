@@ -2,15 +2,14 @@ import { Request, Response } from "express";
 import { UserRole } from "../types";
 import userModel from "../db/services/user";
 import invitationModel from "../db/services/invitation";
-import { db } from "../db/config";
-import { eq } from "drizzle-orm";
-import { invitations } from "../db/schema";
+import { prisma } from "../db/database";
 import { generateTokenPair } from "./jwt";
+import { sendError, sendSuccess } from "./responseWrapper";
 
 interface RegisterOptions {
   req: Request;
   res: Response;
-  role: UserRole;
+  role: any;
   additionalValidations?: (req: Request, res: Response) => boolean;
   additionalUserCreation?: (
     user: any,
@@ -46,6 +45,19 @@ export const register = async ({
     return;
   }
 
+  if (req.body.role === UserRole.REGULAR_USER && !invitationId) {
+    const user = await userModel.create({ email, password, role, username });
+    const tokens = await generateTokenPair(user);
+
+    sendSuccess(
+      res,
+      { user: user, ...tokens },
+      "User registered successfully",
+      201,
+    );
+    return;
+  }
+
   if (!invitationId) {
     res.status(400).json({
       message: "You need an invitation id to signin",
@@ -62,7 +74,7 @@ export const register = async ({
   // Verify the invitation existence
   const invitation = await invitationModel.get({ id: invitationId });
   if (!invitation) {
-    console.error(`Invitation with ID ${invitationId} not found.`);
+    // console.error(`Invitation with ID ${invitationId} not found.`);
     res.status(404).json({ message: "Invitation not found." });
     return;
   }
@@ -100,15 +112,21 @@ export const register = async ({
   }
 
   // Create user
+  const newUserData = {
+    email,
+    password,
+    role: role,
+    username,
+  };
   const user = await userModel.create({ email, password, role, username });
 
-  await db
-    .update(invitations)
-    .set({
+  await prisma.invitation.update({
+    where: { id: invitation.id },
+    data: {
       status: "accepted", // Use literal string from enum
       recipientUserId: user.id,
-    })
-    .where(eq(invitations.id, invitation.id));
+    },
+  });
 
   if (additionalUserCreation) {
     await additionalUserCreation(user, req, res);

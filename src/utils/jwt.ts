@@ -4,7 +4,6 @@ import { logger } from "./logger";
 import { redisClient } from "../config/redis"; // Assuming redisClient is correctly initialized elsewhere
 import { TokenPayload } from "../types"; // Assuming TokenPayload type is correctly defined elsewhere
 import { JWTError } from "./errors/index"; // Assuming JWTError is correctly defined and imported
-import { User } from "../models";
 
 // Constants for JWT configuration
 export const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"; // Should ideally be a strong, secret key from environment
@@ -25,7 +24,10 @@ export interface TokenPair {
  * @returns A promise resolving to an object containing the access token and refresh token.
  * @throws {JWTError} If token generation or storage fails.
  */
-export const generateTokenPair = async (user: any): Promise<TokenPair> => {
+export const generateTokenPair = async (user: {
+  id: string;
+  role: string;
+}): Promise<TokenPair> => {
   try {
     // Define options for access and refresh tokens
     const accessTokenOptions: SignOptions = {

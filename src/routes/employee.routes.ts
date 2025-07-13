@@ -8,18 +8,6 @@ import { UserRole } from "../types";
 const router = Router();
 
 // 2.1. Onboarding & KYC - Accept Employer Invitation
-router.post("/invite/", employeeController.acceptInvite);
-router.post(
-  "/kyc",
-  authenticate,
-  authorize([UserRole.EMPLOYEE]),
-  employeeController.submitKYC,
-);
-router.get(
-  "/kyc",
-  authenticate,
-  authorize([UserRole.EMPLOYEE]),
-  employeeController.getKYC,
-);
+router.post("/invite/", employeeController.register);
 
 export default router;

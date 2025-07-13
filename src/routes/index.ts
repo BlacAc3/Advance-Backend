@@ -5,13 +5,11 @@ import employerRoutes from "./employer.routes";
 import marketerRoutes from "./marketer.routes";
 import adminRoutes from "./admin.routes";
 import { employerController } from "../controllers/employer.controller";
-import { healthCheckRoutes } from "./health.routes";
 
 export const setupRoutes = (app: Express) => {
   // const apiPrefix = `/api/${process.env.API_VERSION || "v1"}`;
 
   // Health check route
-  app.use(`/api/v1/health`, healthCheckRoutes);
 
   // API routes
   app.use(`/api/v1/auth`, authRoutes);
@@ -19,10 +17,6 @@ export const setupRoutes = (app: Express) => {
   app.use(`/api/v1/employer`, employerRoutes);
   app.use(`/api/v1/marketer`, marketerRoutes);
   app.use("/api/v1/admin", adminRoutes);
-  app.post(
-    "/api/v1/employer/accept-invite",
-    employerController.employerRegister,
-  );
   //
   // Root route
   app.get("/", (req, res) => {

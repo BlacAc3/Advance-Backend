@@ -40,3 +40,4 @@ temp/
 
 # Optional eslint cache
 .eslintcache 
+/src/generated/prisma

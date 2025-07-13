@@ -1,49 +1,92 @@
 import "dotenv/config";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { eq, and, SQL, Placeholder, InferInsertModel } from "drizzle-orm";
-import type { NodePgDatabase } from "drizzle-orm/node-postgres";
-import * as schema from "../schema"; // Import all schema for type inference
-
-export const db = drizzle(process.env.DATABASE_URL!, { schema }); // Pass schema for type inference
-
-type DbType = NodePgDatabase<typeof schema>;
+import { prisma } from "../database";
 
 class EmployerService {
-  constructor(private db: DbType) {}
-  private employers = schema.employers;
-
   async get(data: { id?: string; companyName?: string }) {
     const { id, companyName } = data;
     if (!id && !companyName) {
       throw new Error("Either id or companyName must be provided");
+      return;
     }
-
-    let whereClause: SQL<unknown> | undefined;
 
     if (id) {
-      whereClause = eq(this.employers.id, id);
+      return await prisma.employer.findUnique({
+        where: { id },
+        include: {
+          user: true,
+          marketer: true,
+          verifiedByUser: true,
+        },
+      });
     } else if (companyName) {
-      whereClause = eq(this.employers.companyName, companyName);
+      return await prisma.employer.findUnique({
+        where: { companyName },
+        include: {
+          user: true,
+          marketer: true,
+          verifiedByUser: true,
+        },
+      });
     }
-
-    const result = await this.db
-      .select()
-      .from(this.employers)
-      .where(whereClause)
-      .limit(1);
-
-    return result.length > 0 ? result[0] : null;
+    return;
   }
 
-  async create(data: InferInsertModel<typeof schema.employers>) {
-    const [result] = await this.db
-      .insert(this.employers)
-      .values(data)
-      .returning();
+  async create(data: {
+    userId: string;
+    marketerId?: number;
+    companyName: string;
+    registrationDate: Date;
+    isVerified?: boolean;
+    verificationDate?: Date;
+    verifiedBy?: string;
+  }) {
+    return await prisma.employer.create({
+      data,
+      include: {
+        user: true,
+        marketer: true,
+        verifiedByUser: true,
+      },
+    });
+  }
 
-    return result;
+  async update(
+    id: string,
+    data: Partial<{
+      marketerId: number;
+      companyName: string;
+      isVerified: boolean;
+      verificationDate: Date;
+      verifiedBy: string;
+    }>,
+  ) {
+    return await prisma.employer.update({
+      where: { id },
+      data,
+      include: {
+        user: true,
+        marketer: true,
+        verifiedByUser: true,
+      },
+    });
+  }
+
+  async delete(id: string) {
+    return await prisma.employer.delete({
+      where: { id },
+    });
+  }
+
+  async getAll() {
+    return await prisma.employer.findMany({
+      include: {
+        user: true,
+        marketer: true,
+        verifiedByUser: true,
+      },
+    });
   }
 }
 
-const employerService = new EmployerService(db);
+const employerService = new EmployerService();
 export default employerService;

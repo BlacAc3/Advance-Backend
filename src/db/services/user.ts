@@ -1,64 +1,96 @@
 import "dotenv/config";
-import { drizzle } from "drizzle-orm/node-postgres";
 import { hashPassword } from "../../utils/password";
-import { eq, and, SQL, Placeholder, InferInsertModel } from "drizzle-orm";
-import type { NodePgDatabase } from "drizzle-orm/node-postgres";
-import * as schema from "../schema"; // Import all schema for type inference
-
-export const db = drizzle(process.env.DATABASE_URL!, { schema }); // Pass schema for type inference
-
-type DbType = NodePgDatabase<typeof schema>;
+import { prisma } from "../database";
+import { EnumUsersRole, Prisma } from "../../generated/prisma";
 
 class UserService {
-  private user = schema.users;
-  constructor(private db: DbType) {}
-
   async get(data: { id?: string; email?: string; walletAddress?: string }) {
     const { id, email, walletAddress } = data;
-    const whereClauses = [];
 
     if (id) {
-      whereClauses.push(eq(this.user.id, id));
+      return await prisma.user.findUnique({
+        where: { id },
+      });
     } else if (email) {
-      whereClauses.push(eq(this.user.email, email));
+      return await prisma.user.findUnique({
+        where: { email },
+      });
     } else if (walletAddress) {
-      whereClauses.push(eq(this.user.walletAddress, walletAddress));
+      return await prisma.user.findUnique({
+        where: { walletAddress },
+      });
     } else {
       return null;
     }
-
-    const [result] = await this.db
-      .select()
-      .from(this.user)
-      .where(and(...whereClauses))
-      .limit(1);
-
-    if (!result) {
-      return null;
-    }
-    return result;
   }
+
   async getAll() {
-    const result = await this.db.select().from(this.user);
-    return result;
+    return await prisma.user.findMany();
   }
 
-  async create(
-    data: Omit<
-      InferInsertModel<typeof schema.users>,
-      "id" | "createdAt" | "updatedAt" | "isActive" | "isWalletVerified"
-    >,
-  ) {
-    const { password, ...rest } = data;
+  async create(data: {
+    username?: string;
+    email: string;
+    password: string;
+    role?: EnumUsersRole;
+    walletAddress?: string | null;
+  }) {
+    const {
+      password,
+      role = EnumUsersRole.WEB3_USER,
+      walletAddress,
+      ...rest
+    } = data;
     const hashedPassword = await hashPassword(password);
-    const [newUser] = await this.db
-      .insert(this.user)
-      .values({ ...rest, password: hashedPassword })
-      .returning();
 
-    return newUser;
+    const createData: Prisma.UserCreateInput = {
+      ...rest, // This contains username (if provided) and email
+      password: hashedPassword,
+      role,
+    };
+
+    if (typeof walletAddress === "string" && walletAddress.trim() !== "") {
+      createData.walletAddress = walletAddress;
+    } else if (walletAddress === null) {
+      createData.walletAddress = null;
+    }
+    return await prisma.user.create({
+      data: createData,
+    });
+  }
+
+  async update(
+    id: string,
+    data: Partial<{
+      username: string;
+      email: string;
+      password: string;
+      role: EnumUsersRole;
+      walletAddress: string;
+      isActive: boolean;
+      isWalletVerified: boolean;
+    }>,
+  ) {
+    const updateData = { ...data };
+
+    // Hash password if it's being updated
+    if (data.password) {
+      updateData.password = await hashPassword(data.password);
+    }
+
+    return await prisma.user.update({
+      where: { id },
+      data: updateData,
+    });
+  }
+
+  async delete(id: string) {
+    return await prisma.user.delete({
+      where: { id },
+    });
   }
 }
-const userService = new UserService(db);
+
+const userService = new UserService();
 
 export default userService;

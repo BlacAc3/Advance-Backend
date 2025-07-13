@@ -12,7 +12,7 @@ export enum UserRole {
 export interface TokenPayload {
   userId: string;
   role: UserRole;
-  walletAddress?: string;
+  walletAddress?: string | null;
 }
 
 export interface UserAttributes {

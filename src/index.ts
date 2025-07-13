@@ -7,7 +7,7 @@ import { rateLimit } from "express-rate-limit";
 import { errorHandler } from "./middleware/errorHandler";
 import { notFoundHandler } from "./middleware/notFoundHandler";
 import { setupRoutes } from "./routes";
-import { setupDatabase } from "./config/database";
+import { setupDatabase } from "./db/database";
 import { logger } from "./utils/logger";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./swagger-output.json";

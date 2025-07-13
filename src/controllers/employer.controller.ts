@@ -1,16 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { UserRole, TokenPayload, UserResponse } from "../types";
 import { generateTokenPair } from "../utils/jwt";
-import { CreationAttributes } from "sequelize";
-import { eq, and } from "drizzle-orm";
-import { users, employers, marketers, invitations } from "../db/schema";
+import { prisma } from "../db/database";
 
 //DB services
-import { db } from "../db/config";
 import userModel from "../db/services/user";
 import employerModel from "../db/services/employer";
 import invitationModel from "../db/services/invitation";
 import { register } from "../utils/register";
+import { sendSuccess, sendError } from "../utils/responseWrapper";
 
 export const employerController = {
   async sendInvite(
@@ -20,18 +18,22 @@ export const employerController = {
   ): Promise<void> {
     try {
       const { email } = req.body;
-      const senderId = (req.user as TokenPayload).userId;
+      const senderId = req.user?.userId as string;
       const role = "EMPLOYEE"; // Assuming default role is employee
       const expiresAt = new Date(Date.now() + 12 * 60 * 60 * 1000);
       const existingInvitation = await invitationModel.getPending({
         email,
-        senderId,
+        senderId: senderId,
         role,
       });
+      console.error(existingInvitation);
       if (existingInvitation) {
-        res.status(400).json({
-          message: "Invitation for the target user already exists",
-        });
+        sendError(
+          res,
+          null,
+          "Invitation for the target user already exists",
+          400,
+        );
         return;
       }
 
@@ -41,10 +43,11 @@ export const employerController = {
         role,
         expiresAt,
       });
-      res.status(200).json({ message: invitation, inviteLink: invitation.id });
+      sendSuccess(res, invitation, "Invitation sent successfully", 200);
       return;
     } catch (error) {
-      res.json({ error: error });
+      console.error(error);
+      sendError(res, error, "Failed to send invitation", 400);
       next(error);
     }
   },
@@ -60,15 +63,28 @@ export const employerController = {
         role: UserRole.EMPLOYER,
         additionalValidations: (req, res) => {
           const { companyName } = req.body;
+          const { invitationId } = req.body;
           if (!companyName) {
-            res.status(400).json({ message: "companyName field required" });
+            sendError(res, null, "companyName field required", 400);
+            return false;
+          }
+          const invitation = invitationModel.get({ id: invitationId });
+
+          if (!invitation) {
+            sendError(res, null, "Invitation not found", 404);
             return false;
           }
           return true;
         },
         additionalUserCreation: async (user, req, res) => {
           const { companyName } = req.body;
-          //
+          const { invitationId } = req.body;
+          const invitation = await invitationModel.get({ id: invitationId });
+
+          if (!invitation) {
+            sendError(res, null, "Invitation not found", 404);
+            return;
+          }
           const employer = await employerModel.create({
             userId: user.id,
             companyName: companyName,
@@ -76,22 +92,16 @@ export const employerController = {
             isVerified: false,
           });
 
-          const { invitationId } = req.body;
-          const invitation = await invitationModel.get({ id: invitationId });
-
-          const [senderMarketer] = await db
-            .select()
-            .from(marketers)
-            .where(eq(marketers.userId, invitation.senderUserId))
-            .limit(1);
-          console.log(senderMarketer);
+          const senderMarketer = await prisma.marketer.findUnique({
+            where: { userId: invitation.senderUserId },
+          });
 
           // If the sender was a marketer, Update the marketerId field
           if (senderMarketer) {
-            await db
-              .update(employers)
-              .set({ marketerId: senderMarketer.id })
-              .where(eq(employers.id, employer.id));
+            await prisma.employer.update({
+              where: { id: employer.id },
+              data: { marketerId: senderMarketer.id },
+            });
           }
 
           const tokens = await generateTokenPair(user);
@@ -104,14 +114,18 @@ export const employerController = {
             isWalletVerified: user.isWalletVerified,
           };
 
-          res.status(201).json({
-            ...tokens,
-          });
+          sendSuccess(
+            res,
+            { ...tokens, user: userResponse },
+            "Employer registered successfully",
+            201,
+          );
+          return;
         },
       });
-      // No explicit return needed here as res.json() sends the response
     } catch (error) {
-      res.status(400).json({ error: error });
+      console.error(error);
+      sendError(res, error, "Employer registration failed", 400);
       next(error);
     }
   },
@@ -124,17 +138,23 @@ export const employerController = {
       const employerId = req.params.id;
 
       //TODO: Implement Bank-history client integration (Mono/Okra)
-      //TODO: Fetch 6 months’ bank history
+      //TODO: Fetch 6 months' bank history
 
       // In a real application, you'd validate the API credentials,
       // fetch bank history, and update the employer's tier accordingly.
       // For now, we'll just return a dummy response.
-      res.status(200).json({
-        message: `API integration setup successfully for employer ${employerId}.`,
-        tier: "API-Verified", // Assuming successful API integration upgrades the tier
-        advanceLimit: "30%", // Updated advance limit
-      });
+      sendSuccess(
+        res,
+        {
+          message: `API integration setup successfully for employer ${employerId}.`,
+          tier: "API-Verified", // Assuming successful API integration upgrades the tier
+          advanceLimit: "30%", // Updated advance limit
+        },
+        "API integration setup successfully",
+        200,
+      );
     } catch (error) {
+      sendError(res, error, "API integration setup failed");
       console.error(error);
       next(error);
     }
@@ -151,12 +171,18 @@ export const employerController = {
       // In a real application, you'd fetch the employer's tier information
       // from the database and return it in the response.
       // For now, we'll just return a dummy response.
-      res.status(200).json({
-        employerId: employerId,
-        tier: "Trusted", // Example of a potential tier
-        advanceLimit: "50%",
-      });
+      sendSuccess(
+        res,
+        {
+          employerId: employerId,
+          tier: "Trusted", // Example of a potential tier
+          advanceLimit: "50%",
+        },
+        "Employer tiers retrieved successfully",
+        200,
+      );
     } catch (error) {
+      sendError(res, error, "Failed to retrieve employer tiers");
       console.error(error);
       next(error);
     }

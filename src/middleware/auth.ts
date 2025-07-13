@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { redisClient } from "../config/redis";
-import { User } from "../models/User";
 import { verifyRefreshToken, generateTokenPair } from "../utils/jwt";
 import { JWTError, ApiError } from "../utils/errors/index";
 import { ethers } from "ethers";
 import { UserRole, TokenPayload, CreateUserAttributes } from "../types";
+import userModel from "../db/services/user";
+import { hashPassword } from "../utils/password";
 
 export const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h"; // Default to 1 hour
@@ -36,7 +37,7 @@ export const authenticateToken = async (
     }
 
     const decoded = jwt.verify(token, JWT_SECRET) as TokenPayload;
-    const user = await User.findByPk(decoded.userId);
+    const user = await userModel.get({ id: decoded.userId });
 
     if (!user) {
       throw new ApiError(401, "User not found");
@@ -96,18 +97,16 @@ export const authenticateWallet = async (
     }
 
     // Find or create user
-    let user = await User.findOne({ where: { walletAddress } });
+    let user = await userModel.get({ walletAddress });
     if (!user) {
       const randomBytes = ethers.randomBytes(32);
-      const userData: CreateUserAttributes = {
+      const userData = {
         email: `${walletAddress}@web3.user`,
         password: ethers.hexlify(randomBytes),
         role: UserRole.WEB3_USER,
         walletAddress,
-        isActive: true,
-        isWalletVerified: true,
       };
-      user = await User.create(userData);
+      user = await userModel.create(userData);
     }
 
     // Generate tokens
@@ -147,7 +146,7 @@ export const refreshToken = async (
     }
 
     const payload = await verifyRefreshToken(refreshToken);
-    const user = await User.findByPk(payload.userId);
+    const user = await userModel.get({ id: payload.userId });
 
     if (!user) {
       throw new ApiError(401, "User not found");
@@ -210,9 +209,7 @@ export const requireVerifiedWallet = [
       throw new ApiError(401, "Wallet authentication required");
     }
 
-    const user = await User.findOne({
-      where: { walletAddress: req.user.walletAddress },
-    });
+    const user = await userModel.get({ walletAddress: req.user.walletAddress });
     if (!user?.isWalletVerified) {
       throw new ApiError(403, "Wallet not verified");
     }

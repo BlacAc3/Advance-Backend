@@ -6,17 +6,18 @@ import { UserRole } from "../types";
 
 const router = express.Router();
 
-router.post(
-  "/invite",
-  authenticate,
-  authorize([UserRole.MARKETER]),
-  marketerController.sendInvite,
-);
 router.get(
-  "/invitations",
+  "/invites",
   authenticate,
   authorize([UserRole.MARKETER]),
   marketerController.get_invites,
+);
+
+router.post(
+  "/send-invite",
+  authenticate,
+  authorize([UserRole.MARKETER]),
+  marketerController.sendInvite,
 );
 
 export default router;

@@ -5,6 +5,7 @@ import { ethers } from "ethers";
 import { TokenPayload, UserRole } from "../types";
 import crypto from "crypto";
 import userModel from "../db/services/user";
+import { Token } from "typescript";
 
 export const authenticate = async (
   req: Request,
@@ -20,7 +21,7 @@ export const authenticate = async (
 
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, JWT_SECRET) as TokenPayload;
-    console.log(decoded);
+    // console.log(decoded);
 
     const user = await userModel.get({ id: decoded.userId });
     if (!user) {
@@ -40,7 +41,7 @@ export const authenticate = async (
     return next();
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
-      console.log(error);
+      console.error(error);
       res.status(401).json({ message: "Invalid token" });
       return;
     }
@@ -99,8 +100,8 @@ export const authenticateWeb3 = async (
     req.user = {
       userId: user.id,
       role: user.role as UserRole,
-      walletAddress: user.walletAddress ?? undefined,
-    };
+      walletAddress: user.walletAddress,
+    } as TokenPayload;
 
     res.json({
       token,

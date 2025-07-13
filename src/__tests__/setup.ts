@@ -1,45 +1,86 @@
-import { sequelize } from "../config/database"; // Assuming sequelize instance
-import { redisClient as redisWrapper } from "../config/redis"; // Assuming redisClient is a node-redis v4+ client instance
-// Models are not strictly needed here if using sequelize.sync or iterating sequelize.models
-// import { User, Invitation, Employer, Employee } from "../models/index";
+// jest.setup.ts
 
-// Get the raw Redis client instance from the wrapper
+import { PrismaClient, Prisma } from "../generated/prisma";
+import { redisClient as redisWrapper } from "../config/redis";
+
 const redisClient = redisWrapper.getClient();
+let prisma: PrismaClient;
 
-// Optional: Ensure connections are ready before any tests run
-beforeAll(async () => {
+/**
+ * Cleans the database using TRUNCATE statements.
+ * This is significantly faster and more robust for relational databases.
+ * It also resets auto-incrementing IDs.
+ * @param prismaClient The initialized PrismaClient instance.
+ */
+async function cleanDatabase(prismaClient: PrismaClient) {
+  // Fetch actual table names from the database's information schema.
+  // This is more robust as it accounts for Prisma's default pluralization
+  // and any `@map` attributes defined in the schema, which are not
+  // directly available from Prisma.dmmf for table names.
+  const result = await prismaClient.$queryRaw<{ tablename: string }[]>`
+    SELECT tablename FROM pg_tables WHERE schemaname = current_schema();
+  `;
+
+  const dbTableNames = result.map((row) => row.tablename);
+
+  // Filter out Prisma's internal migration table and quote the table names
+  const tablesToTruncate = dbTableNames
+    .filter((tableName) => tableName !== "_prisma_migrations") // Prisma's migration table is typically '_prisma_migrations' in PostgreSQL
+    .map((tableName) => `"${tableName}"`) // Important: Quote table names for PostgreSQL to handle case sensitivity or special characters
+    .join(", ");
+
+  // Ensure there are tables to truncate before attempting the query
+  if (!tablesToTruncate) {
+    console.warn("No tables found to truncate. Skipping database cleanup.");
+    return;
+  }
+
   try {
-    // Authenticate Sequelize connection
-    sequelize.authenticate();
-    // Sync database, forcing recreation for a clean test environment
-    sequelize.sync({ force: true });
-    console.log("Database connection authenticated and synced for tests.");
+    // TRUNCATE TABLE statement is fast and resets auto-incrementing IDs (RESTART IDENTITY)
+    // CASCADE ensures dependent tables are also truncated.
+    await prismaClient.$executeRawUnsafe(
+      `TRUNCATE TABLE ${tablesToTruncate} RESTART IDENTITY CASCADE;`,
+    );
+  } catch (error) {
+    console.error("Error truncating tables:", error);
+    throw error;
+  }
+}
 
-    // Ensure Redis client is connected (for node-redis v4+)
-    // The `redisClient` variable holds the raw client instance
+// ... (rest of your beforeAll, beforeEach, afterAll hooks remain the same)
+
+beforeAll(async () => {
+  process.env.NODE_ENV = "test";
+
+  try {
+    prisma = new PrismaClient();
+    await prisma.$connect();
+
     if (!redisClient.isOpen) {
-      // Check if the client is already open before attempting to connect
-      redisClient.connect();
-      console.log("Redis client connected for tests.");
+      await redisClient.connect();
     }
+
+    // Add database cleanup here
+    await cleanDatabase(prisma);
   } catch (error) {
     console.error("Failed to setup connections for testing:", error);
-    // Exit the process if essential connections fail, as tests cannot run
-    process.exit(1);
+    throw error;
   }
-});
+}, 40000);
 
 beforeEach(async () => {
   try {
-    // Clear Redis data before each test to ensure test isolation
     await redisClient.flushAll();
   } catch (error) {
     console.error("Error during beforeEach cleanup:", error);
-    // Re-throw the error to fail the current test if cleanup fails
     throw error;
   }
-});
+}, 40000);
 
 afterAll(async () => {
-  console.log("finished tests");
-});
+  await cleanDatabase(prisma);
+  await prisma.$disconnect();
+  if (redisClient.isOpen) {
+    await redisClient.quit();
+  }
+}, 50000);

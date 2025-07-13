@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import invitationModel from "../db/services/invitation";
 import userModel from "../db/services/user";
-import { UserRole, TokenPayload } from "../types";
-import { Next } from "koa";
+import { TokenPayload } from "../types";
+import { sendError, sendSuccess } from "../utils/responseWrapper";
 
 interface SendInviteRequestBody {
   email?: string;
@@ -26,18 +26,14 @@ export const marketerController = {
         role,
       });
       if (existingInvitation) {
-        res.status(400).json({
-          message: "Invitation for the target user already exists",
-        });
+        sendError(res, 400, "Invitation for the target user already exists");
         return;
       }
 
       //Verify user is not registered
       const invitedUser = await userModel.get({ email });
       if (invitedUser) {
-        res.status(400).json({
-          message: "Cannot invite an existing user",
-        });
+        sendError(res, 400, "Cannot invite an existing user");
         return;
       }
 
@@ -47,9 +43,10 @@ export const marketerController = {
         role,
         expiresAt,
       });
-      res.status(200).json({ message: invitation, inviteLink: invitation.id });
+      sendSuccess(res, invitation, "Invite sent and created", 200);
       return;
     } catch (error) {
+      sendError(res, 400, "An Error occured while sending invite");
       next(error);
     }
   },
@@ -67,9 +64,10 @@ export const marketerController = {
       const invitations = await invitationModel.getAll({
         status: statusFilter,
       });
-      res.status(200).json(invitations);
+      sendSuccess(res, invitations, "Invitations retrieved successfully", 200);
       return;
     } catch (error) {
+      sendError(res, 400, "An error occured while getting invites");
       next(error);
     }
   },

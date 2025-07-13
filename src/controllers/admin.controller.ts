@@ -1,11 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { User, Invitation, Employer, Marketer } from "../models/index";
 import { UserRole } from "../types";
 import invitationModel from "../db/services/invitation";
 import userModel from "../db/services/user";
-import { eq, and, SQL, Placeholder, InferInsertModel } from "drizzle-orm";
-import { db } from "../db/config";
-import * as schema from "../db/schema";
+import { prisma } from "../db/database";
 
 export const adminController = {
   async getUsers(
@@ -64,14 +61,14 @@ export const adminController = {
         return;
       }
 
-      // Update the user using the userService
-      await db
-        .update(schema.users)
-        .set({
+      // Update the user using Prisma
+      await prisma.user.update({
+        where: { id },
+        data: {
           role: role || user.role,
           isActive: isActive !== undefined ? isActive : user.isActive,
-        })
-        .where(eq(schema.users.id, id));
+        },
+      });
 
       // Fetch the updated user
       const updatedUser = await userModel.get({ id });
@@ -108,7 +105,9 @@ export const adminController = {
         return;
       }
 
-      await db.delete(schema.users).where(eq(schema.users.id, id));
+      await prisma.user.delete({
+        where: { id },
+      });
       res.status(204).send();
       return;
     } catch (error) {
@@ -123,36 +122,33 @@ export const adminController = {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const employers = await Employer.findAll({
-        attributes: [
-          "id",
-          "companyName",
-          "registrationDate",
-          "isVerified",
-          "verificationDate",
-        ],
-        include: [
-          {
-            model: User,
-            as: "owner",
-            attributes: ["id", "email", "role", "username"], // Include user details
+      const employers = await prisma.employer.findMany({
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              role: true,
+              username: true,
+            },
           },
-          {
-            model: Marketer, // Correctly associate with Marketer model
-            as: "invitedBy",
-            attributes: ["id"], // Attributes from the Marketer model itself (e.g., id)
-            include: [
-              {
-                model: User, // Include the User associated with the Marketer
-                as: "user",
-                attributes: ["id", "username", "email"], // Include user details for the marketer
+          marketer: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  email: true,
+                },
               },
-            ],
-            required: false, // Make the inclusion optional in case an employer wasn't invited by a marketer
+            },
           },
-        ],
-        order: [["registrationDate", "DESC"]],
+        },
+        orderBy: {
+          registrationDate: 'asc',
+        },
       });
+
       res.status(200).json(employers);
       return;
     } catch (error) {
