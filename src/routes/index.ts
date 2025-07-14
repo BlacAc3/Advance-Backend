@@ -26,7 +26,7 @@ export const setupRoutes = (app: Express) => {
     res.json({
       message: "Welcome to AdvancePay API",
       version: process.env.API_VERSION || "v1",
-      documentation: `${req.protocol}://${req.get("host")}/api-docs`,
+      documentation: `${req.protocol}://${req.get("host")}/docs`,
     });
   });
 };

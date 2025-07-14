@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "npm run clean && tsc && prisma generate",
+    "build": "npm run clean && tsc && prisma generate && npm run copy:swagger",
     "clean": "rimraf dist",
     "postinstall": "prisma generate && ts-node swagger.ts",
     "test": "jest",
@@ -16,6 +16,7 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "migrate:add-wallet-data": "ts-node src/scripts/run-migration.ts",
     "swagger": "ts-node swagger.ts",
+    "copy:swagger": "copyfiles node_modules/swagger-ui-dist/* public/swagger-ui -f",
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
     "db:migrate": "prisma migrate dev",
