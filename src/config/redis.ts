@@ -15,7 +15,7 @@ import { createClient } from "redis";
 import { logger } from "../utils/logger";
 
 // Determine the Redis connection URL from environment variables or default to localhost.
-const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
+const redisUrl = process.env.REDIS_URL;
 
 // Create the actual Redis client instance.
 // Let TypeScript infer the correct type from createClient.

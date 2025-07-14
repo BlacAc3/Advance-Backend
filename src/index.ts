@@ -47,26 +47,15 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// API routes
-setupRoutes(app);
-// app.use("/api/v1/web3", web3Routes);
-// app.use("/api/v1/auth", authRoutes);
-// app.use("/api/v1/employer", employerRoutes);
-
 // Serve Swagger documentation
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Health check endpoint
-app.get("/api/v1/public/health", (_req, res) => {
-  res.status(200).json({
-    status: "success",
-    message: "Server is running",
-  });
-});
+// API routes
+setupRoutes(app);
 
 // Error handling
+// app.use("/", errorHandler as any);
 app.use(notFoundHandler);
-// app.use("/", errorHandler);
 
 // Start server
 const startServer = async () => {
