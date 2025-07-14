@@ -7,11 +7,5 @@
         "includeFiles": ["dist/**"]
       }
     }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "src/"
-    }
   ]
 }
