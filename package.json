@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && tsc && prisma generate",
     "clean": "rimraf dist",
     "postinstall": "prisma generate && ts-node swagger.ts",
     "test": "jest",

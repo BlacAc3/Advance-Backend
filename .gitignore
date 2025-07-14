@@ -39,5 +39,5 @@ temp/
 .npm
 
 # Optional eslint cache
-.eslintcache 
+.eslintcache
 /src/generated/prisma
