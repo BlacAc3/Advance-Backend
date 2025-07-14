@@ -1,0 +1,233 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum EnumAdvancesStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PAID
+  REPAID
+  DEFAULTED
+}
+
+enum EnumDemoRequestsStatus {
+  PENDING
+  CONTACTED
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum EnumEmployeesKycStage {
+  none
+  level_1
+  level_2
+  full
+}
+
+enum EnumEmployeesKycStatus {
+  pending
+  submitted
+  in_review
+  approved
+  rejected
+  needs_info
+  expired
+}
+
+enum EnumInvitationsRole {
+  EMPLOYER
+  EMPLOYEE
+}
+
+enum EnumInvitationsStatus {
+  pending
+  accepted
+  rejected
+  expired
+}
+
+enum EnumLiquidityPoolTransactionType {
+  CONTRIBUTION
+  WITHDRAWAL
+  ADVANCE_FUNDING
+  REPAYMENT
+}
+
+enum EnumUsersRole {
+  ADMIN
+  EMPLOYER
+  EMPLOYEE
+  WEB3_USER
+  REGULAR_USER
+  MARKETER
+}
+
+model User {
+  id               String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username         String?       @unique @db.VarChar(255)
+  email            String        @unique @db.VarChar(255)
+  password         String        @db.VarChar(255)
+  role             EnumUsersRole @default(WEB3_USER)
+  walletAddress    String?       @unique @map("wallet_address") @db.VarChar(255)
+  isActive         Boolean       @default(true) @map("is_active")
+  isWalletVerified Boolean       @default(false) @map("is_wallet_verified")
+  createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime      @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  marketer             Marketer?
+  employer             Employer?
+  employee             Employee?
+  verifiedEmployers    Employer[]   @relation("VerifiedBy")
+  kycReviewerEmployees Employee[]   @relation("KycReviewer")
+  sentInvitations      Invitation[] @relation("SenderUser")
+  receivedInvitations  Invitation[] @relation("RecipientUser")
+
+  @@map("users")
+}
+
+model Marketer {
+  id               Int      @id @default(autoincrement())
+  userId           String   @unique @map("user_id") @db.Uuid
+  registrationDate DateTime @map("registration_date") @db.Timestamptz(6)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employers Employer[]
+
+  @@map("marketers")
+}
+
+model Employer {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId           String    @unique @map("user_id") @db.Uuid
+  marketerId       Int?      @map("marketer_id")
+  companyName      String    @unique @map("company_name") @db.VarChar(255)
+  registrationDate DateTime  @map("registration_date") @db.Timestamptz(6)
+  isVerified       Boolean   @default(false) @map("is_verified")
+  verificationDate DateTime? @map("verification_date") @db.Timestamptz(6)
+  verifiedBy       String?   @map("verified_by") @db.Uuid
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  marketer       Marketer?       @relation(fields: [marketerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  verifiedByUser User?           @relation("VerifiedBy", fields: [verifiedBy], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  employees      Employee[]
+  liquidityPools LiquidityPool[]
+
+  @@map("employers")
+}
+
+model Employee {
+  id               String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId           String                 @unique @map("user_id") @db.Uuid
+  employerId       String                 @map("employer_id") @db.Uuid
+  kycStage         EnumEmployeesKycStage  @default(none) @map("kyc_stage")
+  kycStatus        EnumEmployeesKycStatus @default(pending) @map("kyc_status")
+  kycSubmittedAt   DateTime?              @map("kyc_submitted_at") @db.Timestamptz(6)
+  kycReviewedAt    DateTime?              @map("kyc_reviewed_at") @db.Timestamptz(6)
+  kycReviewerId    String?                @map("kyc_reviewer_id") @db.Uuid
+  kycNotes         String?                @map("kyc_notes") @db.Text
+  salary           Decimal?               @db.Decimal(20, 0)
+  registrationDate DateTime               @map("registration_date") @db.Timestamptz(6)
+  createdAt        DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime               @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employer    Employer  @relation(fields: [employerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  kycReviewer User?     @relation("KycReviewer", fields: [kycReviewerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  advances    Advance[]
+
+  @@map("employees")
+}
+
+model Advance {
+  id                       String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  employeeId               String             @map("employee_id") @db.Uuid
+  amount                   Decimal            @db.Decimal(20, 0)
+  repaymentAmount          Decimal            @map("repayment_amount") @db.Decimal(20, 0)
+  requestDate              DateTime           @map("request_date") @db.Timestamptz(6)
+  approvalDate             DateTime?          @map("approval_date") @db.Timestamptz(6)
+  paymentDate              DateTime?          @map("payment_date") @db.Timestamptz(6)
+  dueDate                  DateTime           @map("due_date") @db.Timestamptz(6)
+  status                   EnumAdvancesStatus @default(PENDING)
+  transactionHash          String?            @map("transaction_hash") @db.VarChar(66)
+  repaymentTransactionHash String?            @map("repayment_transaction_hash") @db.VarChar(66)
+  createdAt                DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                DateTime           @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("advances")
+}
+
+model LiquidityPool {
+  id              String                           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  employerId      String                           @map("employer_id") @db.Uuid
+  amount          Decimal                          @db.Decimal(20, 0)
+  transactionType EnumLiquidityPoolTransactionType @map("transaction_type")
+  transactionHash String                           @unique @map("transaction_hash") @db.VarChar(66)
+  timestamp       DateTime                         @db.Timestamptz(6)
+  createdAt       DateTime                         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime                         @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  employer Employer @relation(fields: [employerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("liquidity_pool")
+}
+
+model Invitation {
+  id              String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  targetEmail     String                @map("target_email") @db.VarChar(255)
+  senderUserId    String                @map("sender_user_id") @db.Uuid
+  recipientUserId String?               @map("recipient_user_id") @db.Uuid
+  expiresAt       DateTime              @map("expires_at") @db.Timestamptz(6)
+  status          EnumInvitationsStatus @default(pending)
+  role            EnumInvitationsRole
+  createdAt       DateTime              @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime              @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  senderUser    User  @relation("SenderUser", fields: [senderUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  recipientUser User? @relation("RecipientUser", fields: [recipientUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@map("invitations")
+}
+
+model DemoRequest {
+  id            Int                    @id @default(autoincrement())
+  companyName   String                 @map("company_name") @db.VarChar(255)
+  contactName   String                 @map("contact_name") @db.VarChar(255)
+  email         String                 @unique @db.VarChar(255)
+  phone         String                 @db.VarChar(255)
+  companySize   Int                    @map("company_size")
+  message       String?                @db.Text
+  status        EnumDemoRequestsStatus @default(PENDING)
+  scheduledDate DateTime?              @map("scheduled_date") @db.Timestamptz(6)
+  notes         String?                @db.Text
+  createdAt     DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime               @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  @@map("demo_requests")
+}
