@@ -9,8 +9,6 @@ import { notFoundHandler } from "./middleware/notFoundHandler";
 import { setupRoutes } from "./routes";
 import { setupDatabase } from "./db/database";
 import { logger } from "./utils/logger";
-import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "./swagger-output.json";
 // import web3Routes from "./routes/web3.routes";
 import authRoutes from "./routes/auth.routes";
 import employeeRoutes from "./routes/employee.routes";
@@ -46,9 +44,6 @@ const limiter = rateLimit({
   max: 100, // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
-
-// Serve Swagger documentation
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // API routes
 setupRoutes(app);
