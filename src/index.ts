@@ -64,7 +64,7 @@ const startServer = async () => {
     await setupDatabase();
     await connectRedis();
 
-    app.listen(port, "0.0.0.0", () => {
+    app.listen(port, () => {
       logger.info(`Server is running on port ${port}`);
       logger.info(`Environment: ${process.env.NODE_ENV}`);
     });
