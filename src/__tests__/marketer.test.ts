@@ -12,8 +12,6 @@ import {
 import userService from "../db/services/user"; // For user service interactions
 import invitationService from "../db/services/invitation"; // For invitation service interactions
 
-// Define TokenPayload interface and extend Express Request type for mocking req.user.
-// In a full application, this would typically be in a shared declaration file
 // (e.g., src/types/express.d.ts) to avoid duplication across test files.
 interface TokenPayload {
   userId: string;
