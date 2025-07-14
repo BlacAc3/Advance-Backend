@@ -14,7 +14,7 @@
       "dest": "src/index.ts"
     },
     {
-      "src": "/docs",
+      "src": "/docs(.*)",
       "dest": "src/index.ts"
     }
   ]
