@@ -8,6 +8,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "npm run clean && tsc",
     "clean": "rimraf dist",
+    "postinstall": "prisma generate",
     "test": "jest",
     "test:watch": "NODE_ENV=test jest --watch",
     "test:coverage": "NODE_ENV=test jest --coverage",
