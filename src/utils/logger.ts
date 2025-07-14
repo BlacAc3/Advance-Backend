@@ -1,47 +1,35 @@
-import winston from 'winston';
-import path from 'path';
+import winston from "winston";
+import path from "path";
 
-const logDir = 'logs';
-const logLevel = process.env.LOG_LEVEL || 'info';
+const logLevel = process.env.LOG_LEVEL || "info";
 
 // Define log format
 const logFormat = winston.format.combine(
-  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+  winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
   winston.format.errors({ stack: true }),
   winston.format.splat(),
-  winston.format.json()
+  winston.format.json(),
 );
 
 // Create the logger instance
 export const logger = winston.createLogger({
   level: logLevel,
   format: logFormat,
-  defaultMeta: { service: 'advancepay-backend' },
+  defaultMeta: { service: "advancepay-backend" },
   transports: [
-    // Write all logs to console
+    // In serverless environments like Vercel, file-based logging is not persistent.
+    // Logs should be sent to the console (stdout/stderr) where they are captured
+    // by the serverless platform's logging system.
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
         winston.format.printf(
           ({ timestamp, level, message, ...meta }) =>
             `${timestamp} [${level}]: ${message} ${
-              Object.keys(meta).length ? JSON.stringify(meta, null, 2) : ''
-            }`
-        )
+              Object.keys(meta).length ? JSON.stringify(meta, null, 2) : ""
+            }`,
+        ),
       ),
-    }),
-    // Write all logs with level 'error' and below to error.log
-    new winston.transports.File({
-      filename: path.join(logDir, 'error.log'),
-      level: 'error',
-      maxsize: 5242880, // 5MB
-      maxFiles: 5,
-    }),
-    // Write all logs with level 'info' and below to combined.log
-    new winston.transports.File({
-      filename: path.join(logDir, 'combined.log'),
-      maxsize: 5242880, // 5MB
-      maxFiles: 5,
     }),
   ],
 });
@@ -68,13 +56,13 @@ export const logApiRequest = (
   path: string,
   statusCode: number,
   responseTime: number,
-  userAgent?: string
+  userAgent?: string,
 ) => {
-  logger.info('API Request', {
+  logger.info("API Request", {
     method,
     path,
     statusCode,
     responseTime: `${responseTime}ms`,
     userAgent,
   });
-}; 
+};
