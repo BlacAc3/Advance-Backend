@@ -15,7 +15,6 @@
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
     "migrate:add-wallet-data": "ts-node src/scripts/run-migration.ts",
-    "prepare": "[ \"$NODE_ENV\" != \"production\" ] && husky install || echo 'Skipping husky in production'",
     "swagger": "ts-node swagger.ts",
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
