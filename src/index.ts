@@ -85,7 +85,6 @@ app.use(express.static(publicDirectoryPath));
 // --- Error Handling Middleware ---
 // 1. Not Found Handler (MUST be placed AFTER all valid routes and static file servers)
 // This catches requests that didn't match any of the above routes/middleware.
-app.use(notFoundHandler);
 
 // 2. Global Error Handler (MUST be the very last middleware, takes 4 arguments)
 // This catches errors thrown by other middleware or route handlers.
