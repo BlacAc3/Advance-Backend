@@ -9,6 +9,8 @@ import { notFoundHandler } from "./middleware/notFoundHandler";
 import { setupRoutes } from "./routes";
 import { setupDatabase } from "./db/database";
 import { logger } from "./utils/logger";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "../swagger-output.json";
 // import web3Routes from "./routes/web3.routes";
 import authRoutes from "./routes/auth.routes";
 import employeeRoutes from "./routes/employee.routes";
@@ -22,6 +24,7 @@ const port = parseInt(process.env.PORT || "3000", 10);
 
 // Security middleware
 app.use(helmet());
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // app.use(
 //   cors({
 //     origin: process.env.FRONTEND_URL || "http://localhost:3000",
