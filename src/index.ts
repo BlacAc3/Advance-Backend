@@ -56,34 +56,13 @@ const limiter = rateLimit({
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
+app.use(express.static(__dirname));
 // app.use(limiter); // Uncomment to enable rate limiting
-
-// --- DEBUGGING LOGS ---
-// Log before Swagger UI middleware
-app.use((req, res, next) => {
-  if (req.originalUrl.startsWith("/api-docs")) {
-    logger.info(
-      `[DEBUG] Request to /api-docs path: ${req.method} ${req.originalUrl}`,
-    );
-  }
-  next();
-});
 
 // --- API Documentation (Swagger UI) ---
 // This MUST come BEFORE your general API routes and especially before any catch-all
 // or notFoundHandler, as it needs to serve its own static files.
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-// --- DEBUGGING LOGS ---
-// Log after Swagger UI middleware (if it didn't handle the request)
-app.use((req, res, next) => {
-  if (req.originalUrl.startsWith("/api-docs")) {
-    logger.warn(
-      `[DEBUG] Request to /api-docs path PASSED THROUGH Swagger UI middleware: ${req.method} ${req.originalUrl}`,
-    );
-  }
-  next();
-});
 
 // --- API Routes ---
 // Define your actual API endpoints here.
