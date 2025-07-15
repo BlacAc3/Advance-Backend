@@ -1,7 +1,7 @@
 {
   "builds": [
     {
-      "src": "dist/index.js",
+      "src": "src/index.ts",
       "use": "@vercel/node",
       "config": {
         "includeFiles": ["dist/**"]
@@ -11,15 +11,15 @@
   "routes": [
     {
       "src": "/api-docs(.*)",
-      "dest": "dist/index.js"
+      "dest": "src/index.ts"
     },
     {
       "src": "/api/(.*)",
-      "dest": "dist/index.js"
+      "dest": "src/index.ts"
     },
     {
       "src": "/(.*)",
-      "dest": "dist/index.js"
+      "dest": "src/index.ts"
     }
   ]
 }
