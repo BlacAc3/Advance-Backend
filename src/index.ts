@@ -32,6 +32,9 @@ app.set("trust proxy", true);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+//
+// API routes
+setupRoutes(app);
 
 // Logging middleware
 app.use(
@@ -48,9 +51,6 @@ const limiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 // app.use(limiter);
-
-// API routes
-setupRoutes(app);
 
 // Error handling
 // app.use("/", errorHandler as any);
