@@ -11,7 +11,7 @@ import swaggerDocument from "../swagger-output.json";
 export const setupRoutes = (app: Express) => {
   // const apiPrefix = `/api/${process.env.API_VERSION || "v1"}`;
   // Serve Swagger documentation
-  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
   // API routes
   app.use(`/api/v1/auth`, authRoutes);
