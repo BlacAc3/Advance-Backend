@@ -11,9 +11,6 @@ export const setupRoutes = (app: Express) => {
   // const apiPrefix = `/api/${process.env.API_VERSION || "v1"}`;
   // Serve Swagger documentation
   // An endpoint to serve your swagger.json or openapi.yaml
-  app.get("/swagger", (req, res) => {
-    res.sendFile(path.join(__dirname, "src/swagger-output.json")); // Or res.json(yourSwaggerSpecObject);
-  });
   // API routes
   app.use(`/api/v1/auth`, authRoutes);
   app.use(`/api/v1/employee`, employeeRoutes);
