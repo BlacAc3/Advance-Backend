@@ -58,12 +58,6 @@ const limiter = rateLimit({
 });
 // app.use(limiter); // Uncomment to enable rate limiting
 
-// --- API Documentation (Swagger UI) ---
-// This MUST come BEFORE your general API routes and especially before any catch-all
-// or notFoundHandler, as it needs to serve its own static files.
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use(express.static(__dirname));
-
 // --- API Routes ---
 // Define your actual API endpoints here.
 // The `setupRoutes` function should contain your specific API endpoints.
