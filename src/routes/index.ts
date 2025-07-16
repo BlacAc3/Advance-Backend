@@ -11,6 +11,13 @@ export const setupRoutes = (app: Express) => {
   // const apiPrefix = `/api/${process.env.API_VERSION || "v1"}`;
   // Serve Swagger documentation
   app.get("/api-docs", (req, res) => {
+    res.setHeader(
+      "Content-Security-Policy",
+      "default-src 'self'; " +
+        "script-src 'self' https://cdn.jsdelivr.net; " + // Allow scripts from self and cdn.jsdelivr.net
+        "style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline';" + // Allow styles from self and cdn.jsdelivr.net, and inline styles for swagger-ui.css
+        "img-src 'self' data:;", // Often needed for swagger-ui logos, etc.
+    );
     res.send(`
       <!DOCTYPE html>
       <html>
@@ -22,33 +29,15 @@ export const setupRoutes = (app: Express) => {
         <div id="swagger-ui"></div>
         <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.11.0/swagger-ui-bundle.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.11.0/swagger-ui-standalone-preset.js"></script>
-        <script>
-          window.onload = function() {
-            // Begin Swagger UI call
-            const ui = SwaggerUIBundle({
-              url: "/swagger.json", // Or your API endpoint that serves the spec
-              dom_id: '#swagger-ui',
-              deepLinking: true,
-              presets: [
-                SwaggerUIBundle.presets.apis,
-                SwaggerUIStandalonePreset
-              ],
-              plugins: [
-                SwaggerUIBundle.plugins.DownloadUrl
-              ],
-              layout: "StandaloneLayout"
-            });
-            window.ui = ui;
-          };
-        </script>
-      </body>
+        <script src="public/swagger-init.js"></script> </body>
+        </body>
       </html>
     `);
   });
 
   // An endpoint to serve your swagger.json or openapi.yaml
   app.get("/swagger.json", (req, res) => {
-    res.sendFile(path.join(__dirname, "swagger.json")); // Or res.json(yourSwaggerSpecObject);
+    res.sendFile(path.join(__dirname, "swagger-output.json")); // Or res.json(yourSwaggerSpecObject);
   });
   // API routes
   app.use(`/api/v1/auth`, authRoutes);
