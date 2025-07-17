@@ -8,7 +8,7 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 
 swaggerui_blueprint = get_swaggerui_blueprint(
     "/docs/swagger",
-    '/docs/swagger-docs.json',
+    'https://advance-backend.vercel.app/docs/swagger.json',
     config={
         'app_name': "Advance API",
         "layout": "BaseLayout",
@@ -18,12 +18,6 @@ swaggerui_blueprint = get_swaggerui_blueprint(
 app.register_blueprint(swaggerui_blueprint)
 
 
-@app.route('/docs/swagger-docs.json')
-def get_swagger():
-    try:
-        return send_from_directory(os.path.dirname(app.root_path), 'swagger-output.json')
-    except FileNotFoundError:
-        return jsonify({"error": "swagger-output.json not found"}), 404
 
 
 

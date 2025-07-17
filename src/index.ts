@@ -30,7 +30,9 @@ app.use(helmet());
 // Place CORS here if it applies to all routes, including Swagger UI.
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: process.env.FRONTEND_URL
+      ? process.env.FRONTEND_URL.split(",").map((url) => url.trim())
+      : ["http://localhost:5000"],
     credentials: true,
   }),
 );
