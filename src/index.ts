@@ -35,6 +35,7 @@ app.use(helmet());
 //     credentials: true,
 //   }),
 // );
+app.use(cors());
 
 // 3. Trust Proxy (if your app is behind a proxy like Vercel)
 app.set("trust proxy", true);
