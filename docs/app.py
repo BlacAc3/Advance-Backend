@@ -18,7 +18,7 @@ swaggerui_blueprint = get_swaggerui_blueprint(
 app.register_blueprint(swaggerui_blueprint)
 
 
-@app.route('/swagger-docs.json')
+@app.route('/docs/swagger-docs.json')
 def get_swagger():
     try:
         return send_from_directory(os.path.dirname(app.root_path), 'swagger-output.json')

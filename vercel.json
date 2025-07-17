@@ -19,10 +19,6 @@
   ],
   "routes": [
     {
-      "src": "/api-docs(.*)",
-      "dest": "/src/index.ts"
-    },
-    {
       "src": "/api/(.*)",
       "dest": "/src/index.ts"
     },
@@ -30,8 +26,9 @@
       "src": "/(.*)",
       "dest": "/src/index.ts"
     },
+
     {
-      "src": "/swagger",
+      "src": "/docs/(.*)",
       "dest": "/docs/app.py"
     },
     {
