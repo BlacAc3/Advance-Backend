@@ -13,6 +13,7 @@
     {
       "src": "/(.*)",
       "dest": "app.py"
-    }
+    },
+    { "src": "/swagger", "dest": "app.py" }
   ]
 }
