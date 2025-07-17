@@ -14,6 +14,13 @@ export const setupRoutes = (app: Express) => {
   app.get("/docs/swagger.json", (req, res) => {
     res.sendFile(path.join(__dirname, "../swagger-output.json"));
   });
+  app.get("/docs/swagger", (req, res) => {
+    // You can redirect to an external URL or another route within your application.
+    // For example, redirecting to Google:
+    res.redirect("https://advance-backend-docs.vercel.app/docs/swagger/");
+
+    res.redirect(301, "https://www.new-domain.com/permanent-redirect-path");
+  });
   // API routes
   app.use(`/api/v1/auth`, authRoutes);
   app.use(`/api/v1/employee`, employeeRoutes);
