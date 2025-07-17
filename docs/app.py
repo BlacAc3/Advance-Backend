@@ -7,8 +7,8 @@ app = Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
 swaggerui_blueprint = get_swaggerui_blueprint(
-    "/swagger",
-    '/swagger-docs.json',
+    "/docs/swagger",
+    '/docs/swagger-docs.json',
     config={
         'app_name': "Advance API",
         "layout": "BaseLayout",
