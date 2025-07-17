@@ -27,15 +27,14 @@ const port = parseInt(process.env.PORT || "3000", 10);
 app.use(helmet());
 
 // 2. CORS (if needed, uncomment and configure)
-// app.use(
-//   cors({
-//     origin: process.env.FRONTEND_URL
-//       ? process.env.FRONTEND_URL.split(",").map((url) => url.trim())
-//       : ["http://localhost:5000"],
-//     credentials: true,
-//   }),
-// );
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL
+      ? process.env.FRONTEND_URL.split(",").map((url) => url.trim())
+      : ["http://localhost:5000"],
+  }),
+);
+// app.use(cors());
 
 // 3. Trust Proxy (if your app is behind a proxy like Vercel)
 app.set("trust proxy", true);
