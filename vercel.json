@@ -6,6 +6,15 @@
       "config": {
         "includeFiles": ["dist/**"]
       }
+    },
+    {
+      "src": "docs/app.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "15mb",
+        "runtime": "python3.9",
+        "includeFiles": ["src/swagger-output.json"]
+      }
     }
   ],
   "routes": [
@@ -20,6 +29,10 @@
     {
       "src": "/(.*)",
       "dest": "/src/index.ts"
+    },
+    {
+      "src": "/swagger/(.*)",
+      "dest": "/docs/app.py"
     }
   ]
 }
