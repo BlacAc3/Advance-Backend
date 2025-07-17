@@ -159,6 +159,9 @@ exports.Prisma.EmployeeScalarFieldEnum = {
   userId: 'userId',
   employerId: 'employerId',
   kycStage: 'kycStage',
+  kycStageLevel1Completed: 'kycStageLevel1Completed',
+  kycStageLevel2Completed: 'kycStageLevel2Completed',
+  kycStageLevel3Completed: 'kycStageLevel3Completed',
   kycStatus: 'kycStatus',
   kycSubmittedAt: 'kycSubmittedAt',
   kycReviewedAt: 'kycReviewedAt',
@@ -167,7 +170,13 @@ exports.Prisma.EmployeeScalarFieldEnum = {
   salary: 'salary',
   registrationDate: 'registrationDate',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  nin: 'nin',
+  ninVerified: 'ninVerified',
+  bvn: 'bvn',
+  bvnVerified: 'bvnVerified',
+  termsAccepted: 'termsAccepted',
+  termsAcceptedAt: 'termsAcceptedAt'
 };
 
 exports.Prisma.AdvanceScalarFieldEnum = {
@@ -251,7 +260,7 @@ exports.EnumEmployeesKycStage = exports.$Enums.EnumEmployeesKycStage = {
   none: 'none',
   level_1: 'level_1',
   level_2: 'level_2',
-  full: 'full'
+  level_3: 'level_3'
 };
 
 exports.EnumEmployeesKycStatus = exports.$Enums.EnumEmployeesKycStatus = {

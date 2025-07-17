@@ -13,5 +13,6 @@ router.post(
   authorize([UserRole.EMPLOYER]),
   employerController.sendInvite,
 );
+router.post("/payroll/upload", employerController.uploadPayroll);
 
 export default router;

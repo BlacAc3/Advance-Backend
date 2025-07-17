@@ -6,7 +6,7 @@
 
 generator client {
   provider      = "prisma-client-js"
-  output        = "../dist/generated/prisma"
+  output        = "../src/generated/prisma"
   binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
@@ -36,7 +36,7 @@ enum EnumEmployeesKycStage {
   none
   level_1
   level_2
-  full
+  level_3
 }
 
 enum EnumEmployeesKycStatus {
@@ -138,19 +138,28 @@ model Employer {
 }
 
 model Employee {
-  id               String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId           String                 @unique @map("user_id") @db.Uuid
-  employerId       String                 @map("employer_id") @db.Uuid
-  kycStage         EnumEmployeesKycStage  @default(none) @map("kyc_stage")
-  kycStatus        EnumEmployeesKycStatus @default(pending) @map("kyc_status")
-  kycSubmittedAt   DateTime?              @map("kyc_submitted_at") @db.Timestamptz(6)
-  kycReviewedAt    DateTime?              @map("kyc_reviewed_at") @db.Timestamptz(6)
-  kycReviewerId    String?                @map("kyc_reviewer_id") @db.Uuid
-  kycNotes         String?                @map("kyc_notes") @db.Text
-  salary           Decimal?               @db.Decimal(20, 0)
-  registrationDate DateTime               @map("registration_date") @db.Timestamptz(6)
-  createdAt        DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt        DateTime               @default(now()) @map("updated_at") @db.Timestamptz(6)
+  id                      String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId                  String                 @unique @map("user_id") @db.Uuid
+  employerId              String                 @map("employer_id") @db.Uuid
+  kycStage                EnumEmployeesKycStage  @default(level_1) @map("kyc_stage")
+  kycStageLevel1Completed Boolean                @default(false) @map("kyc_stage_level_1_completed")
+  kycStageLevel2Completed Boolean                @default(false) @map("kyc_stage_level_2_completed")
+  kycStageLevel3Completed Boolean                @default(false) @map("kyc_stage_level_3_completed")
+  kycStatus               EnumEmployeesKycStatus @default(pending) @map("kyc_status")
+  kycSubmittedAt          DateTime?              @map("kyc_submitted_at") @db.Timestamptz(6)
+  kycReviewedAt           DateTime?              @map("kyc_reviewed_at") @db.Timestamptz(6)
+  kycReviewerId           String?                @map("kyc_reviewer_id") @db.Uuid
+  kycNotes                String?                @map("kyc_notes") @db.Text
+  salary                  Decimal?               @db.Decimal(20, 0)
+  registrationDate        DateTime               @map("registration_date") @db.Timestamptz(6)
+  createdAt               DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt               DateTime               @default(now()) @map("updated_at") @db.Timestamptz(6)
+  nin                     String?                @unique @map("nin") @db.VarChar(11)
+  ninVerified             Boolean                @default(false) @map("nin_verified")
+  bvn                     String?                @unique @map("bvn") @db.VarChar(11)
+  bvnVerified             Boolean                @default(false) @map("bvn_verified")
+  termsAccepted           Boolean                @default(false) @map("terms_accepted")
+  termsAcceptedAt         DateTime?              @map("terms_accepted_at") @db.Timestamptz(6)
 
   // Relations
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)

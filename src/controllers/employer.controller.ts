@@ -160,27 +160,12 @@ export const employerController = {
     }
   },
 
-  async getEmployerTiers(
+  async uploadPayroll(
     req: Request<{ id: string }>,
     res: Response,
     next: NextFunction,
   ): Promise<void> {
     try {
-      const employerId = req.params.id;
-
-      // In a real application, you'd fetch the employer's tier information
-      // from the database and return it in the response.
-      // For now, we'll just return a dummy response.
-      sendSuccess(
-        res,
-        {
-          employerId: employerId,
-          tier: "Trusted", // Example of a potential tier
-          advanceLimit: "50%",
-        },
-        "Employer tiers retrieved successfully",
-        200,
-      );
     } catch (error) {
       sendError(res, error, "Failed to retrieve employer tiers");
       console.error(error);

@@ -85,7 +85,7 @@ export const EnumEmployeesKycStage: {
   none: 'none',
   level_1: 'level_1',
   level_2: 'level_2',
-  full: 'full'
+  level_3: 'level_3'
 };
 
 export type EnumEmployeesKycStage = (typeof EnumEmployeesKycStage)[keyof typeof EnumEmployeesKycStage]
@@ -5492,6 +5492,9 @@ export namespace Prisma {
     userId: string | null
     employerId: string | null
     kycStage: $Enums.EnumEmployeesKycStage | null
+    kycStageLevel1Completed: boolean | null
+    kycStageLevel2Completed: boolean | null
+    kycStageLevel3Completed: boolean | null
     kycStatus: $Enums.EnumEmployeesKycStatus | null
     kycSubmittedAt: Date | null
     kycReviewedAt: Date | null
@@ -5501,6 +5504,12 @@ export namespace Prisma {
     registrationDate: Date | null
     createdAt: Date | null
     updatedAt: Date | null
+    nin: string | null
+    ninVerified: boolean | null
+    bvn: string | null
+    bvnVerified: boolean | null
+    termsAccepted: boolean | null
+    termsAcceptedAt: Date | null
   }
 
   export type EmployeeMaxAggregateOutputType = {
@@ -5508,6 +5517,9 @@ export namespace Prisma {
     userId: string | null
     employerId: string | null
     kycStage: $Enums.EnumEmployeesKycStage | null
+    kycStageLevel1Completed: boolean | null
+    kycStageLevel2Completed: boolean | null
+    kycStageLevel3Completed: boolean | null
     kycStatus: $Enums.EnumEmployeesKycStatus | null
     kycSubmittedAt: Date | null
     kycReviewedAt: Date | null
@@ -5517,6 +5529,12 @@ export namespace Prisma {
     registrationDate: Date | null
     createdAt: Date | null
     updatedAt: Date | null
+    nin: string | null
+    ninVerified: boolean | null
+    bvn: string | null
+    bvnVerified: boolean | null
+    termsAccepted: boolean | null
+    termsAcceptedAt: Date | null
   }
 
   export type EmployeeCountAggregateOutputType = {
@@ -5524,6 +5542,9 @@ export namespace Prisma {
     userId: number
     employerId: number
     kycStage: number
+    kycStageLevel1Completed: number
+    kycStageLevel2Completed: number
+    kycStageLevel3Completed: number
     kycStatus: number
     kycSubmittedAt: number
     kycReviewedAt: number
@@ -5533,6 +5554,12 @@ export namespace Prisma {
     registrationDate: number
     createdAt: number
     updatedAt: number
+    nin: number
+    ninVerified: number
+    bvn: number
+    bvnVerified: number
+    termsAccepted: number
+    termsAcceptedAt: number
     _all: number
   }
 
@@ -5550,6 +5577,9 @@ export namespace Prisma {
     userId?: true
     employerId?: true
     kycStage?: true
+    kycStageLevel1Completed?: true
+    kycStageLevel2Completed?: true
+    kycStageLevel3Completed?: true
     kycStatus?: true
     kycSubmittedAt?: true
     kycReviewedAt?: true
@@ -5559,6 +5589,12 @@ export namespace Prisma {
     registrationDate?: true
     createdAt?: true
     updatedAt?: true
+    nin?: true
+    ninVerified?: true
+    bvn?: true
+    bvnVerified?: true
+    termsAccepted?: true
+    termsAcceptedAt?: true
   }
 
   export type EmployeeMaxAggregateInputType = {
@@ -5566,6 +5602,9 @@ export namespace Prisma {
     userId?: true
     employerId?: true
     kycStage?: true
+    kycStageLevel1Completed?: true
+    kycStageLevel2Completed?: true
+    kycStageLevel3Completed?: true
     kycStatus?: true
     kycSubmittedAt?: true
     kycReviewedAt?: true
@@ -5575,6 +5614,12 @@ export namespace Prisma {
     registrationDate?: true
     createdAt?: true
     updatedAt?: true
+    nin?: true
+    ninVerified?: true
+    bvn?: true
+    bvnVerified?: true
+    termsAccepted?: true
+    termsAcceptedAt?: true
   }
 
   export type EmployeeCountAggregateInputType = {
@@ -5582,6 +5627,9 @@ export namespace Prisma {
     userId?: true
     employerId?: true
     kycStage?: true
+    kycStageLevel1Completed?: true
+    kycStageLevel2Completed?: true
+    kycStageLevel3Completed?: true
     kycStatus?: true
     kycSubmittedAt?: true
     kycReviewedAt?: true
@@ -5591,6 +5639,12 @@ export namespace Prisma {
     registrationDate?: true
     createdAt?: true
     updatedAt?: true
+    nin?: true
+    ninVerified?: true
+    bvn?: true
+    bvnVerified?: true
+    termsAccepted?: true
+    termsAcceptedAt?: true
     _all?: true
   }
 
@@ -5685,6 +5739,9 @@ export namespace Prisma {
     userId: string
     employerId: string
     kycStage: $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed: boolean
+    kycStageLevel2Completed: boolean
+    kycStageLevel3Completed: boolean
     kycStatus: $Enums.EnumEmployeesKycStatus
     kycSubmittedAt: Date | null
     kycReviewedAt: Date | null
@@ -5694,6 +5751,12 @@ export namespace Prisma {
     registrationDate: Date
     createdAt: Date
     updatedAt: Date
+    nin: string | null
+    ninVerified: boolean
+    bvn: string | null
+    bvnVerified: boolean
+    termsAccepted: boolean
+    termsAcceptedAt: Date | null
     _count: EmployeeCountAggregateOutputType | null
     _avg: EmployeeAvgAggregateOutputType | null
     _sum: EmployeeSumAggregateOutputType | null
@@ -5720,6 +5783,9 @@ export namespace Prisma {
     userId?: boolean
     employerId?: boolean
     kycStage?: boolean
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: boolean
     kycSubmittedAt?: boolean
     kycReviewedAt?: boolean
@@ -5729,6 +5795,12 @@ export namespace Prisma {
     registrationDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    nin?: boolean
+    ninVerified?: boolean
+    bvn?: boolean
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     employer?: boolean | EmployerDefaultArgs<ExtArgs>
     kycReviewer?: boolean | Employee$kycReviewerArgs<ExtArgs>
@@ -5741,6 +5813,9 @@ export namespace Prisma {
     userId?: boolean
     employerId?: boolean
     kycStage?: boolean
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: boolean
     kycSubmittedAt?: boolean
     kycReviewedAt?: boolean
@@ -5750,6 +5825,12 @@ export namespace Prisma {
     registrationDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    nin?: boolean
+    ninVerified?: boolean
+    bvn?: boolean
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     employer?: boolean | EmployerDefaultArgs<ExtArgs>
     kycReviewer?: boolean | Employee$kycReviewerArgs<ExtArgs>
@@ -5760,6 +5841,9 @@ export namespace Prisma {
     userId?: boolean
     employerId?: boolean
     kycStage?: boolean
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: boolean
     kycSubmittedAt?: boolean
     kycReviewedAt?: boolean
@@ -5769,6 +5853,12 @@ export namespace Prisma {
     registrationDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    nin?: boolean
+    ninVerified?: boolean
+    bvn?: boolean
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     employer?: boolean | EmployerDefaultArgs<ExtArgs>
     kycReviewer?: boolean | Employee$kycReviewerArgs<ExtArgs>
@@ -5779,6 +5869,9 @@ export namespace Prisma {
     userId?: boolean
     employerId?: boolean
     kycStage?: boolean
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: boolean
     kycSubmittedAt?: boolean
     kycReviewedAt?: boolean
@@ -5788,9 +5881,15 @@ export namespace Prisma {
     registrationDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    nin?: boolean
+    ninVerified?: boolean
+    bvn?: boolean
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: boolean
   }
 
-  export type EmployeeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "employerId" | "kycStage" | "kycStatus" | "kycSubmittedAt" | "kycReviewedAt" | "kycReviewerId" | "kycNotes" | "salary" | "registrationDate" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
+  export type EmployeeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "employerId" | "kycStage" | "kycStageLevel1Completed" | "kycStageLevel2Completed" | "kycStageLevel3Completed" | "kycStatus" | "kycSubmittedAt" | "kycReviewedAt" | "kycReviewerId" | "kycNotes" | "salary" | "registrationDate" | "createdAt" | "updatedAt" | "nin" | "ninVerified" | "bvn" | "bvnVerified" | "termsAccepted" | "termsAcceptedAt", ExtArgs["result"]["employee"]>
   export type EmployeeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     employer?: boolean | EmployerDefaultArgs<ExtArgs>
@@ -5822,6 +5921,9 @@ export namespace Prisma {
       userId: string
       employerId: string
       kycStage: $Enums.EnumEmployeesKycStage
+      kycStageLevel1Completed: boolean
+      kycStageLevel2Completed: boolean
+      kycStageLevel3Completed: boolean
       kycStatus: $Enums.EnumEmployeesKycStatus
       kycSubmittedAt: Date | null
       kycReviewedAt: Date | null
@@ -5831,6 +5933,12 @@ export namespace Prisma {
       registrationDate: Date
       createdAt: Date
       updatedAt: Date
+      nin: string | null
+      ninVerified: boolean
+      bvn: string | null
+      bvnVerified: boolean
+      termsAccepted: boolean
+      termsAcceptedAt: Date | null
     }, ExtArgs["result"]["employee"]>
     composites: {}
   }
@@ -6262,6 +6370,9 @@ export namespace Prisma {
     readonly userId: FieldRef<"Employee", 'String'>
     readonly employerId: FieldRef<"Employee", 'String'>
     readonly kycStage: FieldRef<"Employee", 'EnumEmployeesKycStage'>
+    readonly kycStageLevel1Completed: FieldRef<"Employee", 'Boolean'>
+    readonly kycStageLevel2Completed: FieldRef<"Employee", 'Boolean'>
+    readonly kycStageLevel3Completed: FieldRef<"Employee", 'Boolean'>
     readonly kycStatus: FieldRef<"Employee", 'EnumEmployeesKycStatus'>
     readonly kycSubmittedAt: FieldRef<"Employee", 'DateTime'>
     readonly kycReviewedAt: FieldRef<"Employee", 'DateTime'>
@@ -6271,6 +6382,12 @@ export namespace Prisma {
     readonly registrationDate: FieldRef<"Employee", 'DateTime'>
     readonly createdAt: FieldRef<"Employee", 'DateTime'>
     readonly updatedAt: FieldRef<"Employee", 'DateTime'>
+    readonly nin: FieldRef<"Employee", 'String'>
+    readonly ninVerified: FieldRef<"Employee", 'Boolean'>
+    readonly bvn: FieldRef<"Employee", 'String'>
+    readonly bvnVerified: FieldRef<"Employee", 'Boolean'>
+    readonly termsAccepted: FieldRef<"Employee", 'Boolean'>
+    readonly termsAcceptedAt: FieldRef<"Employee", 'DateTime'>
   }
     
 
@@ -11382,6 +11499,9 @@ export namespace Prisma {
     userId: 'userId',
     employerId: 'employerId',
     kycStage: 'kycStage',
+    kycStageLevel1Completed: 'kycStageLevel1Completed',
+    kycStageLevel2Completed: 'kycStageLevel2Completed',
+    kycStageLevel3Completed: 'kycStageLevel3Completed',
     kycStatus: 'kycStatus',
     kycSubmittedAt: 'kycSubmittedAt',
     kycReviewedAt: 'kycReviewedAt',
@@ -11390,7 +11510,13 @@ export namespace Prisma {
     salary: 'salary',
     registrationDate: 'registrationDate',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    nin: 'nin',
+    ninVerified: 'ninVerified',
+    bvn: 'bvn',
+    bvnVerified: 'bvnVerified',
+    termsAccepted: 'termsAccepted',
+    termsAcceptedAt: 'termsAcceptedAt'
   };
 
   export type EmployeeScalarFieldEnum = (typeof EmployeeScalarFieldEnum)[keyof typeof EmployeeScalarFieldEnum]
@@ -11943,6 +12069,9 @@ export namespace Prisma {
     userId?: UuidFilter<"Employee"> | string
     employerId?: UuidFilter<"Employee"> | string
     kycStage?: EnumEnumEmployeesKycStageFilter<"Employee"> | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFilter<"Employee"> | boolean
+    kycStageLevel2Completed?: BoolFilter<"Employee"> | boolean
+    kycStageLevel3Completed?: BoolFilter<"Employee"> | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFilter<"Employee"> | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
     kycReviewedAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
@@ -11952,6 +12081,12 @@ export namespace Prisma {
     registrationDate?: DateTimeFilter<"Employee"> | Date | string
     createdAt?: DateTimeFilter<"Employee"> | Date | string
     updatedAt?: DateTimeFilter<"Employee"> | Date | string
+    nin?: StringNullableFilter<"Employee"> | string | null
+    ninVerified?: BoolFilter<"Employee"> | boolean
+    bvn?: StringNullableFilter<"Employee"> | string | null
+    bvnVerified?: BoolFilter<"Employee"> | boolean
+    termsAccepted?: BoolFilter<"Employee"> | boolean
+    termsAcceptedAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     employer?: XOR<EmployerScalarRelationFilter, EmployerWhereInput>
     kycReviewer?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -11963,6 +12098,9 @@ export namespace Prisma {
     userId?: SortOrder
     employerId?: SortOrder
     kycStage?: SortOrder
+    kycStageLevel1Completed?: SortOrder
+    kycStageLevel2Completed?: SortOrder
+    kycStageLevel3Completed?: SortOrder
     kycStatus?: SortOrder
     kycSubmittedAt?: SortOrderInput | SortOrder
     kycReviewedAt?: SortOrderInput | SortOrder
@@ -11972,6 +12110,12 @@ export namespace Prisma {
     registrationDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    nin?: SortOrderInput | SortOrder
+    ninVerified?: SortOrder
+    bvn?: SortOrderInput | SortOrder
+    bvnVerified?: SortOrder
+    termsAccepted?: SortOrder
+    termsAcceptedAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     employer?: EmployerOrderByWithRelationInput
     kycReviewer?: UserOrderByWithRelationInput
@@ -11981,11 +12125,16 @@ export namespace Prisma {
   export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     userId?: string
+    nin?: string
+    bvn?: string
     AND?: EmployeeWhereInput | EmployeeWhereInput[]
     OR?: EmployeeWhereInput[]
     NOT?: EmployeeWhereInput | EmployeeWhereInput[]
     employerId?: UuidFilter<"Employee"> | string
     kycStage?: EnumEnumEmployeesKycStageFilter<"Employee"> | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFilter<"Employee"> | boolean
+    kycStageLevel2Completed?: BoolFilter<"Employee"> | boolean
+    kycStageLevel3Completed?: BoolFilter<"Employee"> | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFilter<"Employee"> | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
     kycReviewedAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
@@ -11995,17 +12144,24 @@ export namespace Prisma {
     registrationDate?: DateTimeFilter<"Employee"> | Date | string
     createdAt?: DateTimeFilter<"Employee"> | Date | string
     updatedAt?: DateTimeFilter<"Employee"> | Date | string
+    ninVerified?: BoolFilter<"Employee"> | boolean
+    bvnVerified?: BoolFilter<"Employee"> | boolean
+    termsAccepted?: BoolFilter<"Employee"> | boolean
+    termsAcceptedAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     employer?: XOR<EmployerScalarRelationFilter, EmployerWhereInput>
     kycReviewer?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     advances?: AdvanceListRelationFilter
-  }, "id" | "userId">
+  }, "id" | "userId" | "nin" | "bvn">
 
   export type EmployeeOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
     employerId?: SortOrder
     kycStage?: SortOrder
+    kycStageLevel1Completed?: SortOrder
+    kycStageLevel2Completed?: SortOrder
+    kycStageLevel3Completed?: SortOrder
     kycStatus?: SortOrder
     kycSubmittedAt?: SortOrderInput | SortOrder
     kycReviewedAt?: SortOrderInput | SortOrder
@@ -12015,6 +12171,12 @@ export namespace Prisma {
     registrationDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    nin?: SortOrderInput | SortOrder
+    ninVerified?: SortOrder
+    bvn?: SortOrderInput | SortOrder
+    bvnVerified?: SortOrder
+    termsAccepted?: SortOrder
+    termsAcceptedAt?: SortOrderInput | SortOrder
     _count?: EmployeeCountOrderByAggregateInput
     _avg?: EmployeeAvgOrderByAggregateInput
     _max?: EmployeeMaxOrderByAggregateInput
@@ -12030,6 +12192,9 @@ export namespace Prisma {
     userId?: UuidWithAggregatesFilter<"Employee"> | string
     employerId?: UuidWithAggregatesFilter<"Employee"> | string
     kycStage?: EnumEnumEmployeesKycStageWithAggregatesFilter<"Employee"> | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolWithAggregatesFilter<"Employee"> | boolean
+    kycStageLevel2Completed?: BoolWithAggregatesFilter<"Employee"> | boolean
+    kycStageLevel3Completed?: BoolWithAggregatesFilter<"Employee"> | boolean
     kycStatus?: EnumEnumEmployeesKycStatusWithAggregatesFilter<"Employee"> | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
     kycReviewedAt?: DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
@@ -12039,6 +12204,12 @@ export namespace Prisma {
     registrationDate?: DateTimeWithAggregatesFilter<"Employee"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"Employee"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Employee"> | Date | string
+    nin?: StringNullableWithAggregatesFilter<"Employee"> | string | null
+    ninVerified?: BoolWithAggregatesFilter<"Employee"> | boolean
+    bvn?: StringNullableWithAggregatesFilter<"Employee"> | string | null
+    bvnVerified?: BoolWithAggregatesFilter<"Employee"> | boolean
+    termsAccepted?: BoolWithAggregatesFilter<"Employee"> | boolean
+    termsAcceptedAt?: DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
   }
 
   export type AdvanceWhereInput = {
@@ -12651,6 +12822,9 @@ export namespace Prisma {
   export type EmployeeCreateInput = {
     id?: string
     kycStage?: $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: Date | string | null
     kycReviewedAt?: Date | string | null
@@ -12659,6 +12833,12 @@ export namespace Prisma {
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    nin?: string | null
+    ninVerified?: boolean
+    bvn?: string | null
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: Date | string | null
     user: UserCreateNestedOneWithoutEmployeeInput
     employer: EmployerCreateNestedOneWithoutEmployeesInput
     kycReviewer?: UserCreateNestedOneWithoutKycReviewerEmployeesInput
@@ -12670,6 +12850,9 @@ export namespace Prisma {
     userId: string
     employerId: string
     kycStage?: $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: Date | string | null
     kycReviewedAt?: Date | string | null
@@ -12679,12 +12862,21 @@ export namespace Prisma {
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    nin?: string | null
+    ninVerified?: boolean
+    bvn?: string | null
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: Date | string | null
     advances?: AdvanceUncheckedCreateNestedManyWithoutEmployeeInput
   }
 
   export type EmployeeUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     kycStage?: EnumEnumEmployeesKycStageFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel2Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel3Completed?: BoolFieldUpdateOperationsInput | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12693,6 +12885,12 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nin?: NullableStringFieldUpdateOperationsInput | string | null
+    ninVerified?: BoolFieldUpdateOperationsInput | boolean
+    bvn?: NullableStringFieldUpdateOperationsInput | string | null
+    bvnVerified?: BoolFieldUpdateOperationsInput | boolean
+    termsAccepted?: BoolFieldUpdateOperationsInput | boolean
+    termsAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutEmployeeNestedInput
     employer?: EmployerUpdateOneRequiredWithoutEmployeesNestedInput
     kycReviewer?: UserUpdateOneWithoutKycReviewerEmployeesNestedInput
@@ -12704,6 +12902,9 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     employerId?: StringFieldUpdateOperationsInput | string
     kycStage?: EnumEnumEmployeesKycStageFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel2Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel3Completed?: BoolFieldUpdateOperationsInput | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12713,6 +12914,12 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nin?: NullableStringFieldUpdateOperationsInput | string | null
+    ninVerified?: BoolFieldUpdateOperationsInput | boolean
+    bvn?: NullableStringFieldUpdateOperationsInput | string | null
+    bvnVerified?: BoolFieldUpdateOperationsInput | boolean
+    termsAccepted?: BoolFieldUpdateOperationsInput | boolean
+    termsAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     advances?: AdvanceUncheckedUpdateManyWithoutEmployeeNestedInput
   }
 
@@ -12721,6 +12928,9 @@ export namespace Prisma {
     userId: string
     employerId: string
     kycStage?: $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: Date | string | null
     kycReviewedAt?: Date | string | null
@@ -12730,11 +12940,20 @@ export namespace Prisma {
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    nin?: string | null
+    ninVerified?: boolean
+    bvn?: string | null
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: Date | string | null
   }
 
   export type EmployeeUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     kycStage?: EnumEnumEmployeesKycStageFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel2Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel3Completed?: BoolFieldUpdateOperationsInput | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12743,6 +12962,12 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nin?: NullableStringFieldUpdateOperationsInput | string | null
+    ninVerified?: BoolFieldUpdateOperationsInput | boolean
+    bvn?: NullableStringFieldUpdateOperationsInput | string | null
+    bvnVerified?: BoolFieldUpdateOperationsInput | boolean
+    termsAccepted?: BoolFieldUpdateOperationsInput | boolean
+    termsAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type EmployeeUncheckedUpdateManyInput = {
@@ -12750,6 +12975,9 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     employerId?: StringFieldUpdateOperationsInput | string
     kycStage?: EnumEnumEmployeesKycStageFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel2Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel3Completed?: BoolFieldUpdateOperationsInput | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12759,6 +12987,12 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nin?: NullableStringFieldUpdateOperationsInput | string | null
+    ninVerified?: BoolFieldUpdateOperationsInput | boolean
+    bvn?: NullableStringFieldUpdateOperationsInput | string | null
+    bvnVerified?: BoolFieldUpdateOperationsInput | boolean
+    termsAccepted?: BoolFieldUpdateOperationsInput | boolean
+    termsAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type AdvanceCreateInput = {
@@ -13619,6 +13853,9 @@ export namespace Prisma {
     userId?: SortOrder
     employerId?: SortOrder
     kycStage?: SortOrder
+    kycStageLevel1Completed?: SortOrder
+    kycStageLevel2Completed?: SortOrder
+    kycStageLevel3Completed?: SortOrder
     kycStatus?: SortOrder
     kycSubmittedAt?: SortOrder
     kycReviewedAt?: SortOrder
@@ -13628,6 +13865,12 @@ export namespace Prisma {
     registrationDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    nin?: SortOrder
+    ninVerified?: SortOrder
+    bvn?: SortOrder
+    bvnVerified?: SortOrder
+    termsAccepted?: SortOrder
+    termsAcceptedAt?: SortOrder
   }
 
   export type EmployeeAvgOrderByAggregateInput = {
@@ -13639,6 +13882,9 @@ export namespace Prisma {
     userId?: SortOrder
     employerId?: SortOrder
     kycStage?: SortOrder
+    kycStageLevel1Completed?: SortOrder
+    kycStageLevel2Completed?: SortOrder
+    kycStageLevel3Completed?: SortOrder
     kycStatus?: SortOrder
     kycSubmittedAt?: SortOrder
     kycReviewedAt?: SortOrder
@@ -13648,6 +13894,12 @@ export namespace Prisma {
     registrationDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    nin?: SortOrder
+    ninVerified?: SortOrder
+    bvn?: SortOrder
+    bvnVerified?: SortOrder
+    termsAccepted?: SortOrder
+    termsAcceptedAt?: SortOrder
   }
 
   export type EmployeeMinOrderByAggregateInput = {
@@ -13655,6 +13907,9 @@ export namespace Prisma {
     userId?: SortOrder
     employerId?: SortOrder
     kycStage?: SortOrder
+    kycStageLevel1Completed?: SortOrder
+    kycStageLevel2Completed?: SortOrder
+    kycStageLevel3Completed?: SortOrder
     kycStatus?: SortOrder
     kycSubmittedAt?: SortOrder
     kycReviewedAt?: SortOrder
@@ -13664,6 +13919,12 @@ export namespace Prisma {
     registrationDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    nin?: SortOrder
+    ninVerified?: SortOrder
+    bvn?: SortOrder
+    bvnVerified?: SortOrder
+    termsAccepted?: SortOrder
+    termsAcceptedAt?: SortOrder
   }
 
   export type EmployeeSumOrderByAggregateInput = {
@@ -15188,6 +15449,9 @@ export namespace Prisma {
   export type EmployeeCreateWithoutUserInput = {
     id?: string
     kycStage?: $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: Date | string | null
     kycReviewedAt?: Date | string | null
@@ -15196,6 +15460,12 @@ export namespace Prisma {
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    nin?: string | null
+    ninVerified?: boolean
+    bvn?: string | null
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: Date | string | null
     employer: EmployerCreateNestedOneWithoutEmployeesInput
     kycReviewer?: UserCreateNestedOneWithoutKycReviewerEmployeesInput
     advances?: AdvanceCreateNestedManyWithoutEmployeeInput
@@ -15205,6 +15475,9 @@ export namespace Prisma {
     id?: string
     employerId: string
     kycStage?: $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: Date | string | null
     kycReviewedAt?: Date | string | null
@@ -15214,6 +15487,12 @@ export namespace Prisma {
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    nin?: string | null
+    ninVerified?: boolean
+    bvn?: string | null
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: Date | string | null
     advances?: AdvanceUncheckedCreateNestedManyWithoutEmployeeInput
   }
 
@@ -15263,6 +15542,9 @@ export namespace Prisma {
   export type EmployeeCreateWithoutKycReviewerInput = {
     id?: string
     kycStage?: $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: Date | string | null
     kycReviewedAt?: Date | string | null
@@ -15271,6 +15553,12 @@ export namespace Prisma {
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    nin?: string | null
+    ninVerified?: boolean
+    bvn?: string | null
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: Date | string | null
     user: UserCreateNestedOneWithoutEmployeeInput
     employer: EmployerCreateNestedOneWithoutEmployeesInput
     advances?: AdvanceCreateNestedManyWithoutEmployeeInput
@@ -15281,6 +15569,9 @@ export namespace Prisma {
     userId: string
     employerId: string
     kycStage?: $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: Date | string | null
     kycReviewedAt?: Date | string | null
@@ -15289,6 +15580,12 @@ export namespace Prisma {
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    nin?: string | null
+    ninVerified?: boolean
+    bvn?: string | null
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: Date | string | null
     advances?: AdvanceUncheckedCreateNestedManyWithoutEmployeeInput
   }
 
@@ -15445,6 +15742,9 @@ export namespace Prisma {
   export type EmployeeUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     kycStage?: EnumEnumEmployeesKycStageFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel2Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel3Completed?: BoolFieldUpdateOperationsInput | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -15453,6 +15753,12 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nin?: NullableStringFieldUpdateOperationsInput | string | null
+    ninVerified?: BoolFieldUpdateOperationsInput | boolean
+    bvn?: NullableStringFieldUpdateOperationsInput | string | null
+    bvnVerified?: BoolFieldUpdateOperationsInput | boolean
+    termsAccepted?: BoolFieldUpdateOperationsInput | boolean
+    termsAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     employer?: EmployerUpdateOneRequiredWithoutEmployeesNestedInput
     kycReviewer?: UserUpdateOneWithoutKycReviewerEmployeesNestedInput
     advances?: AdvanceUpdateManyWithoutEmployeeNestedInput
@@ -15462,6 +15768,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     employerId?: StringFieldUpdateOperationsInput | string
     kycStage?: EnumEnumEmployeesKycStageFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel2Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel3Completed?: BoolFieldUpdateOperationsInput | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -15471,6 +15780,12 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nin?: NullableStringFieldUpdateOperationsInput | string | null
+    ninVerified?: BoolFieldUpdateOperationsInput | boolean
+    bvn?: NullableStringFieldUpdateOperationsInput | string | null
+    bvnVerified?: BoolFieldUpdateOperationsInput | boolean
+    termsAccepted?: BoolFieldUpdateOperationsInput | boolean
+    termsAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     advances?: AdvanceUncheckedUpdateManyWithoutEmployeeNestedInput
   }
 
@@ -15530,6 +15845,9 @@ export namespace Prisma {
     userId?: UuidFilter<"Employee"> | string
     employerId?: UuidFilter<"Employee"> | string
     kycStage?: EnumEnumEmployeesKycStageFilter<"Employee"> | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFilter<"Employee"> | boolean
+    kycStageLevel2Completed?: BoolFilter<"Employee"> | boolean
+    kycStageLevel3Completed?: BoolFilter<"Employee"> | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFilter<"Employee"> | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
     kycReviewedAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
@@ -15539,6 +15857,12 @@ export namespace Prisma {
     registrationDate?: DateTimeFilter<"Employee"> | Date | string
     createdAt?: DateTimeFilter<"Employee"> | Date | string
     updatedAt?: DateTimeFilter<"Employee"> | Date | string
+    nin?: StringNullableFilter<"Employee"> | string | null
+    ninVerified?: BoolFilter<"Employee"> | boolean
+    bvn?: StringNullableFilter<"Employee"> | string | null
+    bvnVerified?: BoolFilter<"Employee"> | boolean
+    termsAccepted?: BoolFilter<"Employee"> | boolean
+    termsAcceptedAt?: DateTimeNullableFilter<"Employee"> | Date | string | null
   }
 
   export type InvitationUpsertWithWhereUniqueWithoutSenderUserInput = {
@@ -15843,6 +16167,9 @@ export namespace Prisma {
   export type EmployeeCreateWithoutEmployerInput = {
     id?: string
     kycStage?: $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: Date | string | null
     kycReviewedAt?: Date | string | null
@@ -15851,6 +16178,12 @@ export namespace Prisma {
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    nin?: string | null
+    ninVerified?: boolean
+    bvn?: string | null
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: Date | string | null
     user: UserCreateNestedOneWithoutEmployeeInput
     kycReviewer?: UserCreateNestedOneWithoutKycReviewerEmployeesInput
     advances?: AdvanceCreateNestedManyWithoutEmployeeInput
@@ -15860,6 +16193,9 @@ export namespace Prisma {
     id?: string
     userId: string
     kycStage?: $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: Date | string | null
     kycReviewedAt?: Date | string | null
@@ -15869,6 +16205,12 @@ export namespace Prisma {
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    nin?: string | null
+    ninVerified?: boolean
+    bvn?: string | null
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: Date | string | null
     advances?: AdvanceUncheckedCreateNestedManyWithoutEmployeeInput
   }
 
@@ -16416,6 +16758,9 @@ export namespace Prisma {
   export type EmployeeCreateWithoutAdvancesInput = {
     id?: string
     kycStage?: $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: Date | string | null
     kycReviewedAt?: Date | string | null
@@ -16424,6 +16769,12 @@ export namespace Prisma {
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    nin?: string | null
+    ninVerified?: boolean
+    bvn?: string | null
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: Date | string | null
     user: UserCreateNestedOneWithoutEmployeeInput
     employer: EmployerCreateNestedOneWithoutEmployeesInput
     kycReviewer?: UserCreateNestedOneWithoutKycReviewerEmployeesInput
@@ -16434,6 +16785,9 @@ export namespace Prisma {
     userId: string
     employerId: string
     kycStage?: $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: Date | string | null
     kycReviewedAt?: Date | string | null
@@ -16443,6 +16797,12 @@ export namespace Prisma {
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    nin?: string | null
+    ninVerified?: boolean
+    bvn?: string | null
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: Date | string | null
   }
 
   export type EmployeeCreateOrConnectWithoutAdvancesInput = {
@@ -16464,6 +16824,9 @@ export namespace Prisma {
   export type EmployeeUpdateWithoutAdvancesInput = {
     id?: StringFieldUpdateOperationsInput | string
     kycStage?: EnumEnumEmployeesKycStageFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel2Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel3Completed?: BoolFieldUpdateOperationsInput | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -16472,6 +16835,12 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nin?: NullableStringFieldUpdateOperationsInput | string | null
+    ninVerified?: BoolFieldUpdateOperationsInput | boolean
+    bvn?: NullableStringFieldUpdateOperationsInput | string | null
+    bvnVerified?: BoolFieldUpdateOperationsInput | boolean
+    termsAccepted?: BoolFieldUpdateOperationsInput | boolean
+    termsAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutEmployeeNestedInput
     employer?: EmployerUpdateOneRequiredWithoutEmployeesNestedInput
     kycReviewer?: UserUpdateOneWithoutKycReviewerEmployeesNestedInput
@@ -16482,6 +16851,9 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     employerId?: StringFieldUpdateOperationsInput | string
     kycStage?: EnumEnumEmployeesKycStageFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel2Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel3Completed?: BoolFieldUpdateOperationsInput | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -16491,6 +16863,12 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nin?: NullableStringFieldUpdateOperationsInput | string | null
+    ninVerified?: BoolFieldUpdateOperationsInput | boolean
+    bvn?: NullableStringFieldUpdateOperationsInput | string | null
+    bvnVerified?: BoolFieldUpdateOperationsInput | boolean
+    termsAccepted?: BoolFieldUpdateOperationsInput | boolean
+    termsAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type EmployerCreateWithoutLiquidityPoolsInput = {
@@ -16766,6 +17144,9 @@ export namespace Prisma {
     userId: string
     employerId: string
     kycStage?: $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: Date | string | null
     kycReviewedAt?: Date | string | null
@@ -16774,6 +17155,12 @@ export namespace Prisma {
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    nin?: string | null
+    ninVerified?: boolean
+    bvn?: string | null
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: Date | string | null
   }
 
   export type InvitationCreateManySenderUserInput = {
@@ -16841,6 +17228,9 @@ export namespace Prisma {
   export type EmployeeUpdateWithoutKycReviewerInput = {
     id?: StringFieldUpdateOperationsInput | string
     kycStage?: EnumEnumEmployeesKycStageFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel2Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel3Completed?: BoolFieldUpdateOperationsInput | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -16849,6 +17239,12 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nin?: NullableStringFieldUpdateOperationsInput | string | null
+    ninVerified?: BoolFieldUpdateOperationsInput | boolean
+    bvn?: NullableStringFieldUpdateOperationsInput | string | null
+    bvnVerified?: BoolFieldUpdateOperationsInput | boolean
+    termsAccepted?: BoolFieldUpdateOperationsInput | boolean
+    termsAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutEmployeeNestedInput
     employer?: EmployerUpdateOneRequiredWithoutEmployeesNestedInput
     advances?: AdvanceUpdateManyWithoutEmployeeNestedInput
@@ -16859,6 +17255,9 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     employerId?: StringFieldUpdateOperationsInput | string
     kycStage?: EnumEnumEmployeesKycStageFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel2Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel3Completed?: BoolFieldUpdateOperationsInput | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -16867,6 +17266,12 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nin?: NullableStringFieldUpdateOperationsInput | string | null
+    ninVerified?: BoolFieldUpdateOperationsInput | boolean
+    bvn?: NullableStringFieldUpdateOperationsInput | string | null
+    bvnVerified?: BoolFieldUpdateOperationsInput | boolean
+    termsAccepted?: BoolFieldUpdateOperationsInput | boolean
+    termsAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     advances?: AdvanceUncheckedUpdateManyWithoutEmployeeNestedInput
   }
 
@@ -16875,6 +17280,9 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     employerId?: StringFieldUpdateOperationsInput | string
     kycStage?: EnumEnumEmployeesKycStageFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel2Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel3Completed?: BoolFieldUpdateOperationsInput | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -16883,6 +17291,12 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nin?: NullableStringFieldUpdateOperationsInput | string | null
+    ninVerified?: BoolFieldUpdateOperationsInput | boolean
+    bvn?: NullableStringFieldUpdateOperationsInput | string | null
+    bvnVerified?: BoolFieldUpdateOperationsInput | boolean
+    termsAccepted?: BoolFieldUpdateOperationsInput | boolean
+    termsAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type InvitationUpdateWithoutSenderUserInput = {
@@ -17007,6 +17421,9 @@ export namespace Prisma {
     id?: string
     userId: string
     kycStage?: $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: boolean
+    kycStageLevel2Completed?: boolean
+    kycStageLevel3Completed?: boolean
     kycStatus?: $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: Date | string | null
     kycReviewedAt?: Date | string | null
@@ -17016,6 +17433,12 @@ export namespace Prisma {
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    nin?: string | null
+    ninVerified?: boolean
+    bvn?: string | null
+    bvnVerified?: boolean
+    termsAccepted?: boolean
+    termsAcceptedAt?: Date | string | null
   }
 
   export type LiquidityPoolCreateManyEmployerInput = {
@@ -17031,6 +17454,9 @@ export namespace Prisma {
   export type EmployeeUpdateWithoutEmployerInput = {
     id?: StringFieldUpdateOperationsInput | string
     kycStage?: EnumEnumEmployeesKycStageFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel2Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel3Completed?: BoolFieldUpdateOperationsInput | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17039,6 +17465,12 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nin?: NullableStringFieldUpdateOperationsInput | string | null
+    ninVerified?: BoolFieldUpdateOperationsInput | boolean
+    bvn?: NullableStringFieldUpdateOperationsInput | string | null
+    bvnVerified?: BoolFieldUpdateOperationsInput | boolean
+    termsAccepted?: BoolFieldUpdateOperationsInput | boolean
+    termsAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutEmployeeNestedInput
     kycReviewer?: UserUpdateOneWithoutKycReviewerEmployeesNestedInput
     advances?: AdvanceUpdateManyWithoutEmployeeNestedInput
@@ -17048,6 +17480,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     kycStage?: EnumEnumEmployeesKycStageFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel2Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel3Completed?: BoolFieldUpdateOperationsInput | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17057,6 +17492,12 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nin?: NullableStringFieldUpdateOperationsInput | string | null
+    ninVerified?: BoolFieldUpdateOperationsInput | boolean
+    bvn?: NullableStringFieldUpdateOperationsInput | string | null
+    bvnVerified?: BoolFieldUpdateOperationsInput | boolean
+    termsAccepted?: BoolFieldUpdateOperationsInput | boolean
+    termsAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     advances?: AdvanceUncheckedUpdateManyWithoutEmployeeNestedInput
   }
 
@@ -17064,6 +17505,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     kycStage?: EnumEnumEmployeesKycStageFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStage
+    kycStageLevel1Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel2Completed?: BoolFieldUpdateOperationsInput | boolean
+    kycStageLevel3Completed?: BoolFieldUpdateOperationsInput | boolean
     kycStatus?: EnumEnumEmployeesKycStatusFieldUpdateOperationsInput | $Enums.EnumEmployeesKycStatus
     kycSubmittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17073,6 +17517,12 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nin?: NullableStringFieldUpdateOperationsInput | string | null
+    ninVerified?: BoolFieldUpdateOperationsInput | boolean
+    bvn?: NullableStringFieldUpdateOperationsInput | string | null
+    bvnVerified?: BoolFieldUpdateOperationsInput | boolean
+    termsAccepted?: BoolFieldUpdateOperationsInput | boolean
+    termsAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type LiquidityPoolUpdateWithoutEmployerInput = {

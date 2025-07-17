@@ -9,5 +9,8 @@ const router = Router();
 
 // 2.1. Onboarding & KYC - Accept Employer Invitation
 router.post("/invite/", employeeController.register);
+router.post("/onboarding/kyc/", employeeController.submitKyc);
+router.post("/onboarding/bankaccount/", employeeController.registerBankaccount);
+router.post("/onboarding/accept-terms/", employeeController.acceptTerms);
 
 export default router;
