@@ -20,6 +20,10 @@
     {
       "src": "/(.*)",
       "dest": "/src/index.ts"
+    },
+    {
+      "src": "/swagger/(.*)",
+      "dest": "python-api/app.py"
     }
   ]
 }
