@@ -31,6 +31,10 @@
       "dest": "/src/index.ts"
     },
     {
+      "src": "/swagger",
+      "dest": "/docs/app.py"
+    },
+    {
       "src": "/swagger/(.*)",
       "dest": "/docs/app.py"
     }
