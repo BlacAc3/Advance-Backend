@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { UserRole, TokenPayload, UserResponse } from "../types";
 import { generateTokenPair } from "../utils/jwt";
 import { prisma } from "../db/database";
+import fs from "fs";
 
 //DB services
 import userModel from "../db/services/user";
@@ -9,6 +10,11 @@ import employerModel from "../db/services/employer";
 import invitationModel from "../db/services/invitation";
 import { register } from "../utils/register";
 import { sendSuccess, sendError } from "../utils/responseWrapper";
+import {
+  parseCsvFile,
+  parseExcelFile,
+  parseJsonFile,
+} from "../utils/payrollParser";
 
 export const employerController = {
   async sendInvite(
@@ -130,7 +136,7 @@ export const employerController = {
     }
   },
   async setupApiIntegration(
-    req: Request<{ id: string }>,
+    req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<void> {
@@ -161,11 +167,116 @@ export const employerController = {
   },
 
   async uploadPayroll(
-    req: Request<{ id: string }>,
+    req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<void> {
     try {
+      if (!req.file) {
+        res.status(400).json({ message: "No file uploaded." });
+        return;
+      }
+
+      // Assume employerId is sent in the request body (e.g., from a hidden input or client-side JavaScript)
+      // In a real app, you'd get this from user authentication (e.g., JWT token)
+      const { employerId } = req.body;
+
+      if (!employerId) {
+        // Clean up the uploaded file if employerId is missing
+        fs.unlink(req.file.path, (err) => {
+          if (err) console.error(`Error deleting file:`, err);
+        });
+        res.status(400).json({ message: "Employer ID is required." });
+        return;
+      }
+
+      const filePath = req.file.path;
+      const originalname = req.file.originalname;
+      const mimetype = req.file.mimetype;
+
+      try {
+        // 1. Verify Employer and check existing uploads
+        const employer = employerModel.get({ id: employerId });
+
+        if (!employer) {
+          fs.unlink(filePath, (err) => {
+            if (err) console.error(`Error deleting file:`, err);
+          });
+          res.status(404).json({ message: "Employer not found." });
+          return;
+        }
+
+        // if (employer.payrollUploads.length >= 3) {
+        //   fs.unlink(filePath, (err) => {
+        //     if (err) console.error(`Error deleting file:`, err);
+        //   });
+        //   return res.status(403).json({
+        //     message:
+        //       "Employer has reached the maximum limit of 3 payroll uploads.",
+        //   });
+        // }
+
+        // 2. Parse the file
+        let parsedData = [];
+        if (mimetype === "text/csv") {
+          parsedData = await parseCsvFile(filePath);
+        } else if (
+          mimetype === "application/vnd.ms-excel" ||
+          mimetype ===
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        ) {
+          parsedData = await parseExcelFile(filePath);
+        } else if (mimetype === "application/json") {
+          parsedData = await parseJsonFile(filePath);
+        } else {
+          fs.unlink(filePath, (err) => {
+            if (err) console.error(`Error deleting file:`, err);
+          });
+          res.status(400).json({ message: "Unsupported file type." });
+          return;
+        }
+
+        // --- IMPORTANT: Further Data Validation and Sanitization ---
+        // Before saving to DB, perform rigorous validation (e.g., ensure mandatory fields exist, correct data types, business rules).
+        // Hash/Encrypt sensitive data within each record in `parsedData`.
+
+        // 3. Save parsed data to the database
+        // const newPayrollUpload = await prisma.payrollUpload.create({
+        //   data: {
+        //     employerId: employer.id,
+        //     originalFileName: originalname,
+        //     fileMimeType: mimetype,
+        //     parsedData: parsedData, // Store the array of parsed records
+        //     status: "pending", // Or "processed" if you do immediate processing
+        //   },
+        // });
+
+        // console.log(
+        //   `Successfully parsed and saved ${parsedData.length} payroll records for employer ${employer.name}.`,
+        // );
+
+        res.status(200).json({
+          message: "Payroll file uploaded, parsed, and saved successfully!",
+          recordsCount: parsedData.length,
+          // uploadId: newPayrollUpload.id,
+        });
+      } catch (error: any) {
+        console.error(
+          `Error processing payroll file ${originalname} for employer ${employerId}:`,
+          error,
+        );
+        res.status(500).json({
+          message: `Error processing payroll file: ${error.message}`,
+          error: error.message,
+        });
+      } finally {
+        // Clean up the temporary uploaded file
+        fs.unlink(filePath, (err) => {
+          if (err)
+            console.error(`Error deleting uploaded file ${filePath}:`, err);
+          else console.log(`Deleted temporary file: ${filePath}`);
+        });
+      }
     } catch (error) {
       sendError(res, error, "Failed to retrieve employer tiers");
       console.error(error);
