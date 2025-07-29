@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import multer from "multer";
 import * as pdf from "pdf-parse";
 import * as XLSX from "xlsx";
@@ -7,25 +6,6 @@ import fs from "fs";
 import path from "path";
 
 // Configure multer for file uploads
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, "uploads/");
-    },
-    filename: (req, file, cb) => {
-      cb(null, `${Date.now()}-${file.originalname}`);
-    },
-  }),
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = [
-      "application/pdf",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      "text/csv",
-    ];
-    cb(null, allowedTypes.includes(file.mimetype));
-  },
-});
-
 // Employee data interface
 interface EmployeeData {
   id: string;
@@ -43,7 +23,7 @@ interface EmployeeData {
 }
 
 // Extraction result interface
-interface ExtractionResult {
+export interface ExtractionResult {
   employees: EmployeeData[];
   metadata: {
     totalEmployees: number;
@@ -53,7 +33,7 @@ interface ExtractionResult {
   };
 }
 
-class PayrollExtractor {
+export class PayrollExtractor {
   // Common field patterns for identification
   private static readonly FIELD_PATTERNS = {
     employeeId:
@@ -106,7 +86,8 @@ class PayrollExtractor {
           },
         }
       );
-    } catch (error) {
+    } catch (error: any) {
+      // Explicitly mark error as any for now
       throw new Error(`PDF extraction failed: ${error.message}`);
     }
   }
@@ -120,7 +101,8 @@ class PayrollExtractor {
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
       return this.processSpreadsheetData(jsonData as string[][], "excel");
-    } catch (error) {
+    } catch (error: any) {
+      // Explicitly mark error as any for now
       throw new Error(`Excel extraction failed: ${error.message}`);
     }
   }
@@ -135,7 +117,8 @@ class PayrollExtractor {
       });
 
       return this.processSpreadsheetData(parsed.data as string[][], "csv");
-    } catch (error) {
+    } catch (error: any) {
+      // Explicitly mark error as any for now
       throw new Error(`CSV extraction failed: ${error.message}`);
     }
   }
@@ -175,7 +158,8 @@ class PayrollExtractor {
         if (employee) {
           employees.push(employee);
         }
-      } catch (error) {
+      } catch (error: any) {
+        // Explicitly mark error as any for now
         errors.push(`Row ${i + 1}: ${error.message}`);
       }
     }
@@ -213,7 +197,7 @@ class PayrollExtractor {
   private static extractEmployeeFromRow(
     row: any[],
     fieldMapping: Record<string, number>,
-    headers: string[],
+    headers: string[], // This parameter is currently unused, but kept as per instructions
   ): EmployeeData | null {
     const employee: Partial<EmployeeData> = {};
 
@@ -245,7 +229,8 @@ class PayrollExtractor {
             case "hoursWorked":
               const numericValue = this.parseNumericValue(value);
               if (numericValue !== null) {
-                employee[fieldName as keyof EmployeeData] = numericValue as any;
+                // Type assertion for assignment
+                (employee as any)[fieldName] = numericValue;
               }
               break;
             case "payPeriod":
@@ -277,7 +262,7 @@ class PayrollExtractor {
 
     // Generate missing required fields
     if (!employee.id) {
-      employee.id = `AUTO_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      employee.id = `AUTO_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
     }
     if (!employee.name) {
       employee.name = `Employee ${employee.id}`;
@@ -386,7 +371,7 @@ class PayrollExtractor {
         };
 
         if (match[3]) {
-          employee.grossPay = this.parseNumericValue(match[3]);
+          employee.grossPay = this.parseNumericValue(match[3]) as number; // Ensure type is number
         }
 
         employees.push(this.finalizeEmployee(employee));
@@ -413,7 +398,7 @@ class PayrollExtractor {
     return {
       id:
         partial.id ||
-        `AUTO_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        `AUTO_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
       name: partial.name || `Employee ${partial.id}`,
       email: partial.email,
       department: partial.department,
@@ -444,7 +429,7 @@ class PayrollExtractor {
 
   private static calculateConfidence(
     employees: EmployeeData[],
-    fieldMapping: Record<string, number>,
+    fieldMapping: Record<string, number>, // This parameter is currently unused, but kept as per instructions
   ): number {
     if (employees.length === 0) return 0;
 
@@ -461,7 +446,7 @@ class PayrollExtractor {
 
   private static calculateEmployeeConfidence(
     employee: Partial<EmployeeData>,
-    fieldMapping: Record<string, number>,
+    fieldMapping: Record<string, number>, // This parameter is currently unused, but kept as per instructions
   ): number {
     let score = 0;
     const weights = {
