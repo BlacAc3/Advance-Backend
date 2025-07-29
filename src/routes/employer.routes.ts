@@ -1,5 +1,6 @@
 import express from "express";
 import { employerController } from "../controllers/employer.controller";
+import { PayrollController } from "../controllers/payroll.controller";
 import { authenticate } from "../middleware/authMiddleware";
 import { authorize } from "../middleware/authorize";
 import { UserRole } from "../types";
@@ -23,7 +24,5 @@ router.post(
 
 // Bulk processing endpoint
 router.post("/bulk-extract", PayrollController.processBulkPayroll);
-
-export default router;
 
 export default router;
