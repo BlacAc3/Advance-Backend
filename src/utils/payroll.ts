@@ -1,5 +1,5 @@
 import multer from "multer";
-import * as pdf from "pdf-parse";
+import pdf from "pdf-parse";
 import * as XLSX from "xlsx";
 import * as Papa from "papaparse";
 import fs from "fs";

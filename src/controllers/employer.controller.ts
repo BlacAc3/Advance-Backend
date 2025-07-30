@@ -32,7 +32,6 @@ export const employerController = {
         senderId: senderId,
         role,
       });
-      console.error(existingInvitation);
       if (existingInvitation) {
         sendError(
           res,

@@ -19,7 +19,10 @@ const upload = multer({
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "text/csv",
     ];
-    cb(null, allowedTypes.includes(file.mimetype));
+    if (!allowedTypes.includes(file.mimetype)) {
+      return cb(new Error("Unsupported file format"));
+    }
+    cb(null, true);
   },
 });
 

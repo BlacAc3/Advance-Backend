@@ -233,9 +233,24 @@ exports.Prisma.DemoRequestScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PayrollScalarFieldEnum = {
+  id: 'id',
+  employerId: 'employerId',
+  originalFileName: 'originalFileName',
+  fileMimeType: 'fileMimeType',
+  parsedData: 'parsedData',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -246,6 +261,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.EnumUsersRole = exports.$Enums.EnumUsersRole = {
   ADMIN: 'ADMIN',
@@ -309,6 +330,14 @@ exports.EnumDemoRequestsStatus = exports.$Enums.EnumDemoRequestsStatus = {
   CANCELLED: 'CANCELLED'
 };
 
+exports.EnumPayrollStatus = exports.$Enums.EnumPayrollStatus = {
+  UPLOADED: 'UPLOADED',
+  PARSED: 'PARSED',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Marketer: 'Marketer',
@@ -317,7 +346,8 @@ exports.Prisma.ModelName = {
   Advance: 'Advance',
   LiquidityPool: 'LiquidityPool',
   Invitation: 'Invitation',
-  DemoRequest: 'DemoRequest'
+  DemoRequest: 'DemoRequest',
+  Payroll: 'Payroll'
 };
 
 /**

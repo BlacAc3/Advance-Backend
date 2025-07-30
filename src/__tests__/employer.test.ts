@@ -141,4 +141,324 @@ describe("Employer Controller", () => {
       // expect(response.body.message).toBe("Invitation not found");
     });
   });
+
+  describe("POST /api/v1/employer/payroll/upload", () => {
+    it("should upload payroll file successfully", async () => {
+      const response = await request(app)
+        .post("/api/v1/employer/payroll/upload")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .field("employerId", employerUser.id)
+        .attach("payrollFile", "src/__tests__/templates/payroll.xlsx");
+
+      expect(response.status).toBe(200);
+      expect(response.body.message).toBe(
+        "Payroll file uploaded, parsed, and saved successfully!",
+      );
+      expect(response.body.recordsCount).toBeDefined();
+    });
+
+    it("should return error when no file is uploaded", async () => {
+      const response = await request(app)
+        .post("/api/v1/employer/payroll/upload")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .field("employerId", employerUser.id);
+
+      expect(response.status).toBe(400);
+      expect(response.body.message).toBe("No file uploaded.");
+    });
+
+    it("should return error when employerId is missing", async () => {
+      const response = await request(app)
+        .post("/api/v1/employer/payroll/upload")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .attach("payrollFile", "src/__tests__/templates/payroll.xlsx");
+
+      expect(response.status).toBe(400);
+      expect(response.body.message).toBe("Employer ID is required.");
+    });
+
+    it("should handle CSV file upload", async () => {
+      // Create a test CSV file
+      const csvContent =
+        "name,email,salary\nJohn Doe,john@example.com,50000\nJane Smith,jane@example.com,60000";
+      const fs = require("fs");
+      const path = require("path");
+      const testCsvPath = path.join(__dirname, "templates", "test-payroll.csv");
+
+      fs.writeFileSync(testCsvPath, csvContent);
+
+      const response = await request(app)
+        .post("/api/v1/employer/payroll/upload")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .field("employerId", employerUser.id)
+        .attach("payrollFile", testCsvPath);
+
+      expect(response.status).toBe(200);
+      expect(response.body.message).toBe(
+        "Payroll file uploaded, parsed, and saved successfully!",
+      );
+
+      // Clean up test file
+      fs.unlinkSync(testCsvPath);
+    });
+
+    it("should handle JSON file upload", async () => {
+      // Create a test JSON file
+      const jsonContent = JSON.stringify([
+        { name: "John Doe", email: "john@example.com", salary: 50000 },
+        { name: "Jane Smith", email: "jane@example.com", salary: 60000 },
+      ]);
+      const fs = require("fs");
+      const path = require("path");
+      const testJsonPath = path.join(
+        __dirname,
+        "templates",
+        "test-payroll.json",
+      );
+
+      fs.writeFileSync(testJsonPath, jsonContent);
+
+      const response = await request(app)
+        .post("/api/v1/employer/payroll/upload")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .field("employerId", employerUser.id)
+        .attach("payrollFile", testJsonPath);
+
+      expect(response.status).toBe(200);
+      expect(response.body.message).toBe(
+        "Payroll file uploaded, parsed, and saved successfully!",
+      );
+
+      // Clean up test file
+      fs.unlinkSync(testJsonPath);
+    });
+
+    it("should reject unsupported file types", async () => {
+      // Create a test text file
+      const txtContent = "This is not a valid payroll file";
+      const fs = require("fs");
+      const path = require("path");
+      const testTxtPath = path.join(__dirname, "templates", "test-file.txt");
+
+      fs.writeFileSync(testTxtPath, txtContent);
+
+      const response = await request(app)
+        .post("/api/v1/employer/payroll/upload")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .field("employerId", employerUser.id)
+        .attach("payrollFile", testTxtPath);
+
+      expect(response.status).toBe(400);
+      expect(response.body.message).toBe("Unsupported file type.");
+
+      // Clean up test file
+      fs.unlinkSync(testTxtPath);
+    });
+  });
+
+  describe("POST /api/v1/employer/extract", () => {
+    it("should extract payroll data from Excel file successfully", async () => {
+      const response = await request(app)
+        .post("/api/v1/employer/extract")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .attach("payrollFile", "src/__tests__/templates/payroll.xlsx");
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toBeDefined();
+      expect(response.body.message).toContain("Extracted");
+      expect(response.body.message).toContain("employees");
+      expect(response.body.message).toContain("confidence");
+    });
+
+    it("should extract payroll data from CSV file successfully", async () => {
+      // Create a test CSV file
+      const csvContent =
+        "Employee Name,Email,Monthly Salary,Department\nJohn Doe,john@example.com,5000,Engineering\nJane Smith,jane@example.com,6000,Marketing";
+      const fs = require("fs");
+      const path = require("path");
+      const testCsvPath = path.join(__dirname, "templates", "test-extract.csv");
+
+      fs.writeFileSync(testCsvPath, csvContent);
+
+      const response = await request(app)
+        .post("/api/v1/employer/extract")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .attach("payrollFile", testCsvPath);
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toBeDefined();
+
+      // Clean up test file
+      fs.unlinkSync(testCsvPath);
+    });
+
+    it("should return error when no file is uploaded for extraction", async () => {
+      const response = await request(app)
+        .post("/api/v1/employer/extract")
+        .set("Authorization", `Bearer ${accessToken}`);
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe("No file uploaded");
+    });
+
+    it("should return error for unsupported file format in extraction", async () => {
+      // Create a test text file
+      const txtContent = "This is not a valid payroll file";
+      const fs = require("fs");
+      const path = require("path");
+      const testTxtPath = path.join(__dirname, "templates", "test-extract.txt");
+
+      fs.writeFileSync(testTxtPath, txtContent);
+
+      const response = await request(app)
+        .post("/api/v1/employer/extract")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .attach("payrollFile", testTxtPath);
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe("Unsupported file format");
+
+      // Clean up test file
+      fs.unlinkSync(testTxtPath);
+    });
+
+    it("should handle extraction errors gracefully", async () => {
+      // Create a corrupted Excel file
+      const corruptedContent = "This is not a valid Excel file content";
+      const fs = require("fs");
+      const path = require("path");
+      const testCorruptedPath = path.join(
+        __dirname,
+        "templates",
+        "corrupted.xlsx",
+      );
+
+      fs.writeFileSync(testCorruptedPath, corruptedContent);
+
+      const response = await request(app)
+        .post("/api/v1/employer/extract")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .attach("payrollFile", testCorruptedPath);
+
+      expect(response.status).toBe(500);
+      expect(response.body.error).toBe("Extraction failed");
+      expect(response.body.message).toBeDefined();
+
+      // Clean up test file
+      fs.unlinkSync(testCorruptedPath);
+    });
+  });
+
+  describe("POST /api/v1/employer/bulk-extract", () => {
+    beforeAll(() => {
+      // Create test files for bulk processing
+      const fs = require("fs");
+      const path = require("path");
+
+      // Create CSV file
+      const csvContent =
+        "name,email,salary\nJohn Doe,john@example.com,50000\nJane Smith,jane@example.com,60000";
+      fs.writeFileSync(
+        path.join(__dirname, "templates", "bulk1.csv"),
+        csvContent,
+      );
+
+      // Create JSON file
+      const jsonContent = JSON.stringify([
+        { name: "Bob Johnson", email: "bob@example.com", salary: 55000 },
+        { name: "Alice Brown", email: "alice@example.com", salary: 65000 },
+      ]);
+      fs.writeFileSync(
+        path.join(__dirname, "templates", "bulk2.json"),
+        jsonContent,
+      );
+    });
+
+    afterAll(() => {
+      // Clean up test files
+      const fs = require("fs");
+      const path = require("path");
+
+      try {
+        fs.unlinkSync(path.join(__dirname, "templates", "bulk1.csv"));
+        fs.unlinkSync(path.join(__dirname, "templates", "bulk2.json"));
+      } catch (error) {
+        // Files might not exist, ignore errors
+      }
+    });
+
+    it("should process bulk payroll files successfully", async () => {
+      const path = require("path");
+      const filePaths = [
+        path.join(__dirname, "templates", "bulk1.csv"),
+        path.join(__dirname, "templates", "bulk2.json"),
+      ];
+
+      const response = await request(app)
+        .post("/api/v1/employer/bulk-extract")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send({ filePaths });
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toBeDefined();
+      expect(response.body.data.employees).toBeDefined();
+      expect(response.body.data.metadata).toBeDefined();
+      expect(response.body.data.metadata.filesProcessed).toBeGreaterThan(0);
+      expect(response.body.data.metadata.totalEmployees).toBeGreaterThan(0);
+    });
+
+    it("should return error when no file paths are provided", async () => {
+      const response = await request(app)
+        .post("/api/v1/employer/bulk-extract")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send({});
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe("No file paths provided");
+    });
+
+    it("should return error when empty file paths array is provided", async () => {
+      const response = await request(app)
+        .post("/api/v1/employer/bulk-extract")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send({ filePaths: [] });
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe("No file paths provided");
+    });
+
+    it("should handle mixed valid and invalid files", async () => {
+      const path = require("path");
+      const filePaths = [
+        path.join(__dirname, "templates", "bulk1.csv"),
+        path.join(__dirname, "templates", "nonexistent.xlsx"),
+        path.join(__dirname, "templates", "bulk2.json"),
+      ];
+
+      const response = await request(app)
+        .post("/api/v1/employer/bulk-extract")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send({ filePaths });
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.metadata.filesProcessed).toBeGreaterThan(0);
+      // Should process valid files even if some are invalid
+    });
+
+    it("should handle bulk processing errors gracefully", async () => {
+      const invalidFilePaths = "not an array";
+
+      const response = await request(app)
+        .post("/api/v1/employer/bulk-extract")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send({ filePaths: invalidFilePaths });
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe("No file paths provided");
+    });
+  });
 });

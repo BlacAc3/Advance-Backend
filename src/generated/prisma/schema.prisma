@@ -77,6 +77,14 @@ enum EnumUsersRole {
   MARKETER
 }
 
+enum EnumPayrollStatus {
+  UPLOADED
+  PARSED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
 model User {
   id               String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   username         String?       @unique @db.VarChar(255)
@@ -133,6 +141,7 @@ model Employer {
   verifiedByUser User?           @relation("VerifiedBy", fields: [verifiedBy], references: [id], onDelete: SetNull, onUpdate: Cascade)
   employees      Employee[]
   liquidityPools LiquidityPool[]
+  payrolls       Payroll[] // Added relation for Payroll
 
   @@map("employers")
 }
@@ -240,4 +249,20 @@ model DemoRequest {
   updatedAt     DateTime               @default(now()) @map("updated_at") @db.Timestamptz(6)
 
   @@map("demo_requests")
+}
+
+model Payroll {
+  id               String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  employerId       String            @map("employer_id") @db.Uuid
+  originalFileName String            @map("original_file_name") @db.VarChar(255)
+  fileMimeType     String            @map("file_mime_type") @db.VarChar(100)
+  parsedData       Json              @map("parsed_data")
+  status           EnumPayrollStatus @default(UPLOADED)
+  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime          @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  employer Employer @relation(fields: [employerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("payrolls")
 }
