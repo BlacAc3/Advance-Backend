@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { UserRole, TokenPayload, UserResponse } from "../types";
 import { generateTokenPair } from "../utils/jwt";
 import { prisma } from "../db/database";
+import { EnumPayrollStatus } from "../generated/prisma";
 import fs from "fs";
 
 //DB services
@@ -240,15 +241,15 @@ export const employerController = {
         // Hash/Encrypt sensitive data within each record in `parsedData`.
 
         // 3. Save parsed data to the database
-        // const newPayrollUpload = await prisma.payrollUpload.create({
-        //   data: {
-        //     employerId: employer.id,
-        //     originalFileName: originalname,
-        //     fileMimeType: mimetype,
-        //     parsedData: parsedData, // Store the array of parsed records
-        //     status: "pending", // Or "processed" if you do immediate processing
-        //   },
-        // });
+        const newPayrollUpload = await prisma.payroll.create({
+          data: {
+            employerId: employerId,
+            originalFileName: originalname,
+            fileMimeType: mimetype,
+            parsedData: parsedData as any, // Store the array of parsed records
+            status: EnumPayrollStatus.UPLOADED, // Or "processed" if you do immediate processing
+          },
+        });
 
         // console.log(
         //   `Successfully parsed and saved ${parsedData.length} payroll records for employer ${employer.name}.`,
