@@ -10,14 +10,29 @@ class UserService {
     if (id) {
       return await prisma.user.findUnique({
         where: { id },
+        include: {
+          marketer: true,
+          employer: true,
+          employee: true,
+        },
       });
     } else if (email) {
       return await prisma.user.findUnique({
         where: { email },
+        include: {
+          marketer: true,
+          employer: true,
+          employee: true,
+        },
       });
     } else if (walletAddress) {
       return await prisma.user.findUnique({
         where: { walletAddress },
+        include: {
+          marketer: true,
+          employer: true,
+          employee: true,
+        },
       });
     } else {
       return null;

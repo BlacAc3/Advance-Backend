@@ -16,6 +16,7 @@ class EmployerService {
           user: true,
           marketer: true,
           verifiedByUser: true,
+          employees: true,
         },
       });
     } else if (companyName) {
@@ -25,6 +26,7 @@ class EmployerService {
           user: true,
           marketer: true,
           verifiedByUser: true,
+          employees: true,
         },
       });
     }

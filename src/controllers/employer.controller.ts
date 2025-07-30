@@ -165,7 +165,6 @@ export const employerController = {
       next(error);
     }
   },
-
   async uploadPayroll(
     req: Request,
     res: Response,
@@ -173,7 +172,7 @@ export const employerController = {
   ): Promise<void> {
     try {
       if (!req.file) {
-        res.status(400).json({ message: "No file uploaded." });
+        sendError(res, null, "No file uploaded.", 400);
         return;
       }
 
@@ -186,7 +185,7 @@ export const employerController = {
         fs.unlink(req.file.path, (err) => {
           if (err) console.error(`Error deleting file:`, err);
         });
-        res.status(400).json({ message: "Employer ID is required." });
+        sendError(res, null, "Employer ID is required.", 400);
         return;
       }
 
@@ -202,7 +201,7 @@ export const employerController = {
           fs.unlink(filePath, (err) => {
             if (err) console.error(`Error deleting file:`, err);
           });
-          res.status(404).json({ message: "Employer not found." });
+          sendError(res, null, "Employer not found.", 404);
           return;
         }
 
@@ -232,7 +231,7 @@ export const employerController = {
           fs.unlink(filePath, (err) => {
             if (err) console.error(`Error deleting file:`, err);
           });
-          res.status(400).json({ message: "Unsupported file type." });
+          sendError(res, null, "Unsupported file type.", 400);
           return;
         }
 
@@ -255,20 +254,25 @@ export const employerController = {
         //   `Successfully parsed and saved ${parsedData.length} payroll records for employer ${employer.name}.`,
         // );
 
-        res.status(200).json({
-          message: "Payroll file uploaded, parsed, and saved successfully!",
-          recordsCount: parsedData.length,
-          // uploadId: newPayrollUpload.id,
-        });
+        sendSuccess(
+          res,
+          {
+            recordsCount: parsedData.length,
+          },
+          "Payroll file uploaded, parsed, and saved successfully!",
+          200,
+        );
       } catch (error: any) {
         console.error(
           `Error processing payroll file ${originalname} for employer ${employerId}:`,
           error,
         );
-        res.status(500).json({
-          message: `Error processing payroll file: ${error.message}`,
-          error: error.message,
-        });
+        sendError(
+          res,
+          error,
+          `Error processing payroll file: ${error.message}`,
+          500,
+        );
       } finally {
         // Clean up the temporary uploaded file
         fs.unlink(filePath, (err) => {
@@ -279,6 +283,33 @@ export const employerController = {
       }
     } catch (error) {
       sendError(res, error, "Failed to retrieve employer tiers");
+      console.error(error);
+      next(error);
+    }
+  },
+  async getEmployees(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const userId = req.user?.userId as string;
+      const user = await userModel.get({ id: userId });
+
+      const employerId = user?.employer?.id;
+      if (!employerId) {
+        sendError(res, null, "User must be an employer.", 400);
+        return;
+      }
+      const employer = await employerModel.get({ id: employerId });
+      if (!employer) {
+        sendError(res, null, "This user does not seem to be an employer!");
+        return;
+      }
+      sendSuccess(res, employer.employees, "", 200);
+      return;
+    } catch (error) {
+      sendError(res, error, "Failed to retrieve employer tiers", 400);
       console.error(error);
       next(error);
     }
