@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authController } from "../controllers/auth.controller";
-import { authenticate, authenticateWeb3 } from "../middleware/authMiddleware";
+import { authenticate } from "../middleware/authMiddleware";
 import { authorize } from "../middleware/authorize";
 import { UserRole } from "../types";
 
@@ -9,7 +9,7 @@ const router = Router();
 // Public routes
 router.post("/register", authController.register);
 router.post("/login", authController.login);
-router.post("/wallet-auth", authenticateWeb3);
+// router.post("/wallet-auth", authenticateWeb3);
 router.post("/refresh-token", authController.refreshToken);
 router.post("/change-password", authenticate, authController.changePassword);
 router.get("/me", authenticate, authController.getProfile);

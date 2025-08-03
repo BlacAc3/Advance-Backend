@@ -69,4 +69,11 @@ router.post(
 // Bulk processing endpoint
 router.post("/bulk-extract", PayrollController.processBulkPayroll);
 
+router.get(
+  "/get-employees",
+  authenticate,
+  authorize([UserRole.EMPLOYER]),
+  employerController.getEmployees,
+);
+
 export default router;

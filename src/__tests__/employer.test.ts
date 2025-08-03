@@ -461,4 +461,45 @@ describe("Employer Controller", () => {
       expect(response.body.error).toBe("No file paths provided");
     });
   });
+
+  describe("GET /api/v1/employer/get-employees", () => {
+    it("should retrieve the employees for the employer", async () => {
+      const response = await request(app)
+        .get("/api/v1/employer/get-employees")
+        .set("Authorization", `Bearer ${accessToken}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      // Add more specific assertions based on the expected response structure
+      expect(response.body.data).toBeDefined();
+      // You can add more assertions here to validate the response data
+      // For example, if you expect the response to be an array of employees:
+      // expect(Array.isArray(response.body.data)).toBe(true);
+    });
+
+    it("should return 401 if not authenticated", async () => {
+      const response = await request(app).get("/api/v1/employer/get-employees");
+
+      expect(response.status).toBe(401);
+      expect(response.body).toHaveProperty("message");
+    });
+
+    it("should return 403 if the user is not an employer", async () => {
+      // Create a user with employee role
+      const employeeUser = await createTestUser(
+        `employee-${Date.now()}@example.com`,
+        "TestPassword123",
+        UserRole.EMPLOYEE,
+      );
+      const employeeTokens = await generateTokenPair(employeeUser);
+
+      const response = await request(app)
+        .get("/api/v1/employer/get-employees")
+        .set("Authorization", `Bearer ${employeeTokens.accessToken}`);
+
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toBe("User must be an employer.");
+    });
+  });
 });
