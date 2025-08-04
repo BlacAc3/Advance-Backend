@@ -8,16 +8,22 @@ import { hashPassword } from "../utils/password";
 import userService from "../db/services/user";
 import invitationService from "../db/services/invitation";
 import { generateTokenPair } from "../utils/jwt";
-import { createTestUser, createTestMarketer } from "./utils/testUtils";
+import {
+  createTestUser,
+  createTestMarketer,
+  createTestEmployer,
+} from "./utils/testUtils";
 
 let employerUser: any;
+let employer: any;
 let accessToken: any;
 beforeEach(async () => {
-  employerUser = await createTestUser(
+  employer = await createTestEmployer(
     `employer-${Date.now()}@example.com`,
     "TestPassword123",
-    UserRole.EMPLOYER,
+    `Company-${Date.now()}`,
   );
+  employerUser = userService.get({ id: employer.userId });
   const tokens = await generateTokenPair(employerUser);
   accessToken = tokens.accessToken;
 });
@@ -147,8 +153,9 @@ describe("Employer Controller", () => {
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
         .set("Authorization", `Bearer ${accessToken}`)
-        .field("employerId", employerUser.id)
+        .field("employerId", employer.id)
         .attach("payrollFile", "src/__tests__/templates/payroll.xlsx");
+      console.error(employer);
 
       expect(response.status).toBe(200);
       expect(response.body.message).toBe(
@@ -161,7 +168,7 @@ describe("Employer Controller", () => {
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
         .set("Authorization", `Bearer ${accessToken}`)
-        .field("employerId", employerUser.id);
+        .field("employerId", employer.id);
 
       expect(response.status).toBe(400);
       expect(response.body.message).toBe("No file uploaded.");
@@ -190,7 +197,7 @@ describe("Employer Controller", () => {
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
         .set("Authorization", `Bearer ${accessToken}`)
-        .field("employerId", employerUser.id)
+        .field("employerId", employer.id)
         .attach("payrollFile", testCsvPath);
 
       expect(response.status).toBe(200);
@@ -221,7 +228,7 @@ describe("Employer Controller", () => {
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
         .set("Authorization", `Bearer ${accessToken}`)
-        .field("employerId", employerUser.id)
+        .field("employerId", employer.id)
         .attach("payrollFile", testJsonPath);
 
       expect(response.status).toBe(200);
@@ -245,7 +252,7 @@ describe("Employer Controller", () => {
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
         .set("Authorization", `Bearer ${accessToken}`)
-        .field("employerId", employerUser.id)
+        .field("employerId", employer.id)
         .attach("payrollFile", testTxtPath);
 
       expect(response.status).toBe(400);

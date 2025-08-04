@@ -1,6 +1,7 @@
 import { UserRole } from "../../types";
 import jwt from "jsonwebtoken";
 import userService from "../../db/services/user";
+import { prisma } from "../../db/database";
 
 export const generateRandomWalletAddress = (): string => {
   let randomHex = "";
@@ -60,17 +61,15 @@ export const createTestEmployer = async (
     username: `testuser_${Date.now()}`,
   });
 
-  const employer = await userService.get({ email });
-  if (employer) {
-    const employerData = {
-      userId: employer.id,
-      companyName: companyName,
-      registrationDate: new Date(),
-    };
-    // Create the employer instance
-    // const newEmployer = await db.insert(employers).values(employerData).returning();
-  }
-  return user;
+  const employerData = {
+    userId: user.id,
+    companyName: companyName,
+    registrationDate: new Date(),
+  };
+  const newEmployer = await prisma.employer.create({
+    data: employerData,
+  });
+  return newEmployer;
 };
 
 export const createTestMarketer = async (email: string, password: string) => {
@@ -89,8 +88,9 @@ export const createTestMarketer = async (email: string, password: string) => {
       userId: marketer.id,
       registrationDate: new Date(),
     };
-    // Create the marketer instance
-    // const newMarketer = await db.insert(marketers).values(marketerData).returning();
+    const newMarketer = await prisma.marketer.create({
+      data: marketerData,
+    });
   }
-  return user;
+  return marketer;
 };
