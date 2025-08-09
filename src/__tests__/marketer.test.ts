@@ -94,7 +94,7 @@ describe("Marketer Controller", () => {
       expect(createdInvitation).not.toBeNull();
       expect(createdInvitation?.targetEmail).toEqual(targetEmail);
       expect(createdInvitation?.senderUserId).toEqual(marketerUser.id);
-      expect(createdInvitation?.role).toEqual(EnumUsersRole.EMPLOYER);
+      expect(createdInvitation?.role).toEqual(EnumInvitationsRole.EMPLOYER);
       expect(createdInvitation?.status).toEqual(EnumInvitationsStatus.pending);
 
       // Check that `expiresAt` is approximately 12 hours from now
@@ -110,7 +110,7 @@ describe("Marketer Controller", () => {
           id: createdInvitation?.id, // Use the actual ID from the DB for comparison
           targetEmail: targetEmail,
           senderUserId: marketerUser.id,
-          role: EnumUsersRole.EMPLOYER,
+          role: EnumInvitationsRole.EMPLOYER,
           status: EnumInvitationsStatus.pending,
         }),
       );
@@ -127,7 +127,7 @@ describe("Marketer Controller", () => {
       await invitationService.create({
         email: targetEmail,
         senderId: marketerUser.id,
-        role: EnumUsersRole.EMPLOYER,
+        role: EnumInvitationsRole.EMPLOYER,
         expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 12),
       });
 
@@ -146,7 +146,7 @@ describe("Marketer Controller", () => {
       const allInvitations = await invitationService.getMany({
         senderId: marketerUser.id,
         email: targetEmail,
-        role: EnumUsersRole.EMPLOYER,
+        role: EnumInvitationsRole.EMPLOYER,
       }); // Assuming getMany can filter
       expect(allInvitations.length).toEqual(1);
     });
@@ -236,21 +236,21 @@ describe("Marketer Controller", () => {
           email: `marketerA-${Date.now()}@example.com`,
           status: EnumInvitationsStatus.pending,
           senderId: marketerUser.id, // Sent by the test marketer
-          role: EnumUsersRole.EMPLOYER,
+          role: EnumInvitationsRole.EMPLOYER,
           expiresAt: new Date(Date.now() + 100000),
         },
         {
           email: `marketerB-${Date.now()}@example.com`,
           status: EnumInvitationsStatus.accepted,
           senderId: marketerUser.id, // Sent by the test marketer
-          role: EnumUsersRole.EMPLOYER,
+          role: EnumInvitationsRole.EMPLOYER,
           expiresAt: new Date(Date.now() + 100000),
         },
         {
           email: `otherC-${Date.now()}@example.com`, // Sent by a different sender
           status: EnumInvitationsStatus.pending,
           senderId: anotherMarketerUser.id,
-          role: EnumUsersRole.EMPLOYER,
+          role: EnumInvitationsRole.EMPLOYER,
           expiresAt: new Date(Date.now() + 100000),
         },
       ];
@@ -302,28 +302,28 @@ describe("Marketer Controller", () => {
           email: `marketerE-${Date.now()}@example.com`,
           status: EnumInvitationsStatus.pending,
           senderId: marketerUser.id,
-          role: EnumUsersRole.EMPLOYER,
+          role: EnumInvitationsRole.EMPLOYER,
           expiresAt: new Date(Date.now() + 100000),
         },
         {
           email: `marketerF-${Date.now()}@example.com`,
           status: EnumInvitationsStatus.accepted,
           senderId: marketerUser.id,
-          role: EnumUsersRole.EMPLOYER,
+          role: EnumInvitationsRole.EMPLOYER,
           expiresAt: new Date(Date.now() + 100000),
         },
         {
           email: `otherG-${Date.now()}@example.com`, // From another sender
           status: EnumInvitationsStatus.pending,
           senderId: anotherMarketerUser.id,
-          role: EnumUsersRole.EMPLOYER,
+          role: EnumInvitationsRole.EMPLOYER,
           expiresAt: new Date(Date.now() + 100000),
         },
         {
           email: `otherH-${Date.now()}@example.com`, // From another sender, accepted
           status: EnumInvitationsStatus.accepted,
           senderId: anotherMarketerUser.id,
-          role: EnumUsersRole.EMPLOYER,
+          role: EnumInvitationsRole.EMPLOYER,
           expiresAt: new Date(Date.now() + 100000),
         },
       ];

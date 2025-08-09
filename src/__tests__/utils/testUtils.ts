@@ -1,4 +1,4 @@
-import { UserRole } from "../../types";
+import { EnumUsersRole } from "../../generated/prisma";
 import jwt from "jsonwebtoken";
 import userService from "../../db/services/user";
 import { prisma } from "../../db/database";
@@ -17,7 +17,7 @@ export const generateRandomWalletAddress = (): string => {
 export const createTestUser = async (
   email: string = "testuser@example.com",
   password: string,
-  role: UserRole = UserRole.EMPLOYEE,
+  role: EnumUsersRole = EnumUsersRole.EMPLOYEE,
   isWalletVerified: boolean = false,
 ) => {
   const walletAddress = generateRandomWalletAddress();
@@ -51,7 +51,7 @@ export const createTestEmployer = async (
   email: string,
   password: string,
   companyName: string,
-  role: UserRole = UserRole.EMPLOYER,
+  role: EnumUsersRole = EnumUsersRole.EMPLOYER,
 ) => {
   const user = await userService.create({
     email,
@@ -76,7 +76,7 @@ export const createTestMarketer = async (email: string, password: string) => {
   const user = await userService.create({
     email,
     password,
-    role: UserRole.MARKETER,
+    role: EnumUsersRole.MARKETER,
     walletAddress: generateRandomWalletAddress(),
     username: `testuser_${Date.now()}`,
   });

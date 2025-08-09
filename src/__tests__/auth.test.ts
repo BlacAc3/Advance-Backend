@@ -1,9 +1,9 @@
 import request from "supertest";
 import app from "../index";
-import { UserRole } from "../types";
 import { createTestUser } from "./utils/testUtils";
 import { generateTokenPair } from "../utils/jwt";
 import userService from "../db/services/user";
+import { EnumUsersRole } from "../generated/prisma";
 
 describe("Authentication", () => {
   describe("POST /api/v1/auth/register", () => {
@@ -13,7 +13,7 @@ describe("Authentication", () => {
       const userData = {
         email: email,
         password: "TestPassword123!",
-        role: UserRole.REGULAR_USER,
+        role: EnumUsersRole.REGULAR_USER,
         walletAddress: "0x" + "1".repeat(40),
         username: `testuser_${Date.now()}`,
       };
@@ -21,8 +21,6 @@ describe("Authentication", () => {
       const response = await request(app)
         .post("/api/v1/auth/register")
         .send(userData);
-      console.log("---------------------------------------------------------");
-      // console.log(response.body);
 
       expect(response.status).toBe(201);
       expect(response.body.data).toHaveProperty("user");
@@ -38,7 +36,7 @@ describe("Authentication", () => {
       const userData = {
         email: existingEmail, // Use the existing email
         password: "NewPassword123!",
-        role: UserRole.WEB3_USER,
+        role: EnumUsersRole.WEB3_USER,
         walletAddress: "0x" + "2".repeat(40),
         username: `existinguser${Date.now()}`,
       };

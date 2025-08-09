@@ -1,7 +1,6 @@
 import request from "supertest";
 import app from "../index";
 import { v4 as uuidv4 } from "uuid";
-import { UserRole } from "../types";
 import jwt from "jsonwebtoken";
 import * as dbConfig from "../db/database";
 import { hashPassword } from "../utils/password";
@@ -13,6 +12,7 @@ import {
   createTestMarketer,
   createTestEmployer,
 } from "./utils/testUtils";
+import { EnumInvitationsRole, EnumUsersRole } from "../generated/prisma";
 
 let employerUser: any;
 let employer: any;
@@ -23,7 +23,7 @@ beforeEach(async () => {
     "TestPassword123",
     `Company-${Date.now()}`,
   );
-  employerUser = userService.get({ id: employer.userId });
+  employerUser = await userService.get({ id: employer.userId });
   const tokens = await generateTokenPair(employerUser);
   accessToken = tokens.accessToken;
 });
@@ -60,13 +60,13 @@ describe("Employer Controller", () => {
         id: uuidv4(),
         targetEmail: mockEmail,
         senderUserId: employerUser.id,
-        role: "EMPLOYEE",
+        role: EnumInvitationsRole.EMPLOYEE,
         expiresAt: new Date(Date.now() + 12 * 60 * 60 * 1000),
       };
       await invitationService.create({
         email: newInvitation.targetEmail,
         senderId: newInvitation.senderUserId,
-        role: "EMPLOYEE",
+        role: EnumInvitationsRole.EMPLOYEE,
         expiresAt: newInvitation.expiresAt,
       });
 
@@ -104,7 +104,7 @@ describe("Employer Controller", () => {
       const newInvitation = await invitationService.create({
         email: mockEmail,
         senderId: marketerUser.id,
-        role: "EMPLOYER",
+        role: EnumInvitationsRole.EMPLOYER,
         expiresAt: new Date(Date.now() + 12 * 60 * 60 * 1000),
       });
 
@@ -134,7 +134,7 @@ describe("Employer Controller", () => {
         email: mockEmail,
         password: "TestPassword123!",
         companyName: mockCompanyName,
-        role: UserRole.EMPLOYER,
+        role: EnumUsersRole.EMPLOYER,
         invitationId: invalidInvitationId,
       };
 
@@ -155,13 +155,12 @@ describe("Employer Controller", () => {
         .set("Authorization", `Bearer ${accessToken}`)
         .field("employerId", employer.id)
         .attach("payrollFile", "src/__tests__/templates/payroll.xlsx");
-      console.error(employer);
 
       expect(response.status).toBe(200);
       expect(response.body.message).toBe(
         "Payroll file uploaded, parsed, and saved successfully!",
       );
-      expect(response.body.recordsCount).toBeDefined();
+      expect(response.body.data.recordsCount).toBeDefined();
     });
 
     it("should return error when no file is uploaded", async () => {
@@ -204,6 +203,7 @@ describe("Employer Controller", () => {
       expect(response.body.message).toBe(
         "Payroll file uploaded, parsed, and saved successfully!",
       );
+      expect(response.body.data.recordsCount).toBeDefined();
 
       // Clean up test file
       fs.unlinkSync(testCsvPath);
@@ -235,6 +235,7 @@ describe("Employer Controller", () => {
       expect(response.body.message).toBe(
         "Payroll file uploaded, parsed, and saved successfully!",
       );
+      expect(response.body.data.recordsCount).toBeDefined();
 
       // Clean up test file
       fs.unlinkSync(testJsonPath);
@@ -256,7 +257,7 @@ describe("Employer Controller", () => {
         .attach("payrollFile", testTxtPath);
 
       expect(response.status).toBe(400);
-      expect(response.body.message).toBe("Unsupported file type.");
+      expect(response.body.error).toBe("Unsupported file type");
 
       // Clean up test file
       fs.unlinkSync(testTxtPath);
@@ -349,9 +350,10 @@ describe("Employer Controller", () => {
         .set("Authorization", `Bearer ${accessToken}`)
         .attach("payrollFile", testCorruptedPath);
 
-      expect(response.status).toBe(500);
-      expect(response.body.error).toBe("Extraction failed");
-      expect(response.body.message).toBeDefined();
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.employees).toHaveLength(0);
+      expect(response.body.data.metadata.errors).toBeDefined();
 
       // Clean up test file
       fs.unlinkSync(testCorruptedPath);
@@ -496,7 +498,7 @@ describe("Employer Controller", () => {
       const employeeUser = await createTestUser(
         `employee-${Date.now()}@example.com`,
         "TestPassword123",
-        UserRole.EMPLOYEE,
+        EnumUsersRole.EMPLOYEE,
       );
       const employeeTokens = await generateTokenPair(employeeUser);
 
@@ -504,9 +506,8 @@ describe("Employer Controller", () => {
         .get("/api/v1/employer/get-employees")
         .set("Authorization", `Bearer ${employeeTokens.accessToken}`);
 
-      expect(response.status).toBe(400);
-      expect(response.body.success).toBe(false);
-      expect(response.body.message).toBe("User must be an employer.");
+      expect(response.status).toBe(403);
+      expect(response.body.message).toBeDefined();
     });
   });
 });

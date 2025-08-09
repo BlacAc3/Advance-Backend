@@ -10,6 +10,7 @@
     "clean": "rimraf dist",
     "postinstall": "prisma generate && ts-node swagger.ts",
     "test": "jest",
+    "test:unit": "jest --config jest.unit.config.js",
     "test:watch": "NODE_ENV=test jest --watch",
     "test:coverage": "NODE_ENV=test jest --coverage",
     "lint": "eslint . --ext .ts",

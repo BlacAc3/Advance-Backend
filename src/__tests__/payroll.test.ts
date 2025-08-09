@@ -1,20 +1,23 @@
 import request from "supertest";
 import app from "../index";
-import { UserRole } from "../types";
+import { EnumUsersRole } from "../generated/prisma";
 import { generateTokenPair } from "../utils/jwt";
-import { createTestUser } from "./utils/testUtils";
+import { createTestUser, createTestEmployer } from "./utils/testUtils";
+import userService from "../db/services/user";
 import fs from "fs";
 import path from "path";
 
 let employerUser: any;
+let employer: any;
 let accessToken: any;
 
 beforeEach(async () => {
-  employerUser = await createTestUser(
+  employer = await createTestEmployer(
     `employer-${Date.now()}@example.com`,
     "TestPassword123",
-    UserRole.EMPLOYER,
+    `Company-${Date.now()}`,
   );
+  employerUser = await userService.get({ id: employer.userId });
   const tokens = await generateTokenPair(employerUser);
   accessToken = tokens.accessToken;
 });
@@ -32,15 +35,15 @@ describe("Payroll Upload Tests", () => {
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
         .set("Authorization", `Bearer ${accessToken}`)
-        .field("employerId", employerUser.id)
+        .field("employerId", employer.id)
         .attach("payrollFile", "src/__tests__/templates/payroll.xlsx");
 
       expect(response.status).toBe(200);
       expect(response.body.message).toBe(
         "Payroll file uploaded, parsed, and saved successfully!",
       );
-      expect(response.body.recordsCount).toBeDefined();
-      expect(typeof response.body.recordsCount).toBe("number");
+      expect(response.body.data.recordsCount).toBeDefined();
+      expect(typeof response.body.data.recordsCount).toBe("number");
     });
 
     it("should upload CSV payroll file successfully", async () => {
@@ -56,14 +59,14 @@ Bob Johnson,bob.johnson@company.com,5500,Sales,EMP003`;
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
         .set("Authorization", `Bearer ${accessToken}`)
-        .field("employerId", employerUser.id)
+        .field("employerId", employer.id)
         .attach("payrollFile", testCsvPath);
 
       expect(response.status).toBe(200);
       expect(response.body.message).toBe(
         "Payroll file uploaded, parsed, and saved successfully!",
       );
-      expect(response.body.recordsCount).toBeGreaterThan(0);
+      expect(response.body.data.recordsCount).toBeGreaterThan(0);
 
       // Clean up test file
       fs.unlinkSync(testCsvPath);
@@ -98,14 +101,14 @@ Bob Johnson,bob.johnson@company.com,5500,Sales,EMP003`;
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
         .set("Authorization", `Bearer ${accessToken}`)
-        .field("employerId", employerUser.id)
+        .field("employerId", employer.id)
         .attach("payrollFile", testJsonPath);
 
       expect(response.status).toBe(200);
       expect(response.body.message).toBe(
         "Payroll file uploaded, parsed, and saved successfully!",
       );
-      expect(response.body.recordsCount).toBe(2);
+      expect(response.body.data.recordsCount).toBe(2);
 
       // Clean up test file
       fs.unlinkSync(testJsonPath);
@@ -115,7 +118,7 @@ Bob Johnson,bob.johnson@company.com,5500,Sales,EMP003`;
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
         .set("Authorization", `Bearer ${accessToken}`)
-        .field("employerId", employerUser.id);
+        .field("employerId", employer.id);
 
       expect(response.status).toBe(400);
       expect(response.body.message).toBe("No file uploaded.");
@@ -146,7 +149,7 @@ Bob Johnson,bob.johnson@company.com,5500,Sales,EMP003`;
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
         .set("Authorization", `Bearer ${accessToken}`)
-        .field("employerId", employerUser.id)
+        .field("employerId", employer.id)
         .attach("payrollFile", testTxtPath);
 
       expect(response.status).toBe(400);
@@ -162,7 +165,7 @@ Bob Johnson,bob.johnson@company.com,5500,Sales,EMP003`;
 
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
-        .field("employerId", employerUser.id)
+        .field("employerId", employer.id)
         .attach("payrollFile", testCsvPath);
 
       expect(response.status).toBe(401);
@@ -176,7 +179,7 @@ Bob Johnson,bob.johnson@company.com,5500,Sales,EMP003`;
       const employeeUser = await createTestUser(
         `employee-${Date.now()}@example.com`,
         "TestPassword123",
-        UserRole.EMPLOYEE,
+        EnumUsersRole.EMPLOYEE,
       );
       const employeeTokens = await generateTokenPair(employeeUser);
 
@@ -186,7 +189,7 @@ Bob Johnson,bob.johnson@company.com,5500,Sales,EMP003`;
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
         .set("Authorization", `Bearer ${employeeTokens.accessToken}`)
-        .field("employerId", employerUser.id)
+        .field("employerId", employer.id)
         .attach("payrollFile", testCsvPath);
 
       expect(response.status).toBe(403);
@@ -213,14 +216,14 @@ Bob Johnson,bob.johnson@company.com,5500,Sales,EMP003`;
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
         .set("Authorization", `Bearer ${accessToken}`)
-        .field("employerId", employerUser.id)
+        .field("employerId", employer.id)
         .attach("payrollFile", testLargeCsvPath);
 
       expect(response.status).toBe(200);
       expect(response.body.message).toBe(
         "Payroll file uploaded, parsed, and saved successfully!",
       );
-      expect(response.body.recordsCount).toBe(100);
+      expect(response.body.data.recordsCount).toBe(100);
 
       // Clean up test file
       fs.unlinkSync(testLargeCsvPath);
@@ -242,11 +245,11 @@ Bob Johnson,bob.johnson@company.com,5500,Sales,EMP003`;
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
         .set("Authorization", `Bearer ${accessToken}`)
-        .field("employerId", employerUser.id)
+        .field("employerId", employer.id)
         .attach("payrollFile", testSpecialCsvPath);
 
       expect(response.status).toBe(200);
-      expect(response.body.recordsCount).toBe(3);
+      expect(response.body.data.recordsCount).toBe(3);
 
       // Clean up test file
       fs.unlinkSync(testSpecialCsvPath);
@@ -525,11 +528,11 @@ Alice Brown,alice@example.com,65000`;
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
         .set("Authorization", `Bearer ${accessToken}`)
-        .field("employerId", employerUser.id)
+        .field("employerId", employer.id)
         .attach("payrollFile", smallCsvPath);
 
       expect(response.status).toBe(200);
-      expect(response.body.recordsCount).toBe(1);
+      expect(response.body.data.recordsCount).toBe(1);
 
       // Clean up test file
       fs.unlinkSync(smallCsvPath);
@@ -551,11 +554,11 @@ Bob Johnson,bob@example.com`;
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
         .set("Authorization", `Bearer ${accessToken}`)
-        .field("employerId", employerUser.id)
+        .field("employerId", employer.id)
         .attach("payrollFile", incompleteCsvPath);
 
       expect(response.status).toBe(200);
-      expect(response.body.recordsCount).toBe(3);
+      expect(response.body.data.recordsCount).toBe(3);
 
       // Clean up test file
       fs.unlinkSync(incompleteCsvPath);
@@ -579,7 +582,7 @@ Bob Johnson,bob@example.com`;
       const response = await request(app)
         .post("/api/v1/employer/payroll/upload")
         .set("Authorization", `Bearer ${accessToken}`)
-        .field("employerId", employerUser.id)
+        .field("employerId", employer.id)
         .attach("payrollFile", malformedJsonPath);
 
       expect(response.status).toBe(500);
