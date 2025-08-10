@@ -18,7 +18,7 @@ const doc = {
   ],
 };
 
-const outputFile = "./swagger-output.json";
+const outputFile = "./src/swagger-output.json";
 // const endpointsFiles = ["src/routes/index.ts"];
 const routes = [
   "./src/index.ts", // Your main app entry point where setupRoutes is called
