@@ -76,4 +76,12 @@ router.get(
   employerController.getEmployees,
 );
 
+// API Integration for bank history verification
+router.post(
+  "/setup-api-integration",
+  authenticate,
+  authorize([UserRole.EMPLOYER]),
+  employerController.setupApiIntegration,
+);
+
 export default router;

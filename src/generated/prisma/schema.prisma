@@ -22,6 +22,8 @@ enum EnumAdvancesStatus {
   PAID
   REPAID
   DEFAULTED
+  PENDING_EMPLOYER_APPROVAL
+  DISBURSED
 }
 
 enum EnumDemoRequestsStatus {
@@ -77,6 +79,12 @@ enum EnumUsersRole {
   MARKETER
 }
 
+enum EnumEmployerTier {
+  NEW
+  API_VERIFIED
+  PLATFORM_TRUSTED
+}
+
 enum EnumPayrollStatus {
   UPLOADED
   PARSED
@@ -124,16 +132,23 @@ model Marketer {
 }
 
 model Employer {
-  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId           String    @unique @map("user_id") @db.Uuid
-  marketerId       Int?      @map("marketer_id")
-  companyName      String    @unique @map("company_name") @db.VarChar(255)
-  registrationDate DateTime  @map("registration_date") @db.Timestamptz(6)
-  isVerified       Boolean   @default(false) @map("is_verified")
-  verificationDate DateTime? @map("verification_date") @db.Timestamptz(6)
-  verifiedBy       String?   @map("verified_by") @db.Uuid
-  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt        DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  id                     String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId                 String           @unique @map("user_id") @db.Uuid
+  marketerId             Int?             @map("marketer_id")
+  companyName            String           @unique @map("company_name") @db.VarChar(255)
+  registrationDate       DateTime         @map("registration_date") @db.Timestamptz(6)
+  isVerified             Boolean          @default(false) @map("is_verified")
+  verificationDate       DateTime?        @map("verification_date") @db.Timestamptz(6)
+  verifiedBy             String?          @map("verified_by") @db.Uuid
+  tier                   EnumEmployerTier @default(NEW)
+  advancePercentageLimit Int              @default(10) @map("advance_percentage_limit")
+  autoApproveAdvances    Boolean          @default(false) @map("auto_approve_advances")
+  bankHistoryVerified    Boolean          @default(false) @map("bank_history_verified")
+  monthsOnPlatform       Int              @default(0) @map("months_on_platform")
+  defaultRate            Decimal          @default(0) @map("default_rate") @db.Decimal(5, 2)
+  totalAdvancesProcessed Int              @default(0) @map("total_advances_processed")
+  createdAt              DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt              DateTime         @default(now()) @map("updated_at") @db.Timestamptz(6)
 
   // Relations
   user           User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -160,6 +175,14 @@ model Employee {
   kycReviewerId           String?                @map("kyc_reviewer_id") @db.Uuid
   kycNotes                String?                @map("kyc_notes") @db.Text
   salary                  Decimal?               @db.Decimal(20, 0)
+  startDate               DateTime?              @map("start_date") @db.Timestamptz(6)
+  daysWorked              Int                    @default(0) @map("days_worked")
+  creditScore             Int                    @default(500) @map("credit_score")
+  totalAdvancesTaken      Int                    @default(0) @map("total_advances_taken")
+  totalAdvancesRepaid     Int                    @default(0) @map("total_advances_repaid")
+  currentAdvanceBalance   Decimal                @default(0) @map("current_advance_balance") @db.Decimal(20, 0)
+  bankAccountNumber       String?                @map("bank_account_number") @db.VarChar(20)
+  bankName                String?                @map("bank_name") @db.VarChar(100)
   registrationDate        DateTime               @map("registration_date") @db.Timestamptz(6)
   createdAt               DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt               DateTime               @default(now()) @map("updated_at") @db.Timestamptz(6)
@@ -182,15 +205,28 @@ model Employee {
 model Advance {
   id                       String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   employeeId               String             @map("employee_id") @db.Uuid
+  employerId               String             @map("employer_id") @db.Uuid
   amount                   Decimal            @db.Decimal(20, 0)
+  serviceFee               Decimal            @map("service_fee") @db.Decimal(20, 0)
+  serviceFeePercentage     Decimal            @map("service_fee_percentage") @db.Decimal(5, 2)
+  netAmount                Decimal            @map("net_amount") @db.Decimal(20, 0)
   repaymentAmount          Decimal            @map("repayment_amount") @db.Decimal(20, 0)
+  earnedToDate             Decimal            @map("earned_to_date") @db.Decimal(20, 0)
+  availableAdvance         Decimal            @map("available_advance") @db.Decimal(20, 0)
   requestDate              DateTime           @map("request_date") @db.Timestamptz(6)
   approvalDate             DateTime?          @map("approval_date") @db.Timestamptz(6)
+  disbursementDate         DateTime?          @map("disbursement_date") @db.Timestamptz(6)
   paymentDate              DateTime?          @map("payment_date") @db.Timestamptz(6)
+  repaymentDate            DateTime?          @map("repayment_date") @db.Timestamptz(6)
   dueDate                  DateTime           @map("due_date") @db.Timestamptz(6)
   status                   EnumAdvancesStatus @default(PENDING)
+  approvedBy               String?            @map("approved_by") @db.Uuid
+  rejectedBy               String?            @map("rejected_by") @db.Uuid
+  rejectionReason          String?            @map("rejection_reason") @db.Text
   transactionHash          String?            @map("transaction_hash") @db.VarChar(66)
   repaymentTransactionHash String?            @map("repayment_transaction_hash") @db.VarChar(66)
+  poolUtilizationAtRequest Decimal?           @map("pool_utilization_at_request") @db.Decimal(5, 2)
+  riskScore                Int?               @map("risk_score")
   createdAt                DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt                DateTime           @default(now()) @map("updated_at") @db.Timestamptz(6)
 
@@ -265,4 +301,32 @@ model Payroll {
   employer Employer @relation(fields: [employerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("payrolls")
+}
+
+model RiskAdjustment {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  employerId     String?  @map("employer_id") @db.Uuid
+  adjustmentType String   @map("adjustment_type") @db.VarChar(50)
+  previousValue  Decimal  @map("previous_value") @db.Decimal(20, 2)
+  newValue       Decimal  @map("new_value") @db.Decimal(20, 2)
+  reason         String   @db.Text
+  triggerMetric  String?  @map("trigger_metric") @db.VarChar(100)
+  triggerValue   Decimal? @map("trigger_value") @db.Decimal(20, 2)
+  adjustmentDate DateTime @map("adjustment_date") @db.Timestamptz(6)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("risk_adjustments")
+}
+
+model ReserveFund {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  amount           Decimal  @db.Decimal(20, 0)
+  transactionType  String   @map("transaction_type") @db.VarChar(50)
+  description      String   @db.Text
+  relatedAdvanceId String?  @map("related_advance_id") @db.Uuid
+  transactionHash  String?  @map("transaction_hash") @db.VarChar(66)
+  timestamp        DateTime @db.Timestamptz(6)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("reserve_fund")
 }

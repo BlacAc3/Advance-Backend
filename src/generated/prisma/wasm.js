@@ -150,6 +150,13 @@ exports.Prisma.EmployerScalarFieldEnum = {
   isVerified: 'isVerified',
   verificationDate: 'verificationDate',
   verifiedBy: 'verifiedBy',
+  tier: 'tier',
+  advancePercentageLimit: 'advancePercentageLimit',
+  autoApproveAdvances: 'autoApproveAdvances',
+  bankHistoryVerified: 'bankHistoryVerified',
+  monthsOnPlatform: 'monthsOnPlatform',
+  defaultRate: 'defaultRate',
+  totalAdvancesProcessed: 'totalAdvancesProcessed',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -168,6 +175,14 @@ exports.Prisma.EmployeeScalarFieldEnum = {
   kycReviewerId: 'kycReviewerId',
   kycNotes: 'kycNotes',
   salary: 'salary',
+  startDate: 'startDate',
+  daysWorked: 'daysWorked',
+  creditScore: 'creditScore',
+  totalAdvancesTaken: 'totalAdvancesTaken',
+  totalAdvancesRepaid: 'totalAdvancesRepaid',
+  currentAdvanceBalance: 'currentAdvanceBalance',
+  bankAccountNumber: 'bankAccountNumber',
+  bankName: 'bankName',
   registrationDate: 'registrationDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -182,15 +197,28 @@ exports.Prisma.EmployeeScalarFieldEnum = {
 exports.Prisma.AdvanceScalarFieldEnum = {
   id: 'id',
   employeeId: 'employeeId',
+  employerId: 'employerId',
   amount: 'amount',
+  serviceFee: 'serviceFee',
+  serviceFeePercentage: 'serviceFeePercentage',
+  netAmount: 'netAmount',
   repaymentAmount: 'repaymentAmount',
+  earnedToDate: 'earnedToDate',
+  availableAdvance: 'availableAdvance',
   requestDate: 'requestDate',
   approvalDate: 'approvalDate',
+  disbursementDate: 'disbursementDate',
   paymentDate: 'paymentDate',
+  repaymentDate: 'repaymentDate',
   dueDate: 'dueDate',
   status: 'status',
+  approvedBy: 'approvedBy',
+  rejectedBy: 'rejectedBy',
+  rejectionReason: 'rejectionReason',
   transactionHash: 'transactionHash',
   repaymentTransactionHash: 'repaymentTransactionHash',
+  poolUtilizationAtRequest: 'poolUtilizationAtRequest',
+  riskScore: 'riskScore',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -244,6 +272,30 @@ exports.Prisma.PayrollScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.RiskAdjustmentScalarFieldEnum = {
+  id: 'id',
+  employerId: 'employerId',
+  adjustmentType: 'adjustmentType',
+  previousValue: 'previousValue',
+  newValue: 'newValue',
+  reason: 'reason',
+  triggerMetric: 'triggerMetric',
+  triggerValue: 'triggerValue',
+  adjustmentDate: 'adjustmentDate',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ReserveFundScalarFieldEnum = {
+  id: 'id',
+  amount: 'amount',
+  transactionType: 'transactionType',
+  description: 'description',
+  relatedAdvanceId: 'relatedAdvanceId',
+  transactionHash: 'transactionHash',
+  timestamp: 'timestamp',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -277,6 +329,12 @@ exports.EnumUsersRole = exports.$Enums.EnumUsersRole = {
   MARKETER: 'MARKETER'
 };
 
+exports.EnumEmployerTier = exports.$Enums.EnumEmployerTier = {
+  NEW: 'NEW',
+  API_VERIFIED: 'API_VERIFIED',
+  PLATFORM_TRUSTED: 'PLATFORM_TRUSTED'
+};
+
 exports.EnumEmployeesKycStage = exports.$Enums.EnumEmployeesKycStage = {
   none: 'none',
   level_1: 'level_1',
@@ -300,7 +358,9 @@ exports.EnumAdvancesStatus = exports.$Enums.EnumAdvancesStatus = {
   REJECTED: 'REJECTED',
   PAID: 'PAID',
   REPAID: 'REPAID',
-  DEFAULTED: 'DEFAULTED'
+  DEFAULTED: 'DEFAULTED',
+  PENDING_EMPLOYER_APPROVAL: 'PENDING_EMPLOYER_APPROVAL',
+  DISBURSED: 'DISBURSED'
 };
 
 exports.EnumLiquidityPoolTransactionType = exports.$Enums.EnumLiquidityPoolTransactionType = {
@@ -347,7 +407,9 @@ exports.Prisma.ModelName = {
   LiquidityPool: 'LiquidityPool',
   Invitation: 'Invitation',
   DemoRequest: 'DemoRequest',
-  Payroll: 'Payroll'
+  Payroll: 'Payroll',
+  RiskAdjustment: 'RiskAdjustment',
+  ReserveFund: 'ReserveFund'
 };
 
 /**

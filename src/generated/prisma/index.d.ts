@@ -58,6 +58,16 @@ export type DemoRequest = $Result.DefaultSelection<Prisma.$DemoRequestPayload>
  * 
  */
 export type Payroll = $Result.DefaultSelection<Prisma.$PayrollPayload>
+/**
+ * Model RiskAdjustment
+ * 
+ */
+export type RiskAdjustment = $Result.DefaultSelection<Prisma.$RiskAdjustmentPayload>
+/**
+ * Model ReserveFund
+ * 
+ */
+export type ReserveFund = $Result.DefaultSelection<Prisma.$ReserveFundPayload>
 
 /**
  * Enums
@@ -69,7 +79,9 @@ export namespace $Enums {
   REJECTED: 'REJECTED',
   PAID: 'PAID',
   REPAID: 'REPAID',
-  DEFAULTED: 'DEFAULTED'
+  DEFAULTED: 'DEFAULTED',
+  PENDING_EMPLOYER_APPROVAL: 'PENDING_EMPLOYER_APPROVAL',
+  DISBURSED: 'DISBURSED'
 };
 
 export type EnumAdvancesStatus = (typeof EnumAdvancesStatus)[keyof typeof EnumAdvancesStatus]
@@ -149,6 +161,15 @@ export const EnumUsersRole: {
 export type EnumUsersRole = (typeof EnumUsersRole)[keyof typeof EnumUsersRole]
 
 
+export const EnumEmployerTier: {
+  NEW: 'NEW',
+  API_VERIFIED: 'API_VERIFIED',
+  PLATFORM_TRUSTED: 'PLATFORM_TRUSTED'
+};
+
+export type EnumEmployerTier = (typeof EnumEmployerTier)[keyof typeof EnumEmployerTier]
+
+
 export const EnumPayrollStatus: {
   UPLOADED: 'UPLOADED',
   PARSED: 'PARSED',
@@ -192,6 +213,10 @@ export const EnumLiquidityPoolTransactionType: typeof $Enums.EnumLiquidityPoolTr
 export type EnumUsersRole = $Enums.EnumUsersRole
 
 export const EnumUsersRole: typeof $Enums.EnumUsersRole
+
+export type EnumEmployerTier = $Enums.EnumEmployerTier
+
+export const EnumEmployerTier: typeof $Enums.EnumEmployerTier
 
 export type EnumPayrollStatus = $Enums.EnumPayrollStatus
 
@@ -411,6 +436,26 @@ export class PrismaClient<
     * ```
     */
   get payroll(): Prisma.PayrollDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.riskAdjustment`: Exposes CRUD operations for the **RiskAdjustment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RiskAdjustments
+    * const riskAdjustments = await prisma.riskAdjustment.findMany()
+    * ```
+    */
+  get riskAdjustment(): Prisma.RiskAdjustmentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.reserveFund`: Exposes CRUD operations for the **ReserveFund** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ReserveFunds
+    * const reserveFunds = await prisma.reserveFund.findMany()
+    * ```
+    */
+  get reserveFund(): Prisma.ReserveFundDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -859,7 +904,9 @@ export namespace Prisma {
     LiquidityPool: 'LiquidityPool',
     Invitation: 'Invitation',
     DemoRequest: 'DemoRequest',
-    Payroll: 'Payroll'
+    Payroll: 'Payroll',
+    RiskAdjustment: 'RiskAdjustment',
+    ReserveFund: 'ReserveFund'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -878,7 +925,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "marketer" | "employer" | "employee" | "advance" | "liquidityPool" | "invitation" | "demoRequest" | "payroll"
+      modelProps: "user" | "marketer" | "employer" | "employee" | "advance" | "liquidityPool" | "invitation" | "demoRequest" | "payroll" | "riskAdjustment" | "reserveFund"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1548,6 +1595,154 @@ export namespace Prisma {
           }
         }
       }
+      RiskAdjustment: {
+        payload: Prisma.$RiskAdjustmentPayload<ExtArgs>
+        fields: Prisma.RiskAdjustmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RiskAdjustmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskAdjustmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RiskAdjustmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskAdjustmentPayload>
+          }
+          findFirst: {
+            args: Prisma.RiskAdjustmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskAdjustmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RiskAdjustmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskAdjustmentPayload>
+          }
+          findMany: {
+            args: Prisma.RiskAdjustmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskAdjustmentPayload>[]
+          }
+          create: {
+            args: Prisma.RiskAdjustmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskAdjustmentPayload>
+          }
+          createMany: {
+            args: Prisma.RiskAdjustmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RiskAdjustmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskAdjustmentPayload>[]
+          }
+          delete: {
+            args: Prisma.RiskAdjustmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskAdjustmentPayload>
+          }
+          update: {
+            args: Prisma.RiskAdjustmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskAdjustmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.RiskAdjustmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RiskAdjustmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RiskAdjustmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskAdjustmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.RiskAdjustmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskAdjustmentPayload>
+          }
+          aggregate: {
+            args: Prisma.RiskAdjustmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRiskAdjustment>
+          }
+          groupBy: {
+            args: Prisma.RiskAdjustmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RiskAdjustmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RiskAdjustmentCountArgs<ExtArgs>
+            result: $Utils.Optional<RiskAdjustmentCountAggregateOutputType> | number
+          }
+        }
+      }
+      ReserveFund: {
+        payload: Prisma.$ReserveFundPayload<ExtArgs>
+        fields: Prisma.ReserveFundFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReserveFundFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReserveFundPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReserveFundFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReserveFundPayload>
+          }
+          findFirst: {
+            args: Prisma.ReserveFundFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReserveFundPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReserveFundFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReserveFundPayload>
+          }
+          findMany: {
+            args: Prisma.ReserveFundFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReserveFundPayload>[]
+          }
+          create: {
+            args: Prisma.ReserveFundCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReserveFundPayload>
+          }
+          createMany: {
+            args: Prisma.ReserveFundCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReserveFundCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReserveFundPayload>[]
+          }
+          delete: {
+            args: Prisma.ReserveFundDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReserveFundPayload>
+          }
+          update: {
+            args: Prisma.ReserveFundUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReserveFundPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReserveFundDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReserveFundUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReserveFundUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReserveFundPayload>[]
+          }
+          upsert: {
+            args: Prisma.ReserveFundUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReserveFundPayload>
+          }
+          aggregate: {
+            args: Prisma.ReserveFundAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReserveFund>
+          }
+          groupBy: {
+            args: Prisma.ReserveFundGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReserveFundGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReserveFundCountArgs<ExtArgs>
+            result: $Utils.Optional<ReserveFundCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1641,6 +1836,8 @@ export namespace Prisma {
     invitation?: InvitationOmit
     demoRequest?: DemoRequestOmit
     payroll?: PayrollOmit
+    riskAdjustment?: RiskAdjustmentOmit
+    reserveFund?: ReserveFundOmit
   }
 
   /* Types for Logging */
@@ -4327,10 +4524,18 @@ export namespace Prisma {
 
   export type EmployerAvgAggregateOutputType = {
     marketerId: number | null
+    advancePercentageLimit: number | null
+    monthsOnPlatform: number | null
+    defaultRate: Decimal | null
+    totalAdvancesProcessed: number | null
   }
 
   export type EmployerSumAggregateOutputType = {
     marketerId: number | null
+    advancePercentageLimit: number | null
+    monthsOnPlatform: number | null
+    defaultRate: Decimal | null
+    totalAdvancesProcessed: number | null
   }
 
   export type EmployerMinAggregateOutputType = {
@@ -4342,6 +4547,13 @@ export namespace Prisma {
     isVerified: boolean | null
     verificationDate: Date | null
     verifiedBy: string | null
+    tier: $Enums.EnumEmployerTier | null
+    advancePercentageLimit: number | null
+    autoApproveAdvances: boolean | null
+    bankHistoryVerified: boolean | null
+    monthsOnPlatform: number | null
+    defaultRate: Decimal | null
+    totalAdvancesProcessed: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4355,6 +4567,13 @@ export namespace Prisma {
     isVerified: boolean | null
     verificationDate: Date | null
     verifiedBy: string | null
+    tier: $Enums.EnumEmployerTier | null
+    advancePercentageLimit: number | null
+    autoApproveAdvances: boolean | null
+    bankHistoryVerified: boolean | null
+    monthsOnPlatform: number | null
+    defaultRate: Decimal | null
+    totalAdvancesProcessed: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4368,6 +4587,13 @@ export namespace Prisma {
     isVerified: number
     verificationDate: number
     verifiedBy: number
+    tier: number
+    advancePercentageLimit: number
+    autoApproveAdvances: number
+    bankHistoryVerified: number
+    monthsOnPlatform: number
+    defaultRate: number
+    totalAdvancesProcessed: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -4376,10 +4602,18 @@ export namespace Prisma {
 
   export type EmployerAvgAggregateInputType = {
     marketerId?: true
+    advancePercentageLimit?: true
+    monthsOnPlatform?: true
+    defaultRate?: true
+    totalAdvancesProcessed?: true
   }
 
   export type EmployerSumAggregateInputType = {
     marketerId?: true
+    advancePercentageLimit?: true
+    monthsOnPlatform?: true
+    defaultRate?: true
+    totalAdvancesProcessed?: true
   }
 
   export type EmployerMinAggregateInputType = {
@@ -4391,6 +4625,13 @@ export namespace Prisma {
     isVerified?: true
     verificationDate?: true
     verifiedBy?: true
+    tier?: true
+    advancePercentageLimit?: true
+    autoApproveAdvances?: true
+    bankHistoryVerified?: true
+    monthsOnPlatform?: true
+    defaultRate?: true
+    totalAdvancesProcessed?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4404,6 +4645,13 @@ export namespace Prisma {
     isVerified?: true
     verificationDate?: true
     verifiedBy?: true
+    tier?: true
+    advancePercentageLimit?: true
+    autoApproveAdvances?: true
+    bankHistoryVerified?: true
+    monthsOnPlatform?: true
+    defaultRate?: true
+    totalAdvancesProcessed?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4417,6 +4665,13 @@ export namespace Prisma {
     isVerified?: true
     verificationDate?: true
     verifiedBy?: true
+    tier?: true
+    advancePercentageLimit?: true
+    autoApproveAdvances?: true
+    bankHistoryVerified?: true
+    monthsOnPlatform?: true
+    defaultRate?: true
+    totalAdvancesProcessed?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -4517,6 +4772,13 @@ export namespace Prisma {
     isVerified: boolean
     verificationDate: Date | null
     verifiedBy: string | null
+    tier: $Enums.EnumEmployerTier
+    advancePercentageLimit: number
+    autoApproveAdvances: boolean
+    bankHistoryVerified: boolean
+    monthsOnPlatform: number
+    defaultRate: Decimal
+    totalAdvancesProcessed: number
     createdAt: Date
     updatedAt: Date
     _count: EmployerCountAggregateOutputType | null
@@ -4549,6 +4811,13 @@ export namespace Prisma {
     isVerified?: boolean
     verificationDate?: boolean
     verifiedBy?: boolean
+    tier?: boolean
+    advancePercentageLimit?: boolean
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: boolean
+    defaultRate?: boolean
+    totalAdvancesProcessed?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -4569,6 +4838,13 @@ export namespace Prisma {
     isVerified?: boolean
     verificationDate?: boolean
     verifiedBy?: boolean
+    tier?: boolean
+    advancePercentageLimit?: boolean
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: boolean
+    defaultRate?: boolean
+    totalAdvancesProcessed?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -4585,6 +4861,13 @@ export namespace Prisma {
     isVerified?: boolean
     verificationDate?: boolean
     verifiedBy?: boolean
+    tier?: boolean
+    advancePercentageLimit?: boolean
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: boolean
+    defaultRate?: boolean
+    totalAdvancesProcessed?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -4601,11 +4884,18 @@ export namespace Prisma {
     isVerified?: boolean
     verificationDate?: boolean
     verifiedBy?: boolean
+    tier?: boolean
+    advancePercentageLimit?: boolean
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: boolean
+    defaultRate?: boolean
+    totalAdvancesProcessed?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type EmployerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "marketerId" | "companyName" | "registrationDate" | "isVerified" | "verificationDate" | "verifiedBy" | "createdAt" | "updatedAt", ExtArgs["result"]["employer"]>
+  export type EmployerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "marketerId" | "companyName" | "registrationDate" | "isVerified" | "verificationDate" | "verifiedBy" | "tier" | "advancePercentageLimit" | "autoApproveAdvances" | "bankHistoryVerified" | "monthsOnPlatform" | "defaultRate" | "totalAdvancesProcessed" | "createdAt" | "updatedAt", ExtArgs["result"]["employer"]>
   export type EmployerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     marketer?: boolean | Employer$marketerArgs<ExtArgs>
@@ -4645,6 +4935,13 @@ export namespace Prisma {
       isVerified: boolean
       verificationDate: Date | null
       verifiedBy: string | null
+      tier: $Enums.EnumEmployerTier
+      advancePercentageLimit: number
+      autoApproveAdvances: boolean
+      bankHistoryVerified: boolean
+      monthsOnPlatform: number
+      defaultRate: Prisma.Decimal
+      totalAdvancesProcessed: number
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["employer"]>
@@ -5084,6 +5381,13 @@ export namespace Prisma {
     readonly isVerified: FieldRef<"Employer", 'Boolean'>
     readonly verificationDate: FieldRef<"Employer", 'DateTime'>
     readonly verifiedBy: FieldRef<"Employer", 'String'>
+    readonly tier: FieldRef<"Employer", 'EnumEmployerTier'>
+    readonly advancePercentageLimit: FieldRef<"Employer", 'Int'>
+    readonly autoApproveAdvances: FieldRef<"Employer", 'Boolean'>
+    readonly bankHistoryVerified: FieldRef<"Employer", 'Boolean'>
+    readonly monthsOnPlatform: FieldRef<"Employer", 'Int'>
+    readonly defaultRate: FieldRef<"Employer", 'Decimal'>
+    readonly totalAdvancesProcessed: FieldRef<"Employer", 'Int'>
     readonly createdAt: FieldRef<"Employer", 'DateTime'>
     readonly updatedAt: FieldRef<"Employer", 'DateTime'>
   }
@@ -5624,10 +5928,20 @@ export namespace Prisma {
 
   export type EmployeeAvgAggregateOutputType = {
     salary: Decimal | null
+    daysWorked: number | null
+    creditScore: number | null
+    totalAdvancesTaken: number | null
+    totalAdvancesRepaid: number | null
+    currentAdvanceBalance: Decimal | null
   }
 
   export type EmployeeSumAggregateOutputType = {
     salary: Decimal | null
+    daysWorked: number | null
+    creditScore: number | null
+    totalAdvancesTaken: number | null
+    totalAdvancesRepaid: number | null
+    currentAdvanceBalance: Decimal | null
   }
 
   export type EmployeeMinAggregateOutputType = {
@@ -5644,6 +5958,14 @@ export namespace Prisma {
     kycReviewerId: string | null
     kycNotes: string | null
     salary: Decimal | null
+    startDate: Date | null
+    daysWorked: number | null
+    creditScore: number | null
+    totalAdvancesTaken: number | null
+    totalAdvancesRepaid: number | null
+    currentAdvanceBalance: Decimal | null
+    bankAccountNumber: string | null
+    bankName: string | null
     registrationDate: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -5669,6 +5991,14 @@ export namespace Prisma {
     kycReviewerId: string | null
     kycNotes: string | null
     salary: Decimal | null
+    startDate: Date | null
+    daysWorked: number | null
+    creditScore: number | null
+    totalAdvancesTaken: number | null
+    totalAdvancesRepaid: number | null
+    currentAdvanceBalance: Decimal | null
+    bankAccountNumber: string | null
+    bankName: string | null
     registrationDate: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -5694,6 +6024,14 @@ export namespace Prisma {
     kycReviewerId: number
     kycNotes: number
     salary: number
+    startDate: number
+    daysWorked: number
+    creditScore: number
+    totalAdvancesTaken: number
+    totalAdvancesRepaid: number
+    currentAdvanceBalance: number
+    bankAccountNumber: number
+    bankName: number
     registrationDate: number
     createdAt: number
     updatedAt: number
@@ -5709,10 +6047,20 @@ export namespace Prisma {
 
   export type EmployeeAvgAggregateInputType = {
     salary?: true
+    daysWorked?: true
+    creditScore?: true
+    totalAdvancesTaken?: true
+    totalAdvancesRepaid?: true
+    currentAdvanceBalance?: true
   }
 
   export type EmployeeSumAggregateInputType = {
     salary?: true
+    daysWorked?: true
+    creditScore?: true
+    totalAdvancesTaken?: true
+    totalAdvancesRepaid?: true
+    currentAdvanceBalance?: true
   }
 
   export type EmployeeMinAggregateInputType = {
@@ -5729,6 +6077,14 @@ export namespace Prisma {
     kycReviewerId?: true
     kycNotes?: true
     salary?: true
+    startDate?: true
+    daysWorked?: true
+    creditScore?: true
+    totalAdvancesTaken?: true
+    totalAdvancesRepaid?: true
+    currentAdvanceBalance?: true
+    bankAccountNumber?: true
+    bankName?: true
     registrationDate?: true
     createdAt?: true
     updatedAt?: true
@@ -5754,6 +6110,14 @@ export namespace Prisma {
     kycReviewerId?: true
     kycNotes?: true
     salary?: true
+    startDate?: true
+    daysWorked?: true
+    creditScore?: true
+    totalAdvancesTaken?: true
+    totalAdvancesRepaid?: true
+    currentAdvanceBalance?: true
+    bankAccountNumber?: true
+    bankName?: true
     registrationDate?: true
     createdAt?: true
     updatedAt?: true
@@ -5779,6 +6143,14 @@ export namespace Prisma {
     kycReviewerId?: true
     kycNotes?: true
     salary?: true
+    startDate?: true
+    daysWorked?: true
+    creditScore?: true
+    totalAdvancesTaken?: true
+    totalAdvancesRepaid?: true
+    currentAdvanceBalance?: true
+    bankAccountNumber?: true
+    bankName?: true
     registrationDate?: true
     createdAt?: true
     updatedAt?: true
@@ -5891,6 +6263,14 @@ export namespace Prisma {
     kycReviewerId: string | null
     kycNotes: string | null
     salary: Decimal | null
+    startDate: Date | null
+    daysWorked: number
+    creditScore: number
+    totalAdvancesTaken: number
+    totalAdvancesRepaid: number
+    currentAdvanceBalance: Decimal
+    bankAccountNumber: string | null
+    bankName: string | null
     registrationDate: Date
     createdAt: Date
     updatedAt: Date
@@ -5935,6 +6315,14 @@ export namespace Prisma {
     kycReviewerId?: boolean
     kycNotes?: boolean
     salary?: boolean
+    startDate?: boolean
+    daysWorked?: boolean
+    creditScore?: boolean
+    totalAdvancesTaken?: boolean
+    totalAdvancesRepaid?: boolean
+    currentAdvanceBalance?: boolean
+    bankAccountNumber?: boolean
+    bankName?: boolean
     registrationDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -5965,6 +6353,14 @@ export namespace Prisma {
     kycReviewerId?: boolean
     kycNotes?: boolean
     salary?: boolean
+    startDate?: boolean
+    daysWorked?: boolean
+    creditScore?: boolean
+    totalAdvancesTaken?: boolean
+    totalAdvancesRepaid?: boolean
+    currentAdvanceBalance?: boolean
+    bankAccountNumber?: boolean
+    bankName?: boolean
     registrationDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -5993,6 +6389,14 @@ export namespace Prisma {
     kycReviewerId?: boolean
     kycNotes?: boolean
     salary?: boolean
+    startDate?: boolean
+    daysWorked?: boolean
+    creditScore?: boolean
+    totalAdvancesTaken?: boolean
+    totalAdvancesRepaid?: boolean
+    currentAdvanceBalance?: boolean
+    bankAccountNumber?: boolean
+    bankName?: boolean
     registrationDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -6021,6 +6425,14 @@ export namespace Prisma {
     kycReviewerId?: boolean
     kycNotes?: boolean
     salary?: boolean
+    startDate?: boolean
+    daysWorked?: boolean
+    creditScore?: boolean
+    totalAdvancesTaken?: boolean
+    totalAdvancesRepaid?: boolean
+    currentAdvanceBalance?: boolean
+    bankAccountNumber?: boolean
+    bankName?: boolean
     registrationDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -6032,7 +6444,7 @@ export namespace Prisma {
     termsAcceptedAt?: boolean
   }
 
-  export type EmployeeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "employerId" | "kycStage" | "kycStageLevel1Completed" | "kycStageLevel2Completed" | "kycStageLevel3Completed" | "kycStatus" | "kycSubmittedAt" | "kycReviewedAt" | "kycReviewerId" | "kycNotes" | "salary" | "registrationDate" | "createdAt" | "updatedAt" | "nin" | "ninVerified" | "bvn" | "bvnVerified" | "termsAccepted" | "termsAcceptedAt", ExtArgs["result"]["employee"]>
+  export type EmployeeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "employerId" | "kycStage" | "kycStageLevel1Completed" | "kycStageLevel2Completed" | "kycStageLevel3Completed" | "kycStatus" | "kycSubmittedAt" | "kycReviewedAt" | "kycReviewerId" | "kycNotes" | "salary" | "startDate" | "daysWorked" | "creditScore" | "totalAdvancesTaken" | "totalAdvancesRepaid" | "currentAdvanceBalance" | "bankAccountNumber" | "bankName" | "registrationDate" | "createdAt" | "updatedAt" | "nin" | "ninVerified" | "bvn" | "bvnVerified" | "termsAccepted" | "termsAcceptedAt", ExtArgs["result"]["employee"]>
   export type EmployeeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     employer?: boolean | EmployerDefaultArgs<ExtArgs>
@@ -6073,6 +6485,14 @@ export namespace Prisma {
       kycReviewerId: string | null
       kycNotes: string | null
       salary: Prisma.Decimal | null
+      startDate: Date | null
+      daysWorked: number
+      creditScore: number
+      totalAdvancesTaken: number
+      totalAdvancesRepaid: number
+      currentAdvanceBalance: Prisma.Decimal
+      bankAccountNumber: string | null
+      bankName: string | null
       registrationDate: Date
       createdAt: Date
       updatedAt: Date
@@ -6522,6 +6942,14 @@ export namespace Prisma {
     readonly kycReviewerId: FieldRef<"Employee", 'String'>
     readonly kycNotes: FieldRef<"Employee", 'String'>
     readonly salary: FieldRef<"Employee", 'Decimal'>
+    readonly startDate: FieldRef<"Employee", 'DateTime'>
+    readonly daysWorked: FieldRef<"Employee", 'Int'>
+    readonly creditScore: FieldRef<"Employee", 'Int'>
+    readonly totalAdvancesTaken: FieldRef<"Employee", 'Int'>
+    readonly totalAdvancesRepaid: FieldRef<"Employee", 'Int'>
+    readonly currentAdvanceBalance: FieldRef<"Employee", 'Decimal'>
+    readonly bankAccountNumber: FieldRef<"Employee", 'String'>
+    readonly bankName: FieldRef<"Employee", 'String'>
     readonly registrationDate: FieldRef<"Employee", 'DateTime'>
     readonly createdAt: FieldRef<"Employee", 'DateTime'>
     readonly updatedAt: FieldRef<"Employee", 'DateTime'>
@@ -7002,26 +7430,53 @@ export namespace Prisma {
 
   export type AdvanceAvgAggregateOutputType = {
     amount: Decimal | null
+    serviceFee: Decimal | null
+    serviceFeePercentage: Decimal | null
+    netAmount: Decimal | null
     repaymentAmount: Decimal | null
+    earnedToDate: Decimal | null
+    availableAdvance: Decimal | null
+    poolUtilizationAtRequest: Decimal | null
+    riskScore: number | null
   }
 
   export type AdvanceSumAggregateOutputType = {
     amount: Decimal | null
+    serviceFee: Decimal | null
+    serviceFeePercentage: Decimal | null
+    netAmount: Decimal | null
     repaymentAmount: Decimal | null
+    earnedToDate: Decimal | null
+    availableAdvance: Decimal | null
+    poolUtilizationAtRequest: Decimal | null
+    riskScore: number | null
   }
 
   export type AdvanceMinAggregateOutputType = {
     id: string | null
     employeeId: string | null
+    employerId: string | null
     amount: Decimal | null
+    serviceFee: Decimal | null
+    serviceFeePercentage: Decimal | null
+    netAmount: Decimal | null
     repaymentAmount: Decimal | null
+    earnedToDate: Decimal | null
+    availableAdvance: Decimal | null
     requestDate: Date | null
     approvalDate: Date | null
+    disbursementDate: Date | null
     paymentDate: Date | null
+    repaymentDate: Date | null
     dueDate: Date | null
     status: $Enums.EnumAdvancesStatus | null
+    approvedBy: string | null
+    rejectedBy: string | null
+    rejectionReason: string | null
     transactionHash: string | null
     repaymentTransactionHash: string | null
+    poolUtilizationAtRequest: Decimal | null
+    riskScore: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7029,15 +7484,28 @@ export namespace Prisma {
   export type AdvanceMaxAggregateOutputType = {
     id: string | null
     employeeId: string | null
+    employerId: string | null
     amount: Decimal | null
+    serviceFee: Decimal | null
+    serviceFeePercentage: Decimal | null
+    netAmount: Decimal | null
     repaymentAmount: Decimal | null
+    earnedToDate: Decimal | null
+    availableAdvance: Decimal | null
     requestDate: Date | null
     approvalDate: Date | null
+    disbursementDate: Date | null
     paymentDate: Date | null
+    repaymentDate: Date | null
     dueDate: Date | null
     status: $Enums.EnumAdvancesStatus | null
+    approvedBy: string | null
+    rejectedBy: string | null
+    rejectionReason: string | null
     transactionHash: string | null
     repaymentTransactionHash: string | null
+    poolUtilizationAtRequest: Decimal | null
+    riskScore: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7045,15 +7513,28 @@ export namespace Prisma {
   export type AdvanceCountAggregateOutputType = {
     id: number
     employeeId: number
+    employerId: number
     amount: number
+    serviceFee: number
+    serviceFeePercentage: number
+    netAmount: number
     repaymentAmount: number
+    earnedToDate: number
+    availableAdvance: number
     requestDate: number
     approvalDate: number
+    disbursementDate: number
     paymentDate: number
+    repaymentDate: number
     dueDate: number
     status: number
+    approvedBy: number
+    rejectedBy: number
+    rejectionReason: number
     transactionHash: number
     repaymentTransactionHash: number
+    poolUtilizationAtRequest: number
+    riskScore: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -7062,26 +7543,53 @@ export namespace Prisma {
 
   export type AdvanceAvgAggregateInputType = {
     amount?: true
+    serviceFee?: true
+    serviceFeePercentage?: true
+    netAmount?: true
     repaymentAmount?: true
+    earnedToDate?: true
+    availableAdvance?: true
+    poolUtilizationAtRequest?: true
+    riskScore?: true
   }
 
   export type AdvanceSumAggregateInputType = {
     amount?: true
+    serviceFee?: true
+    serviceFeePercentage?: true
+    netAmount?: true
     repaymentAmount?: true
+    earnedToDate?: true
+    availableAdvance?: true
+    poolUtilizationAtRequest?: true
+    riskScore?: true
   }
 
   export type AdvanceMinAggregateInputType = {
     id?: true
     employeeId?: true
+    employerId?: true
     amount?: true
+    serviceFee?: true
+    serviceFeePercentage?: true
+    netAmount?: true
     repaymentAmount?: true
+    earnedToDate?: true
+    availableAdvance?: true
     requestDate?: true
     approvalDate?: true
+    disbursementDate?: true
     paymentDate?: true
+    repaymentDate?: true
     dueDate?: true
     status?: true
+    approvedBy?: true
+    rejectedBy?: true
+    rejectionReason?: true
     transactionHash?: true
     repaymentTransactionHash?: true
+    poolUtilizationAtRequest?: true
+    riskScore?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7089,15 +7597,28 @@ export namespace Prisma {
   export type AdvanceMaxAggregateInputType = {
     id?: true
     employeeId?: true
+    employerId?: true
     amount?: true
+    serviceFee?: true
+    serviceFeePercentage?: true
+    netAmount?: true
     repaymentAmount?: true
+    earnedToDate?: true
+    availableAdvance?: true
     requestDate?: true
     approvalDate?: true
+    disbursementDate?: true
     paymentDate?: true
+    repaymentDate?: true
     dueDate?: true
     status?: true
+    approvedBy?: true
+    rejectedBy?: true
+    rejectionReason?: true
     transactionHash?: true
     repaymentTransactionHash?: true
+    poolUtilizationAtRequest?: true
+    riskScore?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7105,15 +7626,28 @@ export namespace Prisma {
   export type AdvanceCountAggregateInputType = {
     id?: true
     employeeId?: true
+    employerId?: true
     amount?: true
+    serviceFee?: true
+    serviceFeePercentage?: true
+    netAmount?: true
     repaymentAmount?: true
+    earnedToDate?: true
+    availableAdvance?: true
     requestDate?: true
     approvalDate?: true
+    disbursementDate?: true
     paymentDate?: true
+    repaymentDate?: true
     dueDate?: true
     status?: true
+    approvedBy?: true
+    rejectedBy?: true
+    rejectionReason?: true
     transactionHash?: true
     repaymentTransactionHash?: true
+    poolUtilizationAtRequest?: true
+    riskScore?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -7208,15 +7742,28 @@ export namespace Prisma {
   export type AdvanceGroupByOutputType = {
     id: string
     employeeId: string
+    employerId: string
     amount: Decimal
+    serviceFee: Decimal
+    serviceFeePercentage: Decimal
+    netAmount: Decimal
     repaymentAmount: Decimal
+    earnedToDate: Decimal
+    availableAdvance: Decimal
     requestDate: Date
     approvalDate: Date | null
+    disbursementDate: Date | null
     paymentDate: Date | null
+    repaymentDate: Date | null
     dueDate: Date
     status: $Enums.EnumAdvancesStatus
+    approvedBy: string | null
+    rejectedBy: string | null
+    rejectionReason: string | null
     transactionHash: string | null
     repaymentTransactionHash: string | null
+    poolUtilizationAtRequest: Decimal | null
+    riskScore: number | null
     createdAt: Date
     updatedAt: Date
     _count: AdvanceCountAggregateOutputType | null
@@ -7243,15 +7790,28 @@ export namespace Prisma {
   export type AdvanceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     employeeId?: boolean
+    employerId?: boolean
     amount?: boolean
+    serviceFee?: boolean
+    serviceFeePercentage?: boolean
+    netAmount?: boolean
     repaymentAmount?: boolean
+    earnedToDate?: boolean
+    availableAdvance?: boolean
     requestDate?: boolean
     approvalDate?: boolean
+    disbursementDate?: boolean
     paymentDate?: boolean
+    repaymentDate?: boolean
     dueDate?: boolean
     status?: boolean
+    approvedBy?: boolean
+    rejectedBy?: boolean
+    rejectionReason?: boolean
     transactionHash?: boolean
     repaymentTransactionHash?: boolean
+    poolUtilizationAtRequest?: boolean
+    riskScore?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
@@ -7260,15 +7820,28 @@ export namespace Prisma {
   export type AdvanceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     employeeId?: boolean
+    employerId?: boolean
     amount?: boolean
+    serviceFee?: boolean
+    serviceFeePercentage?: boolean
+    netAmount?: boolean
     repaymentAmount?: boolean
+    earnedToDate?: boolean
+    availableAdvance?: boolean
     requestDate?: boolean
     approvalDate?: boolean
+    disbursementDate?: boolean
     paymentDate?: boolean
+    repaymentDate?: boolean
     dueDate?: boolean
     status?: boolean
+    approvedBy?: boolean
+    rejectedBy?: boolean
+    rejectionReason?: boolean
     transactionHash?: boolean
     repaymentTransactionHash?: boolean
+    poolUtilizationAtRequest?: boolean
+    riskScore?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
@@ -7277,15 +7850,28 @@ export namespace Prisma {
   export type AdvanceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     employeeId?: boolean
+    employerId?: boolean
     amount?: boolean
+    serviceFee?: boolean
+    serviceFeePercentage?: boolean
+    netAmount?: boolean
     repaymentAmount?: boolean
+    earnedToDate?: boolean
+    availableAdvance?: boolean
     requestDate?: boolean
     approvalDate?: boolean
+    disbursementDate?: boolean
     paymentDate?: boolean
+    repaymentDate?: boolean
     dueDate?: boolean
     status?: boolean
+    approvedBy?: boolean
+    rejectedBy?: boolean
+    rejectionReason?: boolean
     transactionHash?: boolean
     repaymentTransactionHash?: boolean
+    poolUtilizationAtRequest?: boolean
+    riskScore?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
@@ -7294,20 +7880,33 @@ export namespace Prisma {
   export type AdvanceSelectScalar = {
     id?: boolean
     employeeId?: boolean
+    employerId?: boolean
     amount?: boolean
+    serviceFee?: boolean
+    serviceFeePercentage?: boolean
+    netAmount?: boolean
     repaymentAmount?: boolean
+    earnedToDate?: boolean
+    availableAdvance?: boolean
     requestDate?: boolean
     approvalDate?: boolean
+    disbursementDate?: boolean
     paymentDate?: boolean
+    repaymentDate?: boolean
     dueDate?: boolean
     status?: boolean
+    approvedBy?: boolean
+    rejectedBy?: boolean
+    rejectionReason?: boolean
     transactionHash?: boolean
     repaymentTransactionHash?: boolean
+    poolUtilizationAtRequest?: boolean
+    riskScore?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type AdvanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "amount" | "repaymentAmount" | "requestDate" | "approvalDate" | "paymentDate" | "dueDate" | "status" | "transactionHash" | "repaymentTransactionHash" | "createdAt" | "updatedAt", ExtArgs["result"]["advance"]>
+  export type AdvanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employeeId" | "employerId" | "amount" | "serviceFee" | "serviceFeePercentage" | "netAmount" | "repaymentAmount" | "earnedToDate" | "availableAdvance" | "requestDate" | "approvalDate" | "disbursementDate" | "paymentDate" | "repaymentDate" | "dueDate" | "status" | "approvedBy" | "rejectedBy" | "rejectionReason" | "transactionHash" | "repaymentTransactionHash" | "poolUtilizationAtRequest" | "riskScore" | "createdAt" | "updatedAt", ExtArgs["result"]["advance"]>
   export type AdvanceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     employee?: boolean | EmployeeDefaultArgs<ExtArgs>
   }
@@ -7326,15 +7925,28 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       employeeId: string
+      employerId: string
       amount: Prisma.Decimal
+      serviceFee: Prisma.Decimal
+      serviceFeePercentage: Prisma.Decimal
+      netAmount: Prisma.Decimal
       repaymentAmount: Prisma.Decimal
+      earnedToDate: Prisma.Decimal
+      availableAdvance: Prisma.Decimal
       requestDate: Date
       approvalDate: Date | null
+      disbursementDate: Date | null
       paymentDate: Date | null
+      repaymentDate: Date | null
       dueDate: Date
       status: $Enums.EnumAdvancesStatus
+      approvedBy: string | null
+      rejectedBy: string | null
+      rejectionReason: string | null
       transactionHash: string | null
       repaymentTransactionHash: string | null
+      poolUtilizationAtRequest: Prisma.Decimal | null
+      riskScore: number | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["advance"]>
@@ -7763,15 +8375,28 @@ export namespace Prisma {
   interface AdvanceFieldRefs {
     readonly id: FieldRef<"Advance", 'String'>
     readonly employeeId: FieldRef<"Advance", 'String'>
+    readonly employerId: FieldRef<"Advance", 'String'>
     readonly amount: FieldRef<"Advance", 'Decimal'>
+    readonly serviceFee: FieldRef<"Advance", 'Decimal'>
+    readonly serviceFeePercentage: FieldRef<"Advance", 'Decimal'>
+    readonly netAmount: FieldRef<"Advance", 'Decimal'>
     readonly repaymentAmount: FieldRef<"Advance", 'Decimal'>
+    readonly earnedToDate: FieldRef<"Advance", 'Decimal'>
+    readonly availableAdvance: FieldRef<"Advance", 'Decimal'>
     readonly requestDate: FieldRef<"Advance", 'DateTime'>
     readonly approvalDate: FieldRef<"Advance", 'DateTime'>
+    readonly disbursementDate: FieldRef<"Advance", 'DateTime'>
     readonly paymentDate: FieldRef<"Advance", 'DateTime'>
+    readonly repaymentDate: FieldRef<"Advance", 'DateTime'>
     readonly dueDate: FieldRef<"Advance", 'DateTime'>
     readonly status: FieldRef<"Advance", 'EnumAdvancesStatus'>
+    readonly approvedBy: FieldRef<"Advance", 'String'>
+    readonly rejectedBy: FieldRef<"Advance", 'String'>
+    readonly rejectionReason: FieldRef<"Advance", 'String'>
     readonly transactionHash: FieldRef<"Advance", 'String'>
     readonly repaymentTransactionHash: FieldRef<"Advance", 'String'>
+    readonly poolUtilizationAtRequest: FieldRef<"Advance", 'Decimal'>
+    readonly riskScore: FieldRef<"Advance", 'Int'>
     readonly createdAt: FieldRef<"Advance", 'DateTime'>
     readonly updatedAt: FieldRef<"Advance", 'DateTime'>
   }
@@ -12674,6 +13299,2176 @@ export namespace Prisma {
 
 
   /**
+   * Model RiskAdjustment
+   */
+
+  export type AggregateRiskAdjustment = {
+    _count: RiskAdjustmentCountAggregateOutputType | null
+    _avg: RiskAdjustmentAvgAggregateOutputType | null
+    _sum: RiskAdjustmentSumAggregateOutputType | null
+    _min: RiskAdjustmentMinAggregateOutputType | null
+    _max: RiskAdjustmentMaxAggregateOutputType | null
+  }
+
+  export type RiskAdjustmentAvgAggregateOutputType = {
+    previousValue: Decimal | null
+    newValue: Decimal | null
+    triggerValue: Decimal | null
+  }
+
+  export type RiskAdjustmentSumAggregateOutputType = {
+    previousValue: Decimal | null
+    newValue: Decimal | null
+    triggerValue: Decimal | null
+  }
+
+  export type RiskAdjustmentMinAggregateOutputType = {
+    id: string | null
+    employerId: string | null
+    adjustmentType: string | null
+    previousValue: Decimal | null
+    newValue: Decimal | null
+    reason: string | null
+    triggerMetric: string | null
+    triggerValue: Decimal | null
+    adjustmentDate: Date | null
+    createdAt: Date | null
+  }
+
+  export type RiskAdjustmentMaxAggregateOutputType = {
+    id: string | null
+    employerId: string | null
+    adjustmentType: string | null
+    previousValue: Decimal | null
+    newValue: Decimal | null
+    reason: string | null
+    triggerMetric: string | null
+    triggerValue: Decimal | null
+    adjustmentDate: Date | null
+    createdAt: Date | null
+  }
+
+  export type RiskAdjustmentCountAggregateOutputType = {
+    id: number
+    employerId: number
+    adjustmentType: number
+    previousValue: number
+    newValue: number
+    reason: number
+    triggerMetric: number
+    triggerValue: number
+    adjustmentDate: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type RiskAdjustmentAvgAggregateInputType = {
+    previousValue?: true
+    newValue?: true
+    triggerValue?: true
+  }
+
+  export type RiskAdjustmentSumAggregateInputType = {
+    previousValue?: true
+    newValue?: true
+    triggerValue?: true
+  }
+
+  export type RiskAdjustmentMinAggregateInputType = {
+    id?: true
+    employerId?: true
+    adjustmentType?: true
+    previousValue?: true
+    newValue?: true
+    reason?: true
+    triggerMetric?: true
+    triggerValue?: true
+    adjustmentDate?: true
+    createdAt?: true
+  }
+
+  export type RiskAdjustmentMaxAggregateInputType = {
+    id?: true
+    employerId?: true
+    adjustmentType?: true
+    previousValue?: true
+    newValue?: true
+    reason?: true
+    triggerMetric?: true
+    triggerValue?: true
+    adjustmentDate?: true
+    createdAt?: true
+  }
+
+  export type RiskAdjustmentCountAggregateInputType = {
+    id?: true
+    employerId?: true
+    adjustmentType?: true
+    previousValue?: true
+    newValue?: true
+    reason?: true
+    triggerMetric?: true
+    triggerValue?: true
+    adjustmentDate?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type RiskAdjustmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RiskAdjustment to aggregate.
+     */
+    where?: RiskAdjustmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RiskAdjustments to fetch.
+     */
+    orderBy?: RiskAdjustmentOrderByWithRelationInput | RiskAdjustmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RiskAdjustmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RiskAdjustments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RiskAdjustments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RiskAdjustments
+    **/
+    _count?: true | RiskAdjustmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RiskAdjustmentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RiskAdjustmentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RiskAdjustmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RiskAdjustmentMaxAggregateInputType
+  }
+
+  export type GetRiskAdjustmentAggregateType<T extends RiskAdjustmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateRiskAdjustment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRiskAdjustment[P]>
+      : GetScalarType<T[P], AggregateRiskAdjustment[P]>
+  }
+
+
+
+
+  export type RiskAdjustmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RiskAdjustmentWhereInput
+    orderBy?: RiskAdjustmentOrderByWithAggregationInput | RiskAdjustmentOrderByWithAggregationInput[]
+    by: RiskAdjustmentScalarFieldEnum[] | RiskAdjustmentScalarFieldEnum
+    having?: RiskAdjustmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RiskAdjustmentCountAggregateInputType | true
+    _avg?: RiskAdjustmentAvgAggregateInputType
+    _sum?: RiskAdjustmentSumAggregateInputType
+    _min?: RiskAdjustmentMinAggregateInputType
+    _max?: RiskAdjustmentMaxAggregateInputType
+  }
+
+  export type RiskAdjustmentGroupByOutputType = {
+    id: string
+    employerId: string | null
+    adjustmentType: string
+    previousValue: Decimal
+    newValue: Decimal
+    reason: string
+    triggerMetric: string | null
+    triggerValue: Decimal | null
+    adjustmentDate: Date
+    createdAt: Date
+    _count: RiskAdjustmentCountAggregateOutputType | null
+    _avg: RiskAdjustmentAvgAggregateOutputType | null
+    _sum: RiskAdjustmentSumAggregateOutputType | null
+    _min: RiskAdjustmentMinAggregateOutputType | null
+    _max: RiskAdjustmentMaxAggregateOutputType | null
+  }
+
+  type GetRiskAdjustmentGroupByPayload<T extends RiskAdjustmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RiskAdjustmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RiskAdjustmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RiskAdjustmentGroupByOutputType[P]>
+            : GetScalarType<T[P], RiskAdjustmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RiskAdjustmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employerId?: boolean
+    adjustmentType?: boolean
+    previousValue?: boolean
+    newValue?: boolean
+    reason?: boolean
+    triggerMetric?: boolean
+    triggerValue?: boolean
+    adjustmentDate?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["riskAdjustment"]>
+
+  export type RiskAdjustmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employerId?: boolean
+    adjustmentType?: boolean
+    previousValue?: boolean
+    newValue?: boolean
+    reason?: boolean
+    triggerMetric?: boolean
+    triggerValue?: boolean
+    adjustmentDate?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["riskAdjustment"]>
+
+  export type RiskAdjustmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    employerId?: boolean
+    adjustmentType?: boolean
+    previousValue?: boolean
+    newValue?: boolean
+    reason?: boolean
+    triggerMetric?: boolean
+    triggerValue?: boolean
+    adjustmentDate?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["riskAdjustment"]>
+
+  export type RiskAdjustmentSelectScalar = {
+    id?: boolean
+    employerId?: boolean
+    adjustmentType?: boolean
+    previousValue?: boolean
+    newValue?: boolean
+    reason?: boolean
+    triggerMetric?: boolean
+    triggerValue?: boolean
+    adjustmentDate?: boolean
+    createdAt?: boolean
+  }
+
+  export type RiskAdjustmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "employerId" | "adjustmentType" | "previousValue" | "newValue" | "reason" | "triggerMetric" | "triggerValue" | "adjustmentDate" | "createdAt", ExtArgs["result"]["riskAdjustment"]>
+
+  export type $RiskAdjustmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RiskAdjustment"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      employerId: string | null
+      adjustmentType: string
+      previousValue: Prisma.Decimal
+      newValue: Prisma.Decimal
+      reason: string
+      triggerMetric: string | null
+      triggerValue: Prisma.Decimal | null
+      adjustmentDate: Date
+      createdAt: Date
+    }, ExtArgs["result"]["riskAdjustment"]>
+    composites: {}
+  }
+
+  type RiskAdjustmentGetPayload<S extends boolean | null | undefined | RiskAdjustmentDefaultArgs> = $Result.GetResult<Prisma.$RiskAdjustmentPayload, S>
+
+  type RiskAdjustmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RiskAdjustmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RiskAdjustmentCountAggregateInputType | true
+    }
+
+  export interface RiskAdjustmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RiskAdjustment'], meta: { name: 'RiskAdjustment' } }
+    /**
+     * Find zero or one RiskAdjustment that matches the filter.
+     * @param {RiskAdjustmentFindUniqueArgs} args - Arguments to find a RiskAdjustment
+     * @example
+     * // Get one RiskAdjustment
+     * const riskAdjustment = await prisma.riskAdjustment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RiskAdjustmentFindUniqueArgs>(args: SelectSubset<T, RiskAdjustmentFindUniqueArgs<ExtArgs>>): Prisma__RiskAdjustmentClient<$Result.GetResult<Prisma.$RiskAdjustmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RiskAdjustment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RiskAdjustmentFindUniqueOrThrowArgs} args - Arguments to find a RiskAdjustment
+     * @example
+     * // Get one RiskAdjustment
+     * const riskAdjustment = await prisma.riskAdjustment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RiskAdjustmentFindUniqueOrThrowArgs>(args: SelectSubset<T, RiskAdjustmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RiskAdjustmentClient<$Result.GetResult<Prisma.$RiskAdjustmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RiskAdjustment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RiskAdjustmentFindFirstArgs} args - Arguments to find a RiskAdjustment
+     * @example
+     * // Get one RiskAdjustment
+     * const riskAdjustment = await prisma.riskAdjustment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RiskAdjustmentFindFirstArgs>(args?: SelectSubset<T, RiskAdjustmentFindFirstArgs<ExtArgs>>): Prisma__RiskAdjustmentClient<$Result.GetResult<Prisma.$RiskAdjustmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RiskAdjustment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RiskAdjustmentFindFirstOrThrowArgs} args - Arguments to find a RiskAdjustment
+     * @example
+     * // Get one RiskAdjustment
+     * const riskAdjustment = await prisma.riskAdjustment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RiskAdjustmentFindFirstOrThrowArgs>(args?: SelectSubset<T, RiskAdjustmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__RiskAdjustmentClient<$Result.GetResult<Prisma.$RiskAdjustmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RiskAdjustments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RiskAdjustmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RiskAdjustments
+     * const riskAdjustments = await prisma.riskAdjustment.findMany()
+     * 
+     * // Get first 10 RiskAdjustments
+     * const riskAdjustments = await prisma.riskAdjustment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const riskAdjustmentWithIdOnly = await prisma.riskAdjustment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RiskAdjustmentFindManyArgs>(args?: SelectSubset<T, RiskAdjustmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RiskAdjustmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RiskAdjustment.
+     * @param {RiskAdjustmentCreateArgs} args - Arguments to create a RiskAdjustment.
+     * @example
+     * // Create one RiskAdjustment
+     * const RiskAdjustment = await prisma.riskAdjustment.create({
+     *   data: {
+     *     // ... data to create a RiskAdjustment
+     *   }
+     * })
+     * 
+     */
+    create<T extends RiskAdjustmentCreateArgs>(args: SelectSubset<T, RiskAdjustmentCreateArgs<ExtArgs>>): Prisma__RiskAdjustmentClient<$Result.GetResult<Prisma.$RiskAdjustmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RiskAdjustments.
+     * @param {RiskAdjustmentCreateManyArgs} args - Arguments to create many RiskAdjustments.
+     * @example
+     * // Create many RiskAdjustments
+     * const riskAdjustment = await prisma.riskAdjustment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RiskAdjustmentCreateManyArgs>(args?: SelectSubset<T, RiskAdjustmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RiskAdjustments and returns the data saved in the database.
+     * @param {RiskAdjustmentCreateManyAndReturnArgs} args - Arguments to create many RiskAdjustments.
+     * @example
+     * // Create many RiskAdjustments
+     * const riskAdjustment = await prisma.riskAdjustment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RiskAdjustments and only return the `id`
+     * const riskAdjustmentWithIdOnly = await prisma.riskAdjustment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RiskAdjustmentCreateManyAndReturnArgs>(args?: SelectSubset<T, RiskAdjustmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RiskAdjustmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RiskAdjustment.
+     * @param {RiskAdjustmentDeleteArgs} args - Arguments to delete one RiskAdjustment.
+     * @example
+     * // Delete one RiskAdjustment
+     * const RiskAdjustment = await prisma.riskAdjustment.delete({
+     *   where: {
+     *     // ... filter to delete one RiskAdjustment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RiskAdjustmentDeleteArgs>(args: SelectSubset<T, RiskAdjustmentDeleteArgs<ExtArgs>>): Prisma__RiskAdjustmentClient<$Result.GetResult<Prisma.$RiskAdjustmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RiskAdjustment.
+     * @param {RiskAdjustmentUpdateArgs} args - Arguments to update one RiskAdjustment.
+     * @example
+     * // Update one RiskAdjustment
+     * const riskAdjustment = await prisma.riskAdjustment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RiskAdjustmentUpdateArgs>(args: SelectSubset<T, RiskAdjustmentUpdateArgs<ExtArgs>>): Prisma__RiskAdjustmentClient<$Result.GetResult<Prisma.$RiskAdjustmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RiskAdjustments.
+     * @param {RiskAdjustmentDeleteManyArgs} args - Arguments to filter RiskAdjustments to delete.
+     * @example
+     * // Delete a few RiskAdjustments
+     * const { count } = await prisma.riskAdjustment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RiskAdjustmentDeleteManyArgs>(args?: SelectSubset<T, RiskAdjustmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RiskAdjustments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RiskAdjustmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RiskAdjustments
+     * const riskAdjustment = await prisma.riskAdjustment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RiskAdjustmentUpdateManyArgs>(args: SelectSubset<T, RiskAdjustmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RiskAdjustments and returns the data updated in the database.
+     * @param {RiskAdjustmentUpdateManyAndReturnArgs} args - Arguments to update many RiskAdjustments.
+     * @example
+     * // Update many RiskAdjustments
+     * const riskAdjustment = await prisma.riskAdjustment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RiskAdjustments and only return the `id`
+     * const riskAdjustmentWithIdOnly = await prisma.riskAdjustment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RiskAdjustmentUpdateManyAndReturnArgs>(args: SelectSubset<T, RiskAdjustmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RiskAdjustmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RiskAdjustment.
+     * @param {RiskAdjustmentUpsertArgs} args - Arguments to update or create a RiskAdjustment.
+     * @example
+     * // Update or create a RiskAdjustment
+     * const riskAdjustment = await prisma.riskAdjustment.upsert({
+     *   create: {
+     *     // ... data to create a RiskAdjustment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RiskAdjustment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RiskAdjustmentUpsertArgs>(args: SelectSubset<T, RiskAdjustmentUpsertArgs<ExtArgs>>): Prisma__RiskAdjustmentClient<$Result.GetResult<Prisma.$RiskAdjustmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RiskAdjustments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RiskAdjustmentCountArgs} args - Arguments to filter RiskAdjustments to count.
+     * @example
+     * // Count the number of RiskAdjustments
+     * const count = await prisma.riskAdjustment.count({
+     *   where: {
+     *     // ... the filter for the RiskAdjustments we want to count
+     *   }
+     * })
+    **/
+    count<T extends RiskAdjustmentCountArgs>(
+      args?: Subset<T, RiskAdjustmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RiskAdjustmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RiskAdjustment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RiskAdjustmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RiskAdjustmentAggregateArgs>(args: Subset<T, RiskAdjustmentAggregateArgs>): Prisma.PrismaPromise<GetRiskAdjustmentAggregateType<T>>
+
+    /**
+     * Group by RiskAdjustment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RiskAdjustmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RiskAdjustmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RiskAdjustmentGroupByArgs['orderBy'] }
+        : { orderBy?: RiskAdjustmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RiskAdjustmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRiskAdjustmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RiskAdjustment model
+   */
+  readonly fields: RiskAdjustmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RiskAdjustment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RiskAdjustmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RiskAdjustment model
+   */
+  interface RiskAdjustmentFieldRefs {
+    readonly id: FieldRef<"RiskAdjustment", 'String'>
+    readonly employerId: FieldRef<"RiskAdjustment", 'String'>
+    readonly adjustmentType: FieldRef<"RiskAdjustment", 'String'>
+    readonly previousValue: FieldRef<"RiskAdjustment", 'Decimal'>
+    readonly newValue: FieldRef<"RiskAdjustment", 'Decimal'>
+    readonly reason: FieldRef<"RiskAdjustment", 'String'>
+    readonly triggerMetric: FieldRef<"RiskAdjustment", 'String'>
+    readonly triggerValue: FieldRef<"RiskAdjustment", 'Decimal'>
+    readonly adjustmentDate: FieldRef<"RiskAdjustment", 'DateTime'>
+    readonly createdAt: FieldRef<"RiskAdjustment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RiskAdjustment findUnique
+   */
+  export type RiskAdjustmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskAdjustment
+     */
+    select?: RiskAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskAdjustment
+     */
+    omit?: RiskAdjustmentOmit<ExtArgs> | null
+    /**
+     * Filter, which RiskAdjustment to fetch.
+     */
+    where: RiskAdjustmentWhereUniqueInput
+  }
+
+  /**
+   * RiskAdjustment findUniqueOrThrow
+   */
+  export type RiskAdjustmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskAdjustment
+     */
+    select?: RiskAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskAdjustment
+     */
+    omit?: RiskAdjustmentOmit<ExtArgs> | null
+    /**
+     * Filter, which RiskAdjustment to fetch.
+     */
+    where: RiskAdjustmentWhereUniqueInput
+  }
+
+  /**
+   * RiskAdjustment findFirst
+   */
+  export type RiskAdjustmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskAdjustment
+     */
+    select?: RiskAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskAdjustment
+     */
+    omit?: RiskAdjustmentOmit<ExtArgs> | null
+    /**
+     * Filter, which RiskAdjustment to fetch.
+     */
+    where?: RiskAdjustmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RiskAdjustments to fetch.
+     */
+    orderBy?: RiskAdjustmentOrderByWithRelationInput | RiskAdjustmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RiskAdjustments.
+     */
+    cursor?: RiskAdjustmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RiskAdjustments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RiskAdjustments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RiskAdjustments.
+     */
+    distinct?: RiskAdjustmentScalarFieldEnum | RiskAdjustmentScalarFieldEnum[]
+  }
+
+  /**
+   * RiskAdjustment findFirstOrThrow
+   */
+  export type RiskAdjustmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskAdjustment
+     */
+    select?: RiskAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskAdjustment
+     */
+    omit?: RiskAdjustmentOmit<ExtArgs> | null
+    /**
+     * Filter, which RiskAdjustment to fetch.
+     */
+    where?: RiskAdjustmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RiskAdjustments to fetch.
+     */
+    orderBy?: RiskAdjustmentOrderByWithRelationInput | RiskAdjustmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RiskAdjustments.
+     */
+    cursor?: RiskAdjustmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RiskAdjustments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RiskAdjustments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RiskAdjustments.
+     */
+    distinct?: RiskAdjustmentScalarFieldEnum | RiskAdjustmentScalarFieldEnum[]
+  }
+
+  /**
+   * RiskAdjustment findMany
+   */
+  export type RiskAdjustmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskAdjustment
+     */
+    select?: RiskAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskAdjustment
+     */
+    omit?: RiskAdjustmentOmit<ExtArgs> | null
+    /**
+     * Filter, which RiskAdjustments to fetch.
+     */
+    where?: RiskAdjustmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RiskAdjustments to fetch.
+     */
+    orderBy?: RiskAdjustmentOrderByWithRelationInput | RiskAdjustmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RiskAdjustments.
+     */
+    cursor?: RiskAdjustmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RiskAdjustments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RiskAdjustments.
+     */
+    skip?: number
+    distinct?: RiskAdjustmentScalarFieldEnum | RiskAdjustmentScalarFieldEnum[]
+  }
+
+  /**
+   * RiskAdjustment create
+   */
+  export type RiskAdjustmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskAdjustment
+     */
+    select?: RiskAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskAdjustment
+     */
+    omit?: RiskAdjustmentOmit<ExtArgs> | null
+    /**
+     * The data needed to create a RiskAdjustment.
+     */
+    data: XOR<RiskAdjustmentCreateInput, RiskAdjustmentUncheckedCreateInput>
+  }
+
+  /**
+   * RiskAdjustment createMany
+   */
+  export type RiskAdjustmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RiskAdjustments.
+     */
+    data: RiskAdjustmentCreateManyInput | RiskAdjustmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RiskAdjustment createManyAndReturn
+   */
+  export type RiskAdjustmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskAdjustment
+     */
+    select?: RiskAdjustmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskAdjustment
+     */
+    omit?: RiskAdjustmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many RiskAdjustments.
+     */
+    data: RiskAdjustmentCreateManyInput | RiskAdjustmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RiskAdjustment update
+   */
+  export type RiskAdjustmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskAdjustment
+     */
+    select?: RiskAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskAdjustment
+     */
+    omit?: RiskAdjustmentOmit<ExtArgs> | null
+    /**
+     * The data needed to update a RiskAdjustment.
+     */
+    data: XOR<RiskAdjustmentUpdateInput, RiskAdjustmentUncheckedUpdateInput>
+    /**
+     * Choose, which RiskAdjustment to update.
+     */
+    where: RiskAdjustmentWhereUniqueInput
+  }
+
+  /**
+   * RiskAdjustment updateMany
+   */
+  export type RiskAdjustmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RiskAdjustments.
+     */
+    data: XOR<RiskAdjustmentUpdateManyMutationInput, RiskAdjustmentUncheckedUpdateManyInput>
+    /**
+     * Filter which RiskAdjustments to update
+     */
+    where?: RiskAdjustmentWhereInput
+    /**
+     * Limit how many RiskAdjustments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RiskAdjustment updateManyAndReturn
+   */
+  export type RiskAdjustmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskAdjustment
+     */
+    select?: RiskAdjustmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskAdjustment
+     */
+    omit?: RiskAdjustmentOmit<ExtArgs> | null
+    /**
+     * The data used to update RiskAdjustments.
+     */
+    data: XOR<RiskAdjustmentUpdateManyMutationInput, RiskAdjustmentUncheckedUpdateManyInput>
+    /**
+     * Filter which RiskAdjustments to update
+     */
+    where?: RiskAdjustmentWhereInput
+    /**
+     * Limit how many RiskAdjustments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RiskAdjustment upsert
+   */
+  export type RiskAdjustmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskAdjustment
+     */
+    select?: RiskAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskAdjustment
+     */
+    omit?: RiskAdjustmentOmit<ExtArgs> | null
+    /**
+     * The filter to search for the RiskAdjustment to update in case it exists.
+     */
+    where: RiskAdjustmentWhereUniqueInput
+    /**
+     * In case the RiskAdjustment found by the `where` argument doesn't exist, create a new RiskAdjustment with this data.
+     */
+    create: XOR<RiskAdjustmentCreateInput, RiskAdjustmentUncheckedCreateInput>
+    /**
+     * In case the RiskAdjustment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RiskAdjustmentUpdateInput, RiskAdjustmentUncheckedUpdateInput>
+  }
+
+  /**
+   * RiskAdjustment delete
+   */
+  export type RiskAdjustmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskAdjustment
+     */
+    select?: RiskAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskAdjustment
+     */
+    omit?: RiskAdjustmentOmit<ExtArgs> | null
+    /**
+     * Filter which RiskAdjustment to delete.
+     */
+    where: RiskAdjustmentWhereUniqueInput
+  }
+
+  /**
+   * RiskAdjustment deleteMany
+   */
+  export type RiskAdjustmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RiskAdjustments to delete
+     */
+    where?: RiskAdjustmentWhereInput
+    /**
+     * Limit how many RiskAdjustments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RiskAdjustment without action
+   */
+  export type RiskAdjustmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskAdjustment
+     */
+    select?: RiskAdjustmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskAdjustment
+     */
+    omit?: RiskAdjustmentOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ReserveFund
+   */
+
+  export type AggregateReserveFund = {
+    _count: ReserveFundCountAggregateOutputType | null
+    _avg: ReserveFundAvgAggregateOutputType | null
+    _sum: ReserveFundSumAggregateOutputType | null
+    _min: ReserveFundMinAggregateOutputType | null
+    _max: ReserveFundMaxAggregateOutputType | null
+  }
+
+  export type ReserveFundAvgAggregateOutputType = {
+    amount: Decimal | null
+  }
+
+  export type ReserveFundSumAggregateOutputType = {
+    amount: Decimal | null
+  }
+
+  export type ReserveFundMinAggregateOutputType = {
+    id: string | null
+    amount: Decimal | null
+    transactionType: string | null
+    description: string | null
+    relatedAdvanceId: string | null
+    transactionHash: string | null
+    timestamp: Date | null
+    createdAt: Date | null
+  }
+
+  export type ReserveFundMaxAggregateOutputType = {
+    id: string | null
+    amount: Decimal | null
+    transactionType: string | null
+    description: string | null
+    relatedAdvanceId: string | null
+    transactionHash: string | null
+    timestamp: Date | null
+    createdAt: Date | null
+  }
+
+  export type ReserveFundCountAggregateOutputType = {
+    id: number
+    amount: number
+    transactionType: number
+    description: number
+    relatedAdvanceId: number
+    transactionHash: number
+    timestamp: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ReserveFundAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type ReserveFundSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type ReserveFundMinAggregateInputType = {
+    id?: true
+    amount?: true
+    transactionType?: true
+    description?: true
+    relatedAdvanceId?: true
+    transactionHash?: true
+    timestamp?: true
+    createdAt?: true
+  }
+
+  export type ReserveFundMaxAggregateInputType = {
+    id?: true
+    amount?: true
+    transactionType?: true
+    description?: true
+    relatedAdvanceId?: true
+    transactionHash?: true
+    timestamp?: true
+    createdAt?: true
+  }
+
+  export type ReserveFundCountAggregateInputType = {
+    id?: true
+    amount?: true
+    transactionType?: true
+    description?: true
+    relatedAdvanceId?: true
+    transactionHash?: true
+    timestamp?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ReserveFundAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReserveFund to aggregate.
+     */
+    where?: ReserveFundWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReserveFunds to fetch.
+     */
+    orderBy?: ReserveFundOrderByWithRelationInput | ReserveFundOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReserveFundWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReserveFunds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReserveFunds.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ReserveFunds
+    **/
+    _count?: true | ReserveFundCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ReserveFundAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ReserveFundSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReserveFundMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReserveFundMaxAggregateInputType
+  }
+
+  export type GetReserveFundAggregateType<T extends ReserveFundAggregateArgs> = {
+        [P in keyof T & keyof AggregateReserveFund]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReserveFund[P]>
+      : GetScalarType<T[P], AggregateReserveFund[P]>
+  }
+
+
+
+
+  export type ReserveFundGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReserveFundWhereInput
+    orderBy?: ReserveFundOrderByWithAggregationInput | ReserveFundOrderByWithAggregationInput[]
+    by: ReserveFundScalarFieldEnum[] | ReserveFundScalarFieldEnum
+    having?: ReserveFundScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReserveFundCountAggregateInputType | true
+    _avg?: ReserveFundAvgAggregateInputType
+    _sum?: ReserveFundSumAggregateInputType
+    _min?: ReserveFundMinAggregateInputType
+    _max?: ReserveFundMaxAggregateInputType
+  }
+
+  export type ReserveFundGroupByOutputType = {
+    id: string
+    amount: Decimal
+    transactionType: string
+    description: string
+    relatedAdvanceId: string | null
+    transactionHash: string | null
+    timestamp: Date
+    createdAt: Date
+    _count: ReserveFundCountAggregateOutputType | null
+    _avg: ReserveFundAvgAggregateOutputType | null
+    _sum: ReserveFundSumAggregateOutputType | null
+    _min: ReserveFundMinAggregateOutputType | null
+    _max: ReserveFundMaxAggregateOutputType | null
+  }
+
+  type GetReserveFundGroupByPayload<T extends ReserveFundGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReserveFundGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReserveFundGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReserveFundGroupByOutputType[P]>
+            : GetScalarType<T[P], ReserveFundGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReserveFundSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    amount?: boolean
+    transactionType?: boolean
+    description?: boolean
+    relatedAdvanceId?: boolean
+    transactionHash?: boolean
+    timestamp?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["reserveFund"]>
+
+  export type ReserveFundSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    amount?: boolean
+    transactionType?: boolean
+    description?: boolean
+    relatedAdvanceId?: boolean
+    transactionHash?: boolean
+    timestamp?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["reserveFund"]>
+
+  export type ReserveFundSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    amount?: boolean
+    transactionType?: boolean
+    description?: boolean
+    relatedAdvanceId?: boolean
+    transactionHash?: boolean
+    timestamp?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["reserveFund"]>
+
+  export type ReserveFundSelectScalar = {
+    id?: boolean
+    amount?: boolean
+    transactionType?: boolean
+    description?: boolean
+    relatedAdvanceId?: boolean
+    transactionHash?: boolean
+    timestamp?: boolean
+    createdAt?: boolean
+  }
+
+  export type ReserveFundOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "amount" | "transactionType" | "description" | "relatedAdvanceId" | "transactionHash" | "timestamp" | "createdAt", ExtArgs["result"]["reserveFund"]>
+
+  export type $ReserveFundPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ReserveFund"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      amount: Prisma.Decimal
+      transactionType: string
+      description: string
+      relatedAdvanceId: string | null
+      transactionHash: string | null
+      timestamp: Date
+      createdAt: Date
+    }, ExtArgs["result"]["reserveFund"]>
+    composites: {}
+  }
+
+  type ReserveFundGetPayload<S extends boolean | null | undefined | ReserveFundDefaultArgs> = $Result.GetResult<Prisma.$ReserveFundPayload, S>
+
+  type ReserveFundCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReserveFundFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReserveFundCountAggregateInputType | true
+    }
+
+  export interface ReserveFundDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ReserveFund'], meta: { name: 'ReserveFund' } }
+    /**
+     * Find zero or one ReserveFund that matches the filter.
+     * @param {ReserveFundFindUniqueArgs} args - Arguments to find a ReserveFund
+     * @example
+     * // Get one ReserveFund
+     * const reserveFund = await prisma.reserveFund.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReserveFundFindUniqueArgs>(args: SelectSubset<T, ReserveFundFindUniqueArgs<ExtArgs>>): Prisma__ReserveFundClient<$Result.GetResult<Prisma.$ReserveFundPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ReserveFund that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReserveFundFindUniqueOrThrowArgs} args - Arguments to find a ReserveFund
+     * @example
+     * // Get one ReserveFund
+     * const reserveFund = await prisma.reserveFund.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReserveFundFindUniqueOrThrowArgs>(args: SelectSubset<T, ReserveFundFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReserveFundClient<$Result.GetResult<Prisma.$ReserveFundPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReserveFund that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReserveFundFindFirstArgs} args - Arguments to find a ReserveFund
+     * @example
+     * // Get one ReserveFund
+     * const reserveFund = await prisma.reserveFund.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReserveFundFindFirstArgs>(args?: SelectSubset<T, ReserveFundFindFirstArgs<ExtArgs>>): Prisma__ReserveFundClient<$Result.GetResult<Prisma.$ReserveFundPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReserveFund that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReserveFundFindFirstOrThrowArgs} args - Arguments to find a ReserveFund
+     * @example
+     * // Get one ReserveFund
+     * const reserveFund = await prisma.reserveFund.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReserveFundFindFirstOrThrowArgs>(args?: SelectSubset<T, ReserveFundFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReserveFundClient<$Result.GetResult<Prisma.$ReserveFundPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ReserveFunds that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReserveFundFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ReserveFunds
+     * const reserveFunds = await prisma.reserveFund.findMany()
+     * 
+     * // Get first 10 ReserveFunds
+     * const reserveFunds = await prisma.reserveFund.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reserveFundWithIdOnly = await prisma.reserveFund.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReserveFundFindManyArgs>(args?: SelectSubset<T, ReserveFundFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReserveFundPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ReserveFund.
+     * @param {ReserveFundCreateArgs} args - Arguments to create a ReserveFund.
+     * @example
+     * // Create one ReserveFund
+     * const ReserveFund = await prisma.reserveFund.create({
+     *   data: {
+     *     // ... data to create a ReserveFund
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReserveFundCreateArgs>(args: SelectSubset<T, ReserveFundCreateArgs<ExtArgs>>): Prisma__ReserveFundClient<$Result.GetResult<Prisma.$ReserveFundPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ReserveFunds.
+     * @param {ReserveFundCreateManyArgs} args - Arguments to create many ReserveFunds.
+     * @example
+     * // Create many ReserveFunds
+     * const reserveFund = await prisma.reserveFund.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReserveFundCreateManyArgs>(args?: SelectSubset<T, ReserveFundCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ReserveFunds and returns the data saved in the database.
+     * @param {ReserveFundCreateManyAndReturnArgs} args - Arguments to create many ReserveFunds.
+     * @example
+     * // Create many ReserveFunds
+     * const reserveFund = await prisma.reserveFund.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ReserveFunds and only return the `id`
+     * const reserveFundWithIdOnly = await prisma.reserveFund.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReserveFundCreateManyAndReturnArgs>(args?: SelectSubset<T, ReserveFundCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReserveFundPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ReserveFund.
+     * @param {ReserveFundDeleteArgs} args - Arguments to delete one ReserveFund.
+     * @example
+     * // Delete one ReserveFund
+     * const ReserveFund = await prisma.reserveFund.delete({
+     *   where: {
+     *     // ... filter to delete one ReserveFund
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReserveFundDeleteArgs>(args: SelectSubset<T, ReserveFundDeleteArgs<ExtArgs>>): Prisma__ReserveFundClient<$Result.GetResult<Prisma.$ReserveFundPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ReserveFund.
+     * @param {ReserveFundUpdateArgs} args - Arguments to update one ReserveFund.
+     * @example
+     * // Update one ReserveFund
+     * const reserveFund = await prisma.reserveFund.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReserveFundUpdateArgs>(args: SelectSubset<T, ReserveFundUpdateArgs<ExtArgs>>): Prisma__ReserveFundClient<$Result.GetResult<Prisma.$ReserveFundPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ReserveFunds.
+     * @param {ReserveFundDeleteManyArgs} args - Arguments to filter ReserveFunds to delete.
+     * @example
+     * // Delete a few ReserveFunds
+     * const { count } = await prisma.reserveFund.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReserveFundDeleteManyArgs>(args?: SelectSubset<T, ReserveFundDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReserveFunds.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReserveFundUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ReserveFunds
+     * const reserveFund = await prisma.reserveFund.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReserveFundUpdateManyArgs>(args: SelectSubset<T, ReserveFundUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReserveFunds and returns the data updated in the database.
+     * @param {ReserveFundUpdateManyAndReturnArgs} args - Arguments to update many ReserveFunds.
+     * @example
+     * // Update many ReserveFunds
+     * const reserveFund = await prisma.reserveFund.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ReserveFunds and only return the `id`
+     * const reserveFundWithIdOnly = await prisma.reserveFund.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReserveFundUpdateManyAndReturnArgs>(args: SelectSubset<T, ReserveFundUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReserveFundPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ReserveFund.
+     * @param {ReserveFundUpsertArgs} args - Arguments to update or create a ReserveFund.
+     * @example
+     * // Update or create a ReserveFund
+     * const reserveFund = await prisma.reserveFund.upsert({
+     *   create: {
+     *     // ... data to create a ReserveFund
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ReserveFund we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReserveFundUpsertArgs>(args: SelectSubset<T, ReserveFundUpsertArgs<ExtArgs>>): Prisma__ReserveFundClient<$Result.GetResult<Prisma.$ReserveFundPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ReserveFunds.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReserveFundCountArgs} args - Arguments to filter ReserveFunds to count.
+     * @example
+     * // Count the number of ReserveFunds
+     * const count = await prisma.reserveFund.count({
+     *   where: {
+     *     // ... the filter for the ReserveFunds we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReserveFundCountArgs>(
+      args?: Subset<T, ReserveFundCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReserveFundCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ReserveFund.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReserveFundAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReserveFundAggregateArgs>(args: Subset<T, ReserveFundAggregateArgs>): Prisma.PrismaPromise<GetReserveFundAggregateType<T>>
+
+    /**
+     * Group by ReserveFund.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReserveFundGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReserveFundGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReserveFundGroupByArgs['orderBy'] }
+        : { orderBy?: ReserveFundGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReserveFundGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReserveFundGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ReserveFund model
+   */
+  readonly fields: ReserveFundFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ReserveFund.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReserveFundClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ReserveFund model
+   */
+  interface ReserveFundFieldRefs {
+    readonly id: FieldRef<"ReserveFund", 'String'>
+    readonly amount: FieldRef<"ReserveFund", 'Decimal'>
+    readonly transactionType: FieldRef<"ReserveFund", 'String'>
+    readonly description: FieldRef<"ReserveFund", 'String'>
+    readonly relatedAdvanceId: FieldRef<"ReserveFund", 'String'>
+    readonly transactionHash: FieldRef<"ReserveFund", 'String'>
+    readonly timestamp: FieldRef<"ReserveFund", 'DateTime'>
+    readonly createdAt: FieldRef<"ReserveFund", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ReserveFund findUnique
+   */
+  export type ReserveFundFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReserveFund
+     */
+    select?: ReserveFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReserveFund
+     */
+    omit?: ReserveFundOmit<ExtArgs> | null
+    /**
+     * Filter, which ReserveFund to fetch.
+     */
+    where: ReserveFundWhereUniqueInput
+  }
+
+  /**
+   * ReserveFund findUniqueOrThrow
+   */
+  export type ReserveFundFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReserveFund
+     */
+    select?: ReserveFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReserveFund
+     */
+    omit?: ReserveFundOmit<ExtArgs> | null
+    /**
+     * Filter, which ReserveFund to fetch.
+     */
+    where: ReserveFundWhereUniqueInput
+  }
+
+  /**
+   * ReserveFund findFirst
+   */
+  export type ReserveFundFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReserveFund
+     */
+    select?: ReserveFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReserveFund
+     */
+    omit?: ReserveFundOmit<ExtArgs> | null
+    /**
+     * Filter, which ReserveFund to fetch.
+     */
+    where?: ReserveFundWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReserveFunds to fetch.
+     */
+    orderBy?: ReserveFundOrderByWithRelationInput | ReserveFundOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReserveFunds.
+     */
+    cursor?: ReserveFundWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReserveFunds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReserveFunds.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReserveFunds.
+     */
+    distinct?: ReserveFundScalarFieldEnum | ReserveFundScalarFieldEnum[]
+  }
+
+  /**
+   * ReserveFund findFirstOrThrow
+   */
+  export type ReserveFundFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReserveFund
+     */
+    select?: ReserveFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReserveFund
+     */
+    omit?: ReserveFundOmit<ExtArgs> | null
+    /**
+     * Filter, which ReserveFund to fetch.
+     */
+    where?: ReserveFundWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReserveFunds to fetch.
+     */
+    orderBy?: ReserveFundOrderByWithRelationInput | ReserveFundOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReserveFunds.
+     */
+    cursor?: ReserveFundWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReserveFunds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReserveFunds.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReserveFunds.
+     */
+    distinct?: ReserveFundScalarFieldEnum | ReserveFundScalarFieldEnum[]
+  }
+
+  /**
+   * ReserveFund findMany
+   */
+  export type ReserveFundFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReserveFund
+     */
+    select?: ReserveFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReserveFund
+     */
+    omit?: ReserveFundOmit<ExtArgs> | null
+    /**
+     * Filter, which ReserveFunds to fetch.
+     */
+    where?: ReserveFundWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReserveFunds to fetch.
+     */
+    orderBy?: ReserveFundOrderByWithRelationInput | ReserveFundOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ReserveFunds.
+     */
+    cursor?: ReserveFundWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReserveFunds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReserveFunds.
+     */
+    skip?: number
+    distinct?: ReserveFundScalarFieldEnum | ReserveFundScalarFieldEnum[]
+  }
+
+  /**
+   * ReserveFund create
+   */
+  export type ReserveFundCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReserveFund
+     */
+    select?: ReserveFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReserveFund
+     */
+    omit?: ReserveFundOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ReserveFund.
+     */
+    data: XOR<ReserveFundCreateInput, ReserveFundUncheckedCreateInput>
+  }
+
+  /**
+   * ReserveFund createMany
+   */
+  export type ReserveFundCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ReserveFunds.
+     */
+    data: ReserveFundCreateManyInput | ReserveFundCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReserveFund createManyAndReturn
+   */
+  export type ReserveFundCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReserveFund
+     */
+    select?: ReserveFundSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReserveFund
+     */
+    omit?: ReserveFundOmit<ExtArgs> | null
+    /**
+     * The data used to create many ReserveFunds.
+     */
+    data: ReserveFundCreateManyInput | ReserveFundCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReserveFund update
+   */
+  export type ReserveFundUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReserveFund
+     */
+    select?: ReserveFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReserveFund
+     */
+    omit?: ReserveFundOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ReserveFund.
+     */
+    data: XOR<ReserveFundUpdateInput, ReserveFundUncheckedUpdateInput>
+    /**
+     * Choose, which ReserveFund to update.
+     */
+    where: ReserveFundWhereUniqueInput
+  }
+
+  /**
+   * ReserveFund updateMany
+   */
+  export type ReserveFundUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ReserveFunds.
+     */
+    data: XOR<ReserveFundUpdateManyMutationInput, ReserveFundUncheckedUpdateManyInput>
+    /**
+     * Filter which ReserveFunds to update
+     */
+    where?: ReserveFundWhereInput
+    /**
+     * Limit how many ReserveFunds to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReserveFund updateManyAndReturn
+   */
+  export type ReserveFundUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReserveFund
+     */
+    select?: ReserveFundSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReserveFund
+     */
+    omit?: ReserveFundOmit<ExtArgs> | null
+    /**
+     * The data used to update ReserveFunds.
+     */
+    data: XOR<ReserveFundUpdateManyMutationInput, ReserveFundUncheckedUpdateManyInput>
+    /**
+     * Filter which ReserveFunds to update
+     */
+    where?: ReserveFundWhereInput
+    /**
+     * Limit how many ReserveFunds to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReserveFund upsert
+   */
+  export type ReserveFundUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReserveFund
+     */
+    select?: ReserveFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReserveFund
+     */
+    omit?: ReserveFundOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ReserveFund to update in case it exists.
+     */
+    where: ReserveFundWhereUniqueInput
+    /**
+     * In case the ReserveFund found by the `where` argument doesn't exist, create a new ReserveFund with this data.
+     */
+    create: XOR<ReserveFundCreateInput, ReserveFundUncheckedCreateInput>
+    /**
+     * In case the ReserveFund was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReserveFundUpdateInput, ReserveFundUncheckedUpdateInput>
+  }
+
+  /**
+   * ReserveFund delete
+   */
+  export type ReserveFundDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReserveFund
+     */
+    select?: ReserveFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReserveFund
+     */
+    omit?: ReserveFundOmit<ExtArgs> | null
+    /**
+     * Filter which ReserveFund to delete.
+     */
+    where: ReserveFundWhereUniqueInput
+  }
+
+  /**
+   * ReserveFund deleteMany
+   */
+  export type ReserveFundDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReserveFunds to delete
+     */
+    where?: ReserveFundWhereInput
+    /**
+     * Limit how many ReserveFunds to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReserveFund without action
+   */
+  export type ReserveFundDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReserveFund
+     */
+    select?: ReserveFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReserveFund
+     */
+    omit?: ReserveFundOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -12723,6 +15518,13 @@ export namespace Prisma {
     isVerified: 'isVerified',
     verificationDate: 'verificationDate',
     verifiedBy: 'verifiedBy',
+    tier: 'tier',
+    advancePercentageLimit: 'advancePercentageLimit',
+    autoApproveAdvances: 'autoApproveAdvances',
+    bankHistoryVerified: 'bankHistoryVerified',
+    monthsOnPlatform: 'monthsOnPlatform',
+    defaultRate: 'defaultRate',
+    totalAdvancesProcessed: 'totalAdvancesProcessed',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -12744,6 +15546,14 @@ export namespace Prisma {
     kycReviewerId: 'kycReviewerId',
     kycNotes: 'kycNotes',
     salary: 'salary',
+    startDate: 'startDate',
+    daysWorked: 'daysWorked',
+    creditScore: 'creditScore',
+    totalAdvancesTaken: 'totalAdvancesTaken',
+    totalAdvancesRepaid: 'totalAdvancesRepaid',
+    currentAdvanceBalance: 'currentAdvanceBalance',
+    bankAccountNumber: 'bankAccountNumber',
+    bankName: 'bankName',
     registrationDate: 'registrationDate',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
@@ -12761,15 +15571,28 @@ export namespace Prisma {
   export const AdvanceScalarFieldEnum: {
     id: 'id',
     employeeId: 'employeeId',
+    employerId: 'employerId',
     amount: 'amount',
+    serviceFee: 'serviceFee',
+    serviceFeePercentage: 'serviceFeePercentage',
+    netAmount: 'netAmount',
     repaymentAmount: 'repaymentAmount',
+    earnedToDate: 'earnedToDate',
+    availableAdvance: 'availableAdvance',
     requestDate: 'requestDate',
     approvalDate: 'approvalDate',
+    disbursementDate: 'disbursementDate',
     paymentDate: 'paymentDate',
+    repaymentDate: 'repaymentDate',
     dueDate: 'dueDate',
     status: 'status',
+    approvedBy: 'approvedBy',
+    rejectedBy: 'rejectedBy',
+    rejectionReason: 'rejectionReason',
     transactionHash: 'transactionHash',
     repaymentTransactionHash: 'repaymentTransactionHash',
+    poolUtilizationAtRequest: 'poolUtilizationAtRequest',
+    riskScore: 'riskScore',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -12836,6 +15659,36 @@ export namespace Prisma {
   };
 
   export type PayrollScalarFieldEnum = (typeof PayrollScalarFieldEnum)[keyof typeof PayrollScalarFieldEnum]
+
+
+  export const RiskAdjustmentScalarFieldEnum: {
+    id: 'id',
+    employerId: 'employerId',
+    adjustmentType: 'adjustmentType',
+    previousValue: 'previousValue',
+    newValue: 'newValue',
+    reason: 'reason',
+    triggerMetric: 'triggerMetric',
+    triggerValue: 'triggerValue',
+    adjustmentDate: 'adjustmentDate',
+    createdAt: 'createdAt'
+  };
+
+  export type RiskAdjustmentScalarFieldEnum = (typeof RiskAdjustmentScalarFieldEnum)[keyof typeof RiskAdjustmentScalarFieldEnum]
+
+
+  export const ReserveFundScalarFieldEnum: {
+    id: 'id',
+    amount: 'amount',
+    transactionType: 'transactionType',
+    description: 'description',
+    relatedAdvanceId: 'relatedAdvanceId',
+    transactionHash: 'transactionHash',
+    timestamp: 'timestamp',
+    createdAt: 'createdAt'
+  };
+
+  export type ReserveFundScalarFieldEnum = (typeof ReserveFundScalarFieldEnum)[keyof typeof ReserveFundScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -12947,6 +15800,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'EnumEmployerTier'
+   */
+  export type EnumEnumEmployerTierFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EnumEmployerTier'>
+    
+
+
+  /**
+   * Reference to a field of type 'EnumEmployerTier[]'
+   */
+  export type ListEnumEnumEmployerTierFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EnumEmployerTier[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal'
+   */
+  export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal[]'
+   */
+  export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+  /**
    * Reference to a field of type 'EnumEmployeesKycStage'
    */
   export type EnumEnumEmployeesKycStageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EnumEmployeesKycStage'>
@@ -12971,20 +15852,6 @@ export namespace Prisma {
    * Reference to a field of type 'EnumEmployeesKycStatus[]'
    */
   export type ListEnumEnumEmployeesKycStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EnumEmployeesKycStatus[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Decimal'
-   */
-  export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
-    
-
-
-  /**
-   * Reference to a field of type 'Decimal[]'
-   */
-  export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
     
 
 
@@ -13273,6 +16140,13 @@ export namespace Prisma {
     isVerified?: BoolFilter<"Employer"> | boolean
     verificationDate?: DateTimeNullableFilter<"Employer"> | Date | string | null
     verifiedBy?: UuidNullableFilter<"Employer"> | string | null
+    tier?: EnumEnumEmployerTierFilter<"Employer"> | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFilter<"Employer"> | number
+    autoApproveAdvances?: BoolFilter<"Employer"> | boolean
+    bankHistoryVerified?: BoolFilter<"Employer"> | boolean
+    monthsOnPlatform?: IntFilter<"Employer"> | number
+    defaultRate?: DecimalFilter<"Employer"> | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFilter<"Employer"> | number
     createdAt?: DateTimeFilter<"Employer"> | Date | string
     updatedAt?: DateTimeFilter<"Employer"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -13292,6 +16166,13 @@ export namespace Prisma {
     isVerified?: SortOrder
     verificationDate?: SortOrderInput | SortOrder
     verifiedBy?: SortOrderInput | SortOrder
+    tier?: SortOrder
+    advancePercentageLimit?: SortOrder
+    autoApproveAdvances?: SortOrder
+    bankHistoryVerified?: SortOrder
+    monthsOnPlatform?: SortOrder
+    defaultRate?: SortOrder
+    totalAdvancesProcessed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -13314,6 +16195,13 @@ export namespace Prisma {
     isVerified?: BoolFilter<"Employer"> | boolean
     verificationDate?: DateTimeNullableFilter<"Employer"> | Date | string | null
     verifiedBy?: UuidNullableFilter<"Employer"> | string | null
+    tier?: EnumEnumEmployerTierFilter<"Employer"> | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFilter<"Employer"> | number
+    autoApproveAdvances?: BoolFilter<"Employer"> | boolean
+    bankHistoryVerified?: BoolFilter<"Employer"> | boolean
+    monthsOnPlatform?: IntFilter<"Employer"> | number
+    defaultRate?: DecimalFilter<"Employer"> | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFilter<"Employer"> | number
     createdAt?: DateTimeFilter<"Employer"> | Date | string
     updatedAt?: DateTimeFilter<"Employer"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -13333,6 +16221,13 @@ export namespace Prisma {
     isVerified?: SortOrder
     verificationDate?: SortOrderInput | SortOrder
     verifiedBy?: SortOrderInput | SortOrder
+    tier?: SortOrder
+    advancePercentageLimit?: SortOrder
+    autoApproveAdvances?: SortOrder
+    bankHistoryVerified?: SortOrder
+    monthsOnPlatform?: SortOrder
+    defaultRate?: SortOrder
+    totalAdvancesProcessed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: EmployerCountOrderByAggregateInput
@@ -13354,6 +16249,13 @@ export namespace Prisma {
     isVerified?: BoolWithAggregatesFilter<"Employer"> | boolean
     verificationDate?: DateTimeNullableWithAggregatesFilter<"Employer"> | Date | string | null
     verifiedBy?: UuidNullableWithAggregatesFilter<"Employer"> | string | null
+    tier?: EnumEnumEmployerTierWithAggregatesFilter<"Employer"> | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntWithAggregatesFilter<"Employer"> | number
+    autoApproveAdvances?: BoolWithAggregatesFilter<"Employer"> | boolean
+    bankHistoryVerified?: BoolWithAggregatesFilter<"Employer"> | boolean
+    monthsOnPlatform?: IntWithAggregatesFilter<"Employer"> | number
+    defaultRate?: DecimalWithAggregatesFilter<"Employer"> | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntWithAggregatesFilter<"Employer"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Employer"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Employer"> | Date | string
   }
@@ -13375,6 +16277,14 @@ export namespace Prisma {
     kycReviewerId?: UuidNullableFilter<"Employee"> | string | null
     kycNotes?: StringNullableFilter<"Employee"> | string | null
     salary?: DecimalNullableFilter<"Employee"> | Decimal | DecimalJsLike | number | string | null
+    startDate?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    daysWorked?: IntFilter<"Employee"> | number
+    creditScore?: IntFilter<"Employee"> | number
+    totalAdvancesTaken?: IntFilter<"Employee"> | number
+    totalAdvancesRepaid?: IntFilter<"Employee"> | number
+    currentAdvanceBalance?: DecimalFilter<"Employee"> | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: StringNullableFilter<"Employee"> | string | null
+    bankName?: StringNullableFilter<"Employee"> | string | null
     registrationDate?: DateTimeFilter<"Employee"> | Date | string
     createdAt?: DateTimeFilter<"Employee"> | Date | string
     updatedAt?: DateTimeFilter<"Employee"> | Date | string
@@ -13404,6 +16314,14 @@ export namespace Prisma {
     kycReviewerId?: SortOrderInput | SortOrder
     kycNotes?: SortOrderInput | SortOrder
     salary?: SortOrderInput | SortOrder
+    startDate?: SortOrderInput | SortOrder
+    daysWorked?: SortOrder
+    creditScore?: SortOrder
+    totalAdvancesTaken?: SortOrder
+    totalAdvancesRepaid?: SortOrder
+    currentAdvanceBalance?: SortOrder
+    bankAccountNumber?: SortOrderInput | SortOrder
+    bankName?: SortOrderInput | SortOrder
     registrationDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -13438,6 +16356,14 @@ export namespace Prisma {
     kycReviewerId?: UuidNullableFilter<"Employee"> | string | null
     kycNotes?: StringNullableFilter<"Employee"> | string | null
     salary?: DecimalNullableFilter<"Employee"> | Decimal | DecimalJsLike | number | string | null
+    startDate?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    daysWorked?: IntFilter<"Employee"> | number
+    creditScore?: IntFilter<"Employee"> | number
+    totalAdvancesTaken?: IntFilter<"Employee"> | number
+    totalAdvancesRepaid?: IntFilter<"Employee"> | number
+    currentAdvanceBalance?: DecimalFilter<"Employee"> | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: StringNullableFilter<"Employee"> | string | null
+    bankName?: StringNullableFilter<"Employee"> | string | null
     registrationDate?: DateTimeFilter<"Employee"> | Date | string
     createdAt?: DateTimeFilter<"Employee"> | Date | string
     updatedAt?: DateTimeFilter<"Employee"> | Date | string
@@ -13465,6 +16391,14 @@ export namespace Prisma {
     kycReviewerId?: SortOrderInput | SortOrder
     kycNotes?: SortOrderInput | SortOrder
     salary?: SortOrderInput | SortOrder
+    startDate?: SortOrderInput | SortOrder
+    daysWorked?: SortOrder
+    creditScore?: SortOrder
+    totalAdvancesTaken?: SortOrder
+    totalAdvancesRepaid?: SortOrder
+    currentAdvanceBalance?: SortOrder
+    bankAccountNumber?: SortOrderInput | SortOrder
+    bankName?: SortOrderInput | SortOrder
     registrationDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -13498,6 +16432,14 @@ export namespace Prisma {
     kycReviewerId?: UuidNullableWithAggregatesFilter<"Employee"> | string | null
     kycNotes?: StringNullableWithAggregatesFilter<"Employee"> | string | null
     salary?: DecimalNullableWithAggregatesFilter<"Employee"> | Decimal | DecimalJsLike | number | string | null
+    startDate?: DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
+    daysWorked?: IntWithAggregatesFilter<"Employee"> | number
+    creditScore?: IntWithAggregatesFilter<"Employee"> | number
+    totalAdvancesTaken?: IntWithAggregatesFilter<"Employee"> | number
+    totalAdvancesRepaid?: IntWithAggregatesFilter<"Employee"> | number
+    currentAdvanceBalance?: DecimalWithAggregatesFilter<"Employee"> | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: StringNullableWithAggregatesFilter<"Employee"> | string | null
+    bankName?: StringNullableWithAggregatesFilter<"Employee"> | string | null
     registrationDate?: DateTimeWithAggregatesFilter<"Employee"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"Employee"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Employee"> | Date | string
@@ -13515,15 +16457,28 @@ export namespace Prisma {
     NOT?: AdvanceWhereInput | AdvanceWhereInput[]
     id?: UuidFilter<"Advance"> | string
     employeeId?: UuidFilter<"Advance"> | string
+    employerId?: UuidFilter<"Advance"> | string
     amount?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    serviceFee?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    serviceFeePercentage?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    netAmount?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
     repaymentAmount?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    earnedToDate?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    availableAdvance?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
     requestDate?: DateTimeFilter<"Advance"> | Date | string
     approvalDate?: DateTimeNullableFilter<"Advance"> | Date | string | null
+    disbursementDate?: DateTimeNullableFilter<"Advance"> | Date | string | null
     paymentDate?: DateTimeNullableFilter<"Advance"> | Date | string | null
+    repaymentDate?: DateTimeNullableFilter<"Advance"> | Date | string | null
     dueDate?: DateTimeFilter<"Advance"> | Date | string
     status?: EnumEnumAdvancesStatusFilter<"Advance"> | $Enums.EnumAdvancesStatus
+    approvedBy?: UuidNullableFilter<"Advance"> | string | null
+    rejectedBy?: UuidNullableFilter<"Advance"> | string | null
+    rejectionReason?: StringNullableFilter<"Advance"> | string | null
     transactionHash?: StringNullableFilter<"Advance"> | string | null
     repaymentTransactionHash?: StringNullableFilter<"Advance"> | string | null
+    poolUtilizationAtRequest?: DecimalNullableFilter<"Advance"> | Decimal | DecimalJsLike | number | string | null
+    riskScore?: IntNullableFilter<"Advance"> | number | null
     createdAt?: DateTimeFilter<"Advance"> | Date | string
     updatedAt?: DateTimeFilter<"Advance"> | Date | string
     employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
@@ -13532,15 +16487,28 @@ export namespace Prisma {
   export type AdvanceOrderByWithRelationInput = {
     id?: SortOrder
     employeeId?: SortOrder
+    employerId?: SortOrder
     amount?: SortOrder
+    serviceFee?: SortOrder
+    serviceFeePercentage?: SortOrder
+    netAmount?: SortOrder
     repaymentAmount?: SortOrder
+    earnedToDate?: SortOrder
+    availableAdvance?: SortOrder
     requestDate?: SortOrder
     approvalDate?: SortOrderInput | SortOrder
+    disbursementDate?: SortOrderInput | SortOrder
     paymentDate?: SortOrderInput | SortOrder
+    repaymentDate?: SortOrderInput | SortOrder
     dueDate?: SortOrder
     status?: SortOrder
+    approvedBy?: SortOrderInput | SortOrder
+    rejectedBy?: SortOrderInput | SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
     transactionHash?: SortOrderInput | SortOrder
     repaymentTransactionHash?: SortOrderInput | SortOrder
+    poolUtilizationAtRequest?: SortOrderInput | SortOrder
+    riskScore?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     employee?: EmployeeOrderByWithRelationInput
@@ -13552,15 +16520,28 @@ export namespace Prisma {
     OR?: AdvanceWhereInput[]
     NOT?: AdvanceWhereInput | AdvanceWhereInput[]
     employeeId?: UuidFilter<"Advance"> | string
+    employerId?: UuidFilter<"Advance"> | string
     amount?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    serviceFee?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    serviceFeePercentage?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    netAmount?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
     repaymentAmount?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    earnedToDate?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    availableAdvance?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
     requestDate?: DateTimeFilter<"Advance"> | Date | string
     approvalDate?: DateTimeNullableFilter<"Advance"> | Date | string | null
+    disbursementDate?: DateTimeNullableFilter<"Advance"> | Date | string | null
     paymentDate?: DateTimeNullableFilter<"Advance"> | Date | string | null
+    repaymentDate?: DateTimeNullableFilter<"Advance"> | Date | string | null
     dueDate?: DateTimeFilter<"Advance"> | Date | string
     status?: EnumEnumAdvancesStatusFilter<"Advance"> | $Enums.EnumAdvancesStatus
+    approvedBy?: UuidNullableFilter<"Advance"> | string | null
+    rejectedBy?: UuidNullableFilter<"Advance"> | string | null
+    rejectionReason?: StringNullableFilter<"Advance"> | string | null
     transactionHash?: StringNullableFilter<"Advance"> | string | null
     repaymentTransactionHash?: StringNullableFilter<"Advance"> | string | null
+    poolUtilizationAtRequest?: DecimalNullableFilter<"Advance"> | Decimal | DecimalJsLike | number | string | null
+    riskScore?: IntNullableFilter<"Advance"> | number | null
     createdAt?: DateTimeFilter<"Advance"> | Date | string
     updatedAt?: DateTimeFilter<"Advance"> | Date | string
     employee?: XOR<EmployeeScalarRelationFilter, EmployeeWhereInput>
@@ -13569,15 +16550,28 @@ export namespace Prisma {
   export type AdvanceOrderByWithAggregationInput = {
     id?: SortOrder
     employeeId?: SortOrder
+    employerId?: SortOrder
     amount?: SortOrder
+    serviceFee?: SortOrder
+    serviceFeePercentage?: SortOrder
+    netAmount?: SortOrder
     repaymentAmount?: SortOrder
+    earnedToDate?: SortOrder
+    availableAdvance?: SortOrder
     requestDate?: SortOrder
     approvalDate?: SortOrderInput | SortOrder
+    disbursementDate?: SortOrderInput | SortOrder
     paymentDate?: SortOrderInput | SortOrder
+    repaymentDate?: SortOrderInput | SortOrder
     dueDate?: SortOrder
     status?: SortOrder
+    approvedBy?: SortOrderInput | SortOrder
+    rejectedBy?: SortOrderInput | SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
     transactionHash?: SortOrderInput | SortOrder
     repaymentTransactionHash?: SortOrderInput | SortOrder
+    poolUtilizationAtRequest?: SortOrderInput | SortOrder
+    riskScore?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: AdvanceCountOrderByAggregateInput
@@ -13593,15 +16587,28 @@ export namespace Prisma {
     NOT?: AdvanceScalarWhereWithAggregatesInput | AdvanceScalarWhereWithAggregatesInput[]
     id?: UuidWithAggregatesFilter<"Advance"> | string
     employeeId?: UuidWithAggregatesFilter<"Advance"> | string
+    employerId?: UuidWithAggregatesFilter<"Advance"> | string
     amount?: DecimalWithAggregatesFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    serviceFee?: DecimalWithAggregatesFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    serviceFeePercentage?: DecimalWithAggregatesFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    netAmount?: DecimalWithAggregatesFilter<"Advance"> | Decimal | DecimalJsLike | number | string
     repaymentAmount?: DecimalWithAggregatesFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    earnedToDate?: DecimalWithAggregatesFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    availableAdvance?: DecimalWithAggregatesFilter<"Advance"> | Decimal | DecimalJsLike | number | string
     requestDate?: DateTimeWithAggregatesFilter<"Advance"> | Date | string
     approvalDate?: DateTimeNullableWithAggregatesFilter<"Advance"> | Date | string | null
+    disbursementDate?: DateTimeNullableWithAggregatesFilter<"Advance"> | Date | string | null
     paymentDate?: DateTimeNullableWithAggregatesFilter<"Advance"> | Date | string | null
+    repaymentDate?: DateTimeNullableWithAggregatesFilter<"Advance"> | Date | string | null
     dueDate?: DateTimeWithAggregatesFilter<"Advance"> | Date | string
     status?: EnumEnumAdvancesStatusWithAggregatesFilter<"Advance"> | $Enums.EnumAdvancesStatus
+    approvedBy?: UuidNullableWithAggregatesFilter<"Advance"> | string | null
+    rejectedBy?: UuidNullableWithAggregatesFilter<"Advance"> | string | null
+    rejectionReason?: StringNullableWithAggregatesFilter<"Advance"> | string | null
     transactionHash?: StringNullableWithAggregatesFilter<"Advance"> | string | null
     repaymentTransactionHash?: StringNullableWithAggregatesFilter<"Advance"> | string | null
+    poolUtilizationAtRequest?: DecimalNullableWithAggregatesFilter<"Advance"> | Decimal | DecimalJsLike | number | string | null
+    riskScore?: IntNullableWithAggregatesFilter<"Advance"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Advance"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Advance"> | Date | string
   }
@@ -13915,6 +16922,154 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Payroll"> | Date | string
   }
 
+  export type RiskAdjustmentWhereInput = {
+    AND?: RiskAdjustmentWhereInput | RiskAdjustmentWhereInput[]
+    OR?: RiskAdjustmentWhereInput[]
+    NOT?: RiskAdjustmentWhereInput | RiskAdjustmentWhereInput[]
+    id?: UuidFilter<"RiskAdjustment"> | string
+    employerId?: UuidNullableFilter<"RiskAdjustment"> | string | null
+    adjustmentType?: StringFilter<"RiskAdjustment"> | string
+    previousValue?: DecimalFilter<"RiskAdjustment"> | Decimal | DecimalJsLike | number | string
+    newValue?: DecimalFilter<"RiskAdjustment"> | Decimal | DecimalJsLike | number | string
+    reason?: StringFilter<"RiskAdjustment"> | string
+    triggerMetric?: StringNullableFilter<"RiskAdjustment"> | string | null
+    triggerValue?: DecimalNullableFilter<"RiskAdjustment"> | Decimal | DecimalJsLike | number | string | null
+    adjustmentDate?: DateTimeFilter<"RiskAdjustment"> | Date | string
+    createdAt?: DateTimeFilter<"RiskAdjustment"> | Date | string
+  }
+
+  export type RiskAdjustmentOrderByWithRelationInput = {
+    id?: SortOrder
+    employerId?: SortOrderInput | SortOrder
+    adjustmentType?: SortOrder
+    previousValue?: SortOrder
+    newValue?: SortOrder
+    reason?: SortOrder
+    triggerMetric?: SortOrderInput | SortOrder
+    triggerValue?: SortOrderInput | SortOrder
+    adjustmentDate?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RiskAdjustmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: RiskAdjustmentWhereInput | RiskAdjustmentWhereInput[]
+    OR?: RiskAdjustmentWhereInput[]
+    NOT?: RiskAdjustmentWhereInput | RiskAdjustmentWhereInput[]
+    employerId?: UuidNullableFilter<"RiskAdjustment"> | string | null
+    adjustmentType?: StringFilter<"RiskAdjustment"> | string
+    previousValue?: DecimalFilter<"RiskAdjustment"> | Decimal | DecimalJsLike | number | string
+    newValue?: DecimalFilter<"RiskAdjustment"> | Decimal | DecimalJsLike | number | string
+    reason?: StringFilter<"RiskAdjustment"> | string
+    triggerMetric?: StringNullableFilter<"RiskAdjustment"> | string | null
+    triggerValue?: DecimalNullableFilter<"RiskAdjustment"> | Decimal | DecimalJsLike | number | string | null
+    adjustmentDate?: DateTimeFilter<"RiskAdjustment"> | Date | string
+    createdAt?: DateTimeFilter<"RiskAdjustment"> | Date | string
+  }, "id">
+
+  export type RiskAdjustmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    employerId?: SortOrderInput | SortOrder
+    adjustmentType?: SortOrder
+    previousValue?: SortOrder
+    newValue?: SortOrder
+    reason?: SortOrder
+    triggerMetric?: SortOrderInput | SortOrder
+    triggerValue?: SortOrderInput | SortOrder
+    adjustmentDate?: SortOrder
+    createdAt?: SortOrder
+    _count?: RiskAdjustmentCountOrderByAggregateInput
+    _avg?: RiskAdjustmentAvgOrderByAggregateInput
+    _max?: RiskAdjustmentMaxOrderByAggregateInput
+    _min?: RiskAdjustmentMinOrderByAggregateInput
+    _sum?: RiskAdjustmentSumOrderByAggregateInput
+  }
+
+  export type RiskAdjustmentScalarWhereWithAggregatesInput = {
+    AND?: RiskAdjustmentScalarWhereWithAggregatesInput | RiskAdjustmentScalarWhereWithAggregatesInput[]
+    OR?: RiskAdjustmentScalarWhereWithAggregatesInput[]
+    NOT?: RiskAdjustmentScalarWhereWithAggregatesInput | RiskAdjustmentScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"RiskAdjustment"> | string
+    employerId?: UuidNullableWithAggregatesFilter<"RiskAdjustment"> | string | null
+    adjustmentType?: StringWithAggregatesFilter<"RiskAdjustment"> | string
+    previousValue?: DecimalWithAggregatesFilter<"RiskAdjustment"> | Decimal | DecimalJsLike | number | string
+    newValue?: DecimalWithAggregatesFilter<"RiskAdjustment"> | Decimal | DecimalJsLike | number | string
+    reason?: StringWithAggregatesFilter<"RiskAdjustment"> | string
+    triggerMetric?: StringNullableWithAggregatesFilter<"RiskAdjustment"> | string | null
+    triggerValue?: DecimalNullableWithAggregatesFilter<"RiskAdjustment"> | Decimal | DecimalJsLike | number | string | null
+    adjustmentDate?: DateTimeWithAggregatesFilter<"RiskAdjustment"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"RiskAdjustment"> | Date | string
+  }
+
+  export type ReserveFundWhereInput = {
+    AND?: ReserveFundWhereInput | ReserveFundWhereInput[]
+    OR?: ReserveFundWhereInput[]
+    NOT?: ReserveFundWhereInput | ReserveFundWhereInput[]
+    id?: UuidFilter<"ReserveFund"> | string
+    amount?: DecimalFilter<"ReserveFund"> | Decimal | DecimalJsLike | number | string
+    transactionType?: StringFilter<"ReserveFund"> | string
+    description?: StringFilter<"ReserveFund"> | string
+    relatedAdvanceId?: UuidNullableFilter<"ReserveFund"> | string | null
+    transactionHash?: StringNullableFilter<"ReserveFund"> | string | null
+    timestamp?: DateTimeFilter<"ReserveFund"> | Date | string
+    createdAt?: DateTimeFilter<"ReserveFund"> | Date | string
+  }
+
+  export type ReserveFundOrderByWithRelationInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    transactionType?: SortOrder
+    description?: SortOrder
+    relatedAdvanceId?: SortOrderInput | SortOrder
+    transactionHash?: SortOrderInput | SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReserveFundWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ReserveFundWhereInput | ReserveFundWhereInput[]
+    OR?: ReserveFundWhereInput[]
+    NOT?: ReserveFundWhereInput | ReserveFundWhereInput[]
+    amount?: DecimalFilter<"ReserveFund"> | Decimal | DecimalJsLike | number | string
+    transactionType?: StringFilter<"ReserveFund"> | string
+    description?: StringFilter<"ReserveFund"> | string
+    relatedAdvanceId?: UuidNullableFilter<"ReserveFund"> | string | null
+    transactionHash?: StringNullableFilter<"ReserveFund"> | string | null
+    timestamp?: DateTimeFilter<"ReserveFund"> | Date | string
+    createdAt?: DateTimeFilter<"ReserveFund"> | Date | string
+  }, "id">
+
+  export type ReserveFundOrderByWithAggregationInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    transactionType?: SortOrder
+    description?: SortOrder
+    relatedAdvanceId?: SortOrderInput | SortOrder
+    transactionHash?: SortOrderInput | SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+    _count?: ReserveFundCountOrderByAggregateInput
+    _avg?: ReserveFundAvgOrderByAggregateInput
+    _max?: ReserveFundMaxOrderByAggregateInput
+    _min?: ReserveFundMinOrderByAggregateInput
+    _sum?: ReserveFundSumOrderByAggregateInput
+  }
+
+  export type ReserveFundScalarWhereWithAggregatesInput = {
+    AND?: ReserveFundScalarWhereWithAggregatesInput | ReserveFundScalarWhereWithAggregatesInput[]
+    OR?: ReserveFundScalarWhereWithAggregatesInput[]
+    NOT?: ReserveFundScalarWhereWithAggregatesInput | ReserveFundScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"ReserveFund"> | string
+    amount?: DecimalWithAggregatesFilter<"ReserveFund"> | Decimal | DecimalJsLike | number | string
+    transactionType?: StringWithAggregatesFilter<"ReserveFund"> | string
+    description?: StringWithAggregatesFilter<"ReserveFund"> | string
+    relatedAdvanceId?: UuidNullableWithAggregatesFilter<"ReserveFund"> | string | null
+    transactionHash?: StringNullableWithAggregatesFilter<"ReserveFund"> | string | null
+    timestamp?: DateTimeWithAggregatesFilter<"ReserveFund"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"ReserveFund"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     username?: string | null
@@ -14096,6 +17251,13 @@ export namespace Prisma {
     registrationDate: Date | string
     isVerified?: boolean
     verificationDate?: Date | string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutEmployerInput
@@ -14115,6 +17277,13 @@ export namespace Prisma {
     isVerified?: boolean
     verificationDate?: Date | string | null
     verifiedBy?: string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     employees?: EmployeeUncheckedCreateNestedManyWithoutEmployerInput
@@ -14128,6 +17297,13 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutEmployerNestedInput
@@ -14147,6 +17323,13 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     employees?: EmployeeUncheckedUpdateManyWithoutEmployerNestedInput
@@ -14163,6 +17346,13 @@ export namespace Prisma {
     isVerified?: boolean
     verificationDate?: Date | string | null
     verifiedBy?: string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -14173,6 +17363,13 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14186,6 +17383,13 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14201,6 +17405,14 @@ export namespace Prisma {
     kycReviewedAt?: Date | string | null
     kycNotes?: string | null
     salary?: Decimal | DecimalJsLike | number | string | null
+    startDate?: Date | string | null
+    daysWorked?: number
+    creditScore?: number
+    totalAdvancesTaken?: number
+    totalAdvancesRepaid?: number
+    currentAdvanceBalance?: Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: string | null
+    bankName?: string | null
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14230,6 +17442,14 @@ export namespace Prisma {
     kycReviewerId?: string | null
     kycNotes?: string | null
     salary?: Decimal | DecimalJsLike | number | string | null
+    startDate?: Date | string | null
+    daysWorked?: number
+    creditScore?: number
+    totalAdvancesTaken?: number
+    totalAdvancesRepaid?: number
+    currentAdvanceBalance?: Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: string | null
+    bankName?: string | null
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14253,6 +17473,14 @@ export namespace Prisma {
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycNotes?: NullableStringFieldUpdateOperationsInput | string | null
     salary?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    daysWorked?: IntFieldUpdateOperationsInput | number
+    creditScore?: IntFieldUpdateOperationsInput | number
+    totalAdvancesTaken?: IntFieldUpdateOperationsInput | number
+    totalAdvancesRepaid?: IntFieldUpdateOperationsInput | number
+    currentAdvanceBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14282,6 +17510,14 @@ export namespace Prisma {
     kycReviewerId?: NullableStringFieldUpdateOperationsInput | string | null
     kycNotes?: NullableStringFieldUpdateOperationsInput | string | null
     salary?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    daysWorked?: IntFieldUpdateOperationsInput | number
+    creditScore?: IntFieldUpdateOperationsInput | number
+    totalAdvancesTaken?: IntFieldUpdateOperationsInput | number
+    totalAdvancesRepaid?: IntFieldUpdateOperationsInput | number
+    currentAdvanceBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14308,6 +17544,14 @@ export namespace Prisma {
     kycReviewerId?: string | null
     kycNotes?: string | null
     salary?: Decimal | DecimalJsLike | number | string | null
+    startDate?: Date | string | null
+    daysWorked?: number
+    creditScore?: number
+    totalAdvancesTaken?: number
+    totalAdvancesRepaid?: number
+    currentAdvanceBalance?: Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: string | null
+    bankName?: string | null
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14330,6 +17574,14 @@ export namespace Prisma {
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycNotes?: NullableStringFieldUpdateOperationsInput | string | null
     salary?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    daysWorked?: IntFieldUpdateOperationsInput | number
+    creditScore?: IntFieldUpdateOperationsInput | number
+    totalAdvancesTaken?: IntFieldUpdateOperationsInput | number
+    totalAdvancesRepaid?: IntFieldUpdateOperationsInput | number
+    currentAdvanceBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14355,6 +17607,14 @@ export namespace Prisma {
     kycReviewerId?: NullableStringFieldUpdateOperationsInput | string | null
     kycNotes?: NullableStringFieldUpdateOperationsInput | string | null
     salary?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    daysWorked?: IntFieldUpdateOperationsInput | number
+    creditScore?: IntFieldUpdateOperationsInput | number
+    totalAdvancesTaken?: IntFieldUpdateOperationsInput | number
+    totalAdvancesRepaid?: IntFieldUpdateOperationsInput | number
+    currentAdvanceBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14368,15 +17628,28 @@ export namespace Prisma {
 
   export type AdvanceCreateInput = {
     id?: string
+    employerId: string
     amount: Decimal | DecimalJsLike | number | string
+    serviceFee: Decimal | DecimalJsLike | number | string
+    serviceFeePercentage: Decimal | DecimalJsLike | number | string
+    netAmount: Decimal | DecimalJsLike | number | string
     repaymentAmount: Decimal | DecimalJsLike | number | string
+    earnedToDate: Decimal | DecimalJsLike | number | string
+    availableAdvance: Decimal | DecimalJsLike | number | string
     requestDate: Date | string
     approvalDate?: Date | string | null
+    disbursementDate?: Date | string | null
     paymentDate?: Date | string | null
+    repaymentDate?: Date | string | null
     dueDate: Date | string
     status?: $Enums.EnumAdvancesStatus
+    approvedBy?: string | null
+    rejectedBy?: string | null
+    rejectionReason?: string | null
     transactionHash?: string | null
     repaymentTransactionHash?: string | null
+    poolUtilizationAtRequest?: Decimal | DecimalJsLike | number | string | null
+    riskScore?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     employee: EmployeeCreateNestedOneWithoutAdvancesInput
@@ -14385,30 +17658,56 @@ export namespace Prisma {
   export type AdvanceUncheckedCreateInput = {
     id?: string
     employeeId: string
+    employerId: string
     amount: Decimal | DecimalJsLike | number | string
+    serviceFee: Decimal | DecimalJsLike | number | string
+    serviceFeePercentage: Decimal | DecimalJsLike | number | string
+    netAmount: Decimal | DecimalJsLike | number | string
     repaymentAmount: Decimal | DecimalJsLike | number | string
+    earnedToDate: Decimal | DecimalJsLike | number | string
+    availableAdvance: Decimal | DecimalJsLike | number | string
     requestDate: Date | string
     approvalDate?: Date | string | null
+    disbursementDate?: Date | string | null
     paymentDate?: Date | string | null
+    repaymentDate?: Date | string | null
     dueDate: Date | string
     status?: $Enums.EnumAdvancesStatus
+    approvedBy?: string | null
+    rejectedBy?: string | null
+    rejectionReason?: string | null
     transactionHash?: string | null
     repaymentTransactionHash?: string | null
+    poolUtilizationAtRequest?: Decimal | DecimalJsLike | number | string | null
+    riskScore?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type AdvanceUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    employerId?: StringFieldUpdateOperationsInput | string
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    serviceFee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    serviceFeePercentage?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    netAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     repaymentAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    earnedToDate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    availableAdvance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     requestDate?: DateTimeFieldUpdateOperationsInput | Date | string
     approvalDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    disbursementDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    repaymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEnumAdvancesStatusFieldUpdateOperationsInput | $Enums.EnumAdvancesStatus
+    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     transactionHash?: NullableStringFieldUpdateOperationsInput | string | null
     repaymentTransactionHash?: NullableStringFieldUpdateOperationsInput | string | null
+    poolUtilizationAtRequest?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    riskScore?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     employee?: EmployeeUpdateOneRequiredWithoutAdvancesNestedInput
@@ -14417,15 +17716,28 @@ export namespace Prisma {
   export type AdvanceUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     employeeId?: StringFieldUpdateOperationsInput | string
+    employerId?: StringFieldUpdateOperationsInput | string
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    serviceFee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    serviceFeePercentage?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    netAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     repaymentAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    earnedToDate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    availableAdvance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     requestDate?: DateTimeFieldUpdateOperationsInput | Date | string
     approvalDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    disbursementDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    repaymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEnumAdvancesStatusFieldUpdateOperationsInput | $Enums.EnumAdvancesStatus
+    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     transactionHash?: NullableStringFieldUpdateOperationsInput | string | null
     repaymentTransactionHash?: NullableStringFieldUpdateOperationsInput | string | null
+    poolUtilizationAtRequest?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    riskScore?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14433,30 +17745,56 @@ export namespace Prisma {
   export type AdvanceCreateManyInput = {
     id?: string
     employeeId: string
+    employerId: string
     amount: Decimal | DecimalJsLike | number | string
+    serviceFee: Decimal | DecimalJsLike | number | string
+    serviceFeePercentage: Decimal | DecimalJsLike | number | string
+    netAmount: Decimal | DecimalJsLike | number | string
     repaymentAmount: Decimal | DecimalJsLike | number | string
+    earnedToDate: Decimal | DecimalJsLike | number | string
+    availableAdvance: Decimal | DecimalJsLike | number | string
     requestDate: Date | string
     approvalDate?: Date | string | null
+    disbursementDate?: Date | string | null
     paymentDate?: Date | string | null
+    repaymentDate?: Date | string | null
     dueDate: Date | string
     status?: $Enums.EnumAdvancesStatus
+    approvedBy?: string | null
+    rejectedBy?: string | null
+    rejectionReason?: string | null
     transactionHash?: string | null
     repaymentTransactionHash?: string | null
+    poolUtilizationAtRequest?: Decimal | DecimalJsLike | number | string | null
+    riskScore?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type AdvanceUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    employerId?: StringFieldUpdateOperationsInput | string
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    serviceFee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    serviceFeePercentage?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    netAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     repaymentAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    earnedToDate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    availableAdvance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     requestDate?: DateTimeFieldUpdateOperationsInput | Date | string
     approvalDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    disbursementDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    repaymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEnumAdvancesStatusFieldUpdateOperationsInput | $Enums.EnumAdvancesStatus
+    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     transactionHash?: NullableStringFieldUpdateOperationsInput | string | null
     repaymentTransactionHash?: NullableStringFieldUpdateOperationsInput | string | null
+    poolUtilizationAtRequest?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    riskScore?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14464,15 +17802,28 @@ export namespace Prisma {
   export type AdvanceUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     employeeId?: StringFieldUpdateOperationsInput | string
+    employerId?: StringFieldUpdateOperationsInput | string
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    serviceFee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    serviceFeePercentage?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    netAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     repaymentAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    earnedToDate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    availableAdvance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     requestDate?: DateTimeFieldUpdateOperationsInput | Date | string
     approvalDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    disbursementDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    repaymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEnumAdvancesStatusFieldUpdateOperationsInput | $Enums.EnumAdvancesStatus
+    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     transactionHash?: NullableStringFieldUpdateOperationsInput | string | null
     repaymentTransactionHash?: NullableStringFieldUpdateOperationsInput | string | null
+    poolUtilizationAtRequest?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    riskScore?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14813,6 +18164,174 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type RiskAdjustmentCreateInput = {
+    id?: string
+    employerId?: string | null
+    adjustmentType: string
+    previousValue: Decimal | DecimalJsLike | number | string
+    newValue: Decimal | DecimalJsLike | number | string
+    reason: string
+    triggerMetric?: string | null
+    triggerValue?: Decimal | DecimalJsLike | number | string | null
+    adjustmentDate: Date | string
+    createdAt?: Date | string
+  }
+
+  export type RiskAdjustmentUncheckedCreateInput = {
+    id?: string
+    employerId?: string | null
+    adjustmentType: string
+    previousValue: Decimal | DecimalJsLike | number | string
+    newValue: Decimal | DecimalJsLike | number | string
+    reason: string
+    triggerMetric?: string | null
+    triggerValue?: Decimal | DecimalJsLike | number | string | null
+    adjustmentDate: Date | string
+    createdAt?: Date | string
+  }
+
+  export type RiskAdjustmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    employerId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentType?: StringFieldUpdateOperationsInput | string
+    previousValue?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    newValue?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    reason?: StringFieldUpdateOperationsInput | string
+    triggerMetric?: NullableStringFieldUpdateOperationsInput | string | null
+    triggerValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    adjustmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RiskAdjustmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    employerId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentType?: StringFieldUpdateOperationsInput | string
+    previousValue?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    newValue?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    reason?: StringFieldUpdateOperationsInput | string
+    triggerMetric?: NullableStringFieldUpdateOperationsInput | string | null
+    triggerValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    adjustmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RiskAdjustmentCreateManyInput = {
+    id?: string
+    employerId?: string | null
+    adjustmentType: string
+    previousValue: Decimal | DecimalJsLike | number | string
+    newValue: Decimal | DecimalJsLike | number | string
+    reason: string
+    triggerMetric?: string | null
+    triggerValue?: Decimal | DecimalJsLike | number | string | null
+    adjustmentDate: Date | string
+    createdAt?: Date | string
+  }
+
+  export type RiskAdjustmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    employerId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentType?: StringFieldUpdateOperationsInput | string
+    previousValue?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    newValue?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    reason?: StringFieldUpdateOperationsInput | string
+    triggerMetric?: NullableStringFieldUpdateOperationsInput | string | null
+    triggerValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    adjustmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RiskAdjustmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    employerId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentType?: StringFieldUpdateOperationsInput | string
+    previousValue?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    newValue?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    reason?: StringFieldUpdateOperationsInput | string
+    triggerMetric?: NullableStringFieldUpdateOperationsInput | string | null
+    triggerValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    adjustmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReserveFundCreateInput = {
+    id?: string
+    amount: Decimal | DecimalJsLike | number | string
+    transactionType: string
+    description: string
+    relatedAdvanceId?: string | null
+    transactionHash?: string | null
+    timestamp: Date | string
+    createdAt?: Date | string
+  }
+
+  export type ReserveFundUncheckedCreateInput = {
+    id?: string
+    amount: Decimal | DecimalJsLike | number | string
+    transactionType: string
+    description: string
+    relatedAdvanceId?: string | null
+    transactionHash?: string | null
+    timestamp: Date | string
+    createdAt?: Date | string
+  }
+
+  export type ReserveFundUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    transactionType?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    relatedAdvanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionHash?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReserveFundUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    transactionType?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    relatedAdvanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionHash?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReserveFundCreateManyInput = {
+    id?: string
+    amount: Decimal | DecimalJsLike | number | string
+    transactionType: string
+    description: string
+    relatedAdvanceId?: string | null
+    transactionHash?: string | null
+    timestamp: Date | string
+    createdAt?: Date | string
+  }
+
+  export type ReserveFundUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    transactionType?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    relatedAdvanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionHash?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReserveFundUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    transactionType?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    relatedAdvanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionHash?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UuidFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -15148,6 +18667,24 @@ export namespace Prisma {
     not?: NestedUuidNullableFilter<$PrismaModel> | string | null
   }
 
+  export type EnumEnumEmployerTierFilter<$PrismaModel = never> = {
+    equals?: $Enums.EnumEmployerTier | EnumEnumEmployerTierFieldRefInput<$PrismaModel>
+    in?: $Enums.EnumEmployerTier[] | ListEnumEnumEmployerTierFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EnumEmployerTier[] | ListEnumEnumEmployerTierFieldRefInput<$PrismaModel>
+    not?: NestedEnumEnumEmployerTierFilter<$PrismaModel> | $Enums.EnumEmployerTier
+  }
+
+  export type DecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
   export type UserNullableScalarRelationFilter = {
     is?: UserWhereInput | null
     isNot?: UserWhereInput | null
@@ -15182,12 +18719,23 @@ export namespace Prisma {
     isVerified?: SortOrder
     verificationDate?: SortOrder
     verifiedBy?: SortOrder
+    tier?: SortOrder
+    advancePercentageLimit?: SortOrder
+    autoApproveAdvances?: SortOrder
+    bankHistoryVerified?: SortOrder
+    monthsOnPlatform?: SortOrder
+    defaultRate?: SortOrder
+    totalAdvancesProcessed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type EmployerAvgOrderByAggregateInput = {
     marketerId?: SortOrder
+    advancePercentageLimit?: SortOrder
+    monthsOnPlatform?: SortOrder
+    defaultRate?: SortOrder
+    totalAdvancesProcessed?: SortOrder
   }
 
   export type EmployerMaxOrderByAggregateInput = {
@@ -15199,6 +18747,13 @@ export namespace Prisma {
     isVerified?: SortOrder
     verificationDate?: SortOrder
     verifiedBy?: SortOrder
+    tier?: SortOrder
+    advancePercentageLimit?: SortOrder
+    autoApproveAdvances?: SortOrder
+    bankHistoryVerified?: SortOrder
+    monthsOnPlatform?: SortOrder
+    defaultRate?: SortOrder
+    totalAdvancesProcessed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -15212,12 +18767,23 @@ export namespace Prisma {
     isVerified?: SortOrder
     verificationDate?: SortOrder
     verifiedBy?: SortOrder
+    tier?: SortOrder
+    advancePercentageLimit?: SortOrder
+    autoApproveAdvances?: SortOrder
+    bankHistoryVerified?: SortOrder
+    monthsOnPlatform?: SortOrder
+    defaultRate?: SortOrder
+    totalAdvancesProcessed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type EmployerSumOrderByAggregateInput = {
     marketerId?: SortOrder
+    advancePercentageLimit?: SortOrder
+    monthsOnPlatform?: SortOrder
+    defaultRate?: SortOrder
+    totalAdvancesProcessed?: SortOrder
   }
 
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -15263,6 +18829,32 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type EnumEnumEmployerTierWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EnumEmployerTier | EnumEnumEmployerTierFieldRefInput<$PrismaModel>
+    in?: $Enums.EnumEmployerTier[] | ListEnumEnumEmployerTierFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EnumEmployerTier[] | ListEnumEnumEmployerTierFieldRefInput<$PrismaModel>
+    not?: NestedEnumEnumEmployerTierWithAggregatesFilter<$PrismaModel> | $Enums.EnumEmployerTier
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEnumEmployerTierFilter<$PrismaModel>
+    _max?: NestedEnumEnumEmployerTierFilter<$PrismaModel>
+  }
+
+  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type EnumEnumEmployeesKycStageFilter<$PrismaModel = never> = {
@@ -15319,6 +18911,14 @@ export namespace Prisma {
     kycReviewerId?: SortOrder
     kycNotes?: SortOrder
     salary?: SortOrder
+    startDate?: SortOrder
+    daysWorked?: SortOrder
+    creditScore?: SortOrder
+    totalAdvancesTaken?: SortOrder
+    totalAdvancesRepaid?: SortOrder
+    currentAdvanceBalance?: SortOrder
+    bankAccountNumber?: SortOrder
+    bankName?: SortOrder
     registrationDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -15332,6 +18932,11 @@ export namespace Prisma {
 
   export type EmployeeAvgOrderByAggregateInput = {
     salary?: SortOrder
+    daysWorked?: SortOrder
+    creditScore?: SortOrder
+    totalAdvancesTaken?: SortOrder
+    totalAdvancesRepaid?: SortOrder
+    currentAdvanceBalance?: SortOrder
   }
 
   export type EmployeeMaxOrderByAggregateInput = {
@@ -15348,6 +18953,14 @@ export namespace Prisma {
     kycReviewerId?: SortOrder
     kycNotes?: SortOrder
     salary?: SortOrder
+    startDate?: SortOrder
+    daysWorked?: SortOrder
+    creditScore?: SortOrder
+    totalAdvancesTaken?: SortOrder
+    totalAdvancesRepaid?: SortOrder
+    currentAdvanceBalance?: SortOrder
+    bankAccountNumber?: SortOrder
+    bankName?: SortOrder
     registrationDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -15373,6 +18986,14 @@ export namespace Prisma {
     kycReviewerId?: SortOrder
     kycNotes?: SortOrder
     salary?: SortOrder
+    startDate?: SortOrder
+    daysWorked?: SortOrder
+    creditScore?: SortOrder
+    totalAdvancesTaken?: SortOrder
+    totalAdvancesRepaid?: SortOrder
+    currentAdvanceBalance?: SortOrder
+    bankAccountNumber?: SortOrder
+    bankName?: SortOrder
     registrationDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -15386,6 +19007,11 @@ export namespace Prisma {
 
   export type EmployeeSumOrderByAggregateInput = {
     salary?: SortOrder
+    daysWorked?: SortOrder
+    creditScore?: SortOrder
+    totalAdvancesTaken?: SortOrder
+    totalAdvancesRepaid?: SortOrder
+    currentAdvanceBalance?: SortOrder
   }
 
   export type EnumEnumEmployeesKycStageWithAggregatesFilter<$PrismaModel = never> = {
@@ -15424,17 +19050,6 @@ export namespace Prisma {
     _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
-  export type DecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-  }
-
   export type EnumEnumAdvancesStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.EnumAdvancesStatus | EnumEnumAdvancesStatusFieldRefInput<$PrismaModel>
     in?: $Enums.EnumAdvancesStatus[] | ListEnumEnumAdvancesStatusFieldRefInput<$PrismaModel>
@@ -15450,36 +19065,69 @@ export namespace Prisma {
   export type AdvanceCountOrderByAggregateInput = {
     id?: SortOrder
     employeeId?: SortOrder
+    employerId?: SortOrder
     amount?: SortOrder
+    serviceFee?: SortOrder
+    serviceFeePercentage?: SortOrder
+    netAmount?: SortOrder
     repaymentAmount?: SortOrder
+    earnedToDate?: SortOrder
+    availableAdvance?: SortOrder
     requestDate?: SortOrder
     approvalDate?: SortOrder
+    disbursementDate?: SortOrder
     paymentDate?: SortOrder
+    repaymentDate?: SortOrder
     dueDate?: SortOrder
     status?: SortOrder
+    approvedBy?: SortOrder
+    rejectedBy?: SortOrder
+    rejectionReason?: SortOrder
     transactionHash?: SortOrder
     repaymentTransactionHash?: SortOrder
+    poolUtilizationAtRequest?: SortOrder
+    riskScore?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type AdvanceAvgOrderByAggregateInput = {
     amount?: SortOrder
+    serviceFee?: SortOrder
+    serviceFeePercentage?: SortOrder
+    netAmount?: SortOrder
     repaymentAmount?: SortOrder
+    earnedToDate?: SortOrder
+    availableAdvance?: SortOrder
+    poolUtilizationAtRequest?: SortOrder
+    riskScore?: SortOrder
   }
 
   export type AdvanceMaxOrderByAggregateInput = {
     id?: SortOrder
     employeeId?: SortOrder
+    employerId?: SortOrder
     amount?: SortOrder
+    serviceFee?: SortOrder
+    serviceFeePercentage?: SortOrder
+    netAmount?: SortOrder
     repaymentAmount?: SortOrder
+    earnedToDate?: SortOrder
+    availableAdvance?: SortOrder
     requestDate?: SortOrder
     approvalDate?: SortOrder
+    disbursementDate?: SortOrder
     paymentDate?: SortOrder
+    repaymentDate?: SortOrder
     dueDate?: SortOrder
     status?: SortOrder
+    approvedBy?: SortOrder
+    rejectedBy?: SortOrder
+    rejectionReason?: SortOrder
     transactionHash?: SortOrder
     repaymentTransactionHash?: SortOrder
+    poolUtilizationAtRequest?: SortOrder
+    riskScore?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -15487,38 +19135,42 @@ export namespace Prisma {
   export type AdvanceMinOrderByAggregateInput = {
     id?: SortOrder
     employeeId?: SortOrder
+    employerId?: SortOrder
     amount?: SortOrder
+    serviceFee?: SortOrder
+    serviceFeePercentage?: SortOrder
+    netAmount?: SortOrder
     repaymentAmount?: SortOrder
+    earnedToDate?: SortOrder
+    availableAdvance?: SortOrder
     requestDate?: SortOrder
     approvalDate?: SortOrder
+    disbursementDate?: SortOrder
     paymentDate?: SortOrder
+    repaymentDate?: SortOrder
     dueDate?: SortOrder
     status?: SortOrder
+    approvedBy?: SortOrder
+    rejectedBy?: SortOrder
+    rejectionReason?: SortOrder
     transactionHash?: SortOrder
     repaymentTransactionHash?: SortOrder
+    poolUtilizationAtRequest?: SortOrder
+    riskScore?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type AdvanceSumOrderByAggregateInput = {
     amount?: SortOrder
+    serviceFee?: SortOrder
+    serviceFeePercentage?: SortOrder
+    netAmount?: SortOrder
     repaymentAmount?: SortOrder
-  }
-
-  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedDecimalFilter<$PrismaModel>
-    _sum?: NestedDecimalFilter<$PrismaModel>
-    _min?: NestedDecimalFilter<$PrismaModel>
-    _max?: NestedDecimalFilter<$PrismaModel>
+    earnedToDate?: SortOrder
+    availableAdvance?: SortOrder
+    poolUtilizationAtRequest?: SortOrder
+    riskScore?: SortOrder
   }
 
   export type EnumEnumAdvancesStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -15826,6 +19478,98 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumEnumPayrollStatusFilter<$PrismaModel>
     _max?: NestedEnumEnumPayrollStatusFilter<$PrismaModel>
+  }
+
+  export type RiskAdjustmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    employerId?: SortOrder
+    adjustmentType?: SortOrder
+    previousValue?: SortOrder
+    newValue?: SortOrder
+    reason?: SortOrder
+    triggerMetric?: SortOrder
+    triggerValue?: SortOrder
+    adjustmentDate?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RiskAdjustmentAvgOrderByAggregateInput = {
+    previousValue?: SortOrder
+    newValue?: SortOrder
+    triggerValue?: SortOrder
+  }
+
+  export type RiskAdjustmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    employerId?: SortOrder
+    adjustmentType?: SortOrder
+    previousValue?: SortOrder
+    newValue?: SortOrder
+    reason?: SortOrder
+    triggerMetric?: SortOrder
+    triggerValue?: SortOrder
+    adjustmentDate?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RiskAdjustmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    employerId?: SortOrder
+    adjustmentType?: SortOrder
+    previousValue?: SortOrder
+    newValue?: SortOrder
+    reason?: SortOrder
+    triggerMetric?: SortOrder
+    triggerValue?: SortOrder
+    adjustmentDate?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RiskAdjustmentSumOrderByAggregateInput = {
+    previousValue?: SortOrder
+    newValue?: SortOrder
+    triggerValue?: SortOrder
+  }
+
+  export type ReserveFundCountOrderByAggregateInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    transactionType?: SortOrder
+    description?: SortOrder
+    relatedAdvanceId?: SortOrder
+    transactionHash?: SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReserveFundAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type ReserveFundMaxOrderByAggregateInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    transactionType?: SortOrder
+    description?: SortOrder
+    relatedAdvanceId?: SortOrder
+    transactionHash?: SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReserveFundMinOrderByAggregateInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    transactionType?: SortOrder
+    description?: SortOrder
+    relatedAdvanceId?: SortOrder
+    transactionHash?: SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReserveFundSumOrderByAggregateInput = {
+    amount?: SortOrder
   }
 
   export type MarketerCreateNestedOneWithoutUserInput = {
@@ -16240,6 +19984,18 @@ export namespace Prisma {
     set?: Date | string | null
   }
 
+  export type EnumEnumEmployerTierFieldUpdateOperationsInput = {
+    set?: $Enums.EnumEmployerTier
+  }
+
+  export type DecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
   export type UserUpdateOneRequiredWithoutEmployerNestedInput = {
     create?: XOR<UserCreateWithoutEmployerInput, UserUncheckedCreateWithoutEmployerInput>
     connectOrCreate?: UserCreateOrConnectWithoutEmployerInput
@@ -16466,14 +20222,6 @@ export namespace Prisma {
     create?: XOR<EmployeeCreateWithoutAdvancesInput, EmployeeUncheckedCreateWithoutAdvancesInput>
     connectOrCreate?: EmployeeCreateOrConnectWithoutAdvancesInput
     connect?: EmployeeWhereUniqueInput
-  }
-
-  export type DecimalFieldUpdateOperationsInput = {
-    set?: Decimal | DecimalJsLike | number | string
-    increment?: Decimal | DecimalJsLike | number | string
-    decrement?: Decimal | DecimalJsLike | number | string
-    multiply?: Decimal | DecimalJsLike | number | string
-    divide?: Decimal | DecimalJsLike | number | string
   }
 
   export type EnumEnumAdvancesStatusFieldUpdateOperationsInput = {
@@ -16779,6 +20527,24 @@ export namespace Prisma {
     not?: NestedUuidNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedEnumEnumEmployerTierFilter<$PrismaModel = never> = {
+    equals?: $Enums.EnumEmployerTier | EnumEnumEmployerTierFieldRefInput<$PrismaModel>
+    in?: $Enums.EnumEmployerTier[] | ListEnumEnumEmployerTierFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EnumEmployerTier[] | ListEnumEnumEmployerTierFieldRefInput<$PrismaModel>
+    not?: NestedEnumEnumEmployerTierFilter<$PrismaModel> | $Enums.EnumEmployerTier
+  }
+
+  export type NestedDecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -16832,6 +20598,32 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumEnumEmployerTierWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EnumEmployerTier | EnumEnumEmployerTierFieldRefInput<$PrismaModel>
+    in?: $Enums.EnumEmployerTier[] | ListEnumEnumEmployerTierFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EnumEmployerTier[] | ListEnumEnumEmployerTierFieldRefInput<$PrismaModel>
+    not?: NestedEnumEnumEmployerTierWithAggregatesFilter<$PrismaModel> | $Enums.EnumEmployerTier
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEnumEmployerTierFilter<$PrismaModel>
+    _max?: NestedEnumEnumEmployerTierFilter<$PrismaModel>
+  }
+
+  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type NestedEnumEnumEmployeesKycStageFilter<$PrismaModel = never> = {
@@ -16895,38 +20687,11 @@ export namespace Prisma {
     _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
-  export type NestedDecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-  }
-
   export type NestedEnumEnumAdvancesStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.EnumAdvancesStatus | EnumEnumAdvancesStatusFieldRefInput<$PrismaModel>
     in?: $Enums.EnumAdvancesStatus[] | ListEnumEnumAdvancesStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.EnumAdvancesStatus[] | ListEnumEnumAdvancesStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumEnumAdvancesStatusFilter<$PrismaModel> | $Enums.EnumAdvancesStatus
-  }
-
-  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedDecimalFilter<$PrismaModel>
-    _sum?: NestedDecimalFilter<$PrismaModel>
-    _min?: NestedDecimalFilter<$PrismaModel>
-    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type NestedEnumEnumAdvancesStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -17073,6 +20838,13 @@ export namespace Prisma {
     registrationDate: Date | string
     isVerified?: boolean
     verificationDate?: Date | string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     marketer?: MarketerCreateNestedOneWithoutEmployersInput
@@ -17090,6 +20862,13 @@ export namespace Prisma {
     isVerified?: boolean
     verificationDate?: Date | string | null
     verifiedBy?: string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     employees?: EmployeeUncheckedCreateNestedManyWithoutEmployerInput
@@ -17113,6 +20892,14 @@ export namespace Prisma {
     kycReviewedAt?: Date | string | null
     kycNotes?: string | null
     salary?: Decimal | DecimalJsLike | number | string | null
+    startDate?: Date | string | null
+    daysWorked?: number
+    creditScore?: number
+    totalAdvancesTaken?: number
+    totalAdvancesRepaid?: number
+    currentAdvanceBalance?: Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: string | null
+    bankName?: string | null
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17140,6 +20927,14 @@ export namespace Prisma {
     kycReviewerId?: string | null
     kycNotes?: string | null
     salary?: Decimal | DecimalJsLike | number | string | null
+    startDate?: Date | string | null
+    daysWorked?: number
+    creditScore?: number
+    totalAdvancesTaken?: number
+    totalAdvancesRepaid?: number
+    currentAdvanceBalance?: Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: string | null
+    bankName?: string | null
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17163,6 +20958,13 @@ export namespace Prisma {
     registrationDate: Date | string
     isVerified?: boolean
     verificationDate?: Date | string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutEmployerInput
@@ -17180,6 +20982,13 @@ export namespace Prisma {
     registrationDate: Date | string
     isVerified?: boolean
     verificationDate?: Date | string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     employees?: EmployeeUncheckedCreateNestedManyWithoutEmployerInput
@@ -17208,6 +21017,14 @@ export namespace Prisma {
     kycReviewedAt?: Date | string | null
     kycNotes?: string | null
     salary?: Decimal | DecimalJsLike | number | string | null
+    startDate?: Date | string | null
+    daysWorked?: number
+    creditScore?: number
+    totalAdvancesTaken?: number
+    totalAdvancesRepaid?: number
+    currentAdvanceBalance?: Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: string | null
+    bankName?: string | null
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17235,6 +21052,14 @@ export namespace Prisma {
     kycReviewedAt?: Date | string | null
     kycNotes?: string | null
     salary?: Decimal | DecimalJsLike | number | string | null
+    startDate?: Date | string | null
+    daysWorked?: number
+    creditScore?: number
+    totalAdvancesTaken?: number
+    totalAdvancesRepaid?: number
+    currentAdvanceBalance?: Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: string | null
+    bankName?: string | null
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17364,6 +21189,13 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     marketer?: MarketerUpdateOneWithoutEmployersNestedInput
@@ -17381,6 +21213,13 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     employees?: EmployeeUncheckedUpdateManyWithoutEmployerNestedInput
@@ -17410,6 +21249,14 @@ export namespace Prisma {
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycNotes?: NullableStringFieldUpdateOperationsInput | string | null
     salary?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    daysWorked?: IntFieldUpdateOperationsInput | number
+    creditScore?: IntFieldUpdateOperationsInput | number
+    totalAdvancesTaken?: IntFieldUpdateOperationsInput | number
+    totalAdvancesRepaid?: IntFieldUpdateOperationsInput | number
+    currentAdvanceBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17437,6 +21284,14 @@ export namespace Prisma {
     kycReviewerId?: NullableStringFieldUpdateOperationsInput | string | null
     kycNotes?: NullableStringFieldUpdateOperationsInput | string | null
     salary?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    daysWorked?: IntFieldUpdateOperationsInput | number
+    creditScore?: IntFieldUpdateOperationsInput | number
+    totalAdvancesTaken?: IntFieldUpdateOperationsInput | number
+    totalAdvancesRepaid?: IntFieldUpdateOperationsInput | number
+    currentAdvanceBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17477,6 +21332,13 @@ export namespace Prisma {
     isVerified?: BoolFilter<"Employer"> | boolean
     verificationDate?: DateTimeNullableFilter<"Employer"> | Date | string | null
     verifiedBy?: UuidNullableFilter<"Employer"> | string | null
+    tier?: EnumEnumEmployerTierFilter<"Employer"> | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFilter<"Employer"> | number
+    autoApproveAdvances?: BoolFilter<"Employer"> | boolean
+    bankHistoryVerified?: BoolFilter<"Employer"> | boolean
+    monthsOnPlatform?: IntFilter<"Employer"> | number
+    defaultRate?: DecimalFilter<"Employer"> | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFilter<"Employer"> | number
     createdAt?: DateTimeFilter<"Employer"> | Date | string
     updatedAt?: DateTimeFilter<"Employer"> | Date | string
   }
@@ -17514,6 +21376,14 @@ export namespace Prisma {
     kycReviewerId?: UuidNullableFilter<"Employee"> | string | null
     kycNotes?: StringNullableFilter<"Employee"> | string | null
     salary?: DecimalNullableFilter<"Employee"> | Decimal | DecimalJsLike | number | string | null
+    startDate?: DateTimeNullableFilter<"Employee"> | Date | string | null
+    daysWorked?: IntFilter<"Employee"> | number
+    creditScore?: IntFilter<"Employee"> | number
+    totalAdvancesTaken?: IntFilter<"Employee"> | number
+    totalAdvancesRepaid?: IntFilter<"Employee"> | number
+    currentAdvanceBalance?: DecimalFilter<"Employee"> | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: StringNullableFilter<"Employee"> | string | null
+    bankName?: StringNullableFilter<"Employee"> | string | null
     registrationDate?: DateTimeFilter<"Employee"> | Date | string
     createdAt?: DateTimeFilter<"Employee"> | Date | string
     updatedAt?: DateTimeFilter<"Employee"> | Date | string
@@ -17621,6 +21491,13 @@ export namespace Prisma {
     registrationDate: Date | string
     isVerified?: boolean
     verificationDate?: Date | string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutEmployerInput
@@ -17638,6 +21515,13 @@ export namespace Prisma {
     isVerified?: boolean
     verificationDate?: Date | string | null
     verifiedBy?: string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     employees?: EmployeeUncheckedCreateNestedManyWithoutEmployerInput
@@ -17837,6 +21721,14 @@ export namespace Prisma {
     kycReviewedAt?: Date | string | null
     kycNotes?: string | null
     salary?: Decimal | DecimalJsLike | number | string | null
+    startDate?: Date | string | null
+    daysWorked?: number
+    creditScore?: number
+    totalAdvancesTaken?: number
+    totalAdvancesRepaid?: number
+    currentAdvanceBalance?: Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: string | null
+    bankName?: string | null
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17864,6 +21756,14 @@ export namespace Prisma {
     kycReviewerId?: string | null
     kycNotes?: string | null
     salary?: Decimal | DecimalJsLike | number | string | null
+    startDate?: Date | string | null
+    daysWorked?: number
+    creditScore?: number
+    totalAdvancesTaken?: number
+    totalAdvancesRepaid?: number
+    currentAdvanceBalance?: Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: string | null
+    bankName?: string | null
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18195,6 +22095,13 @@ export namespace Prisma {
     registrationDate: Date | string
     isVerified?: boolean
     verificationDate?: Date | string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutEmployerInput
@@ -18213,6 +22120,13 @@ export namespace Prisma {
     isVerified?: boolean
     verificationDate?: Date | string | null
     verifiedBy?: string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     liquidityPools?: LiquidityPoolUncheckedCreateNestedManyWithoutEmployerInput
@@ -18269,30 +22183,56 @@ export namespace Prisma {
 
   export type AdvanceCreateWithoutEmployeeInput = {
     id?: string
+    employerId: string
     amount: Decimal | DecimalJsLike | number | string
+    serviceFee: Decimal | DecimalJsLike | number | string
+    serviceFeePercentage: Decimal | DecimalJsLike | number | string
+    netAmount: Decimal | DecimalJsLike | number | string
     repaymentAmount: Decimal | DecimalJsLike | number | string
+    earnedToDate: Decimal | DecimalJsLike | number | string
+    availableAdvance: Decimal | DecimalJsLike | number | string
     requestDate: Date | string
     approvalDate?: Date | string | null
+    disbursementDate?: Date | string | null
     paymentDate?: Date | string | null
+    repaymentDate?: Date | string | null
     dueDate: Date | string
     status?: $Enums.EnumAdvancesStatus
+    approvedBy?: string | null
+    rejectedBy?: string | null
+    rejectionReason?: string | null
     transactionHash?: string | null
     repaymentTransactionHash?: string | null
+    poolUtilizationAtRequest?: Decimal | DecimalJsLike | number | string | null
+    riskScore?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type AdvanceUncheckedCreateWithoutEmployeeInput = {
     id?: string
+    employerId: string
     amount: Decimal | DecimalJsLike | number | string
+    serviceFee: Decimal | DecimalJsLike | number | string
+    serviceFeePercentage: Decimal | DecimalJsLike | number | string
+    netAmount: Decimal | DecimalJsLike | number | string
     repaymentAmount: Decimal | DecimalJsLike | number | string
+    earnedToDate: Decimal | DecimalJsLike | number | string
+    availableAdvance: Decimal | DecimalJsLike | number | string
     requestDate: Date | string
     approvalDate?: Date | string | null
+    disbursementDate?: Date | string | null
     paymentDate?: Date | string | null
+    repaymentDate?: Date | string | null
     dueDate: Date | string
     status?: $Enums.EnumAdvancesStatus
+    approvedBy?: string | null
+    rejectedBy?: string | null
+    rejectionReason?: string | null
     transactionHash?: string | null
     repaymentTransactionHash?: string | null
+    poolUtilizationAtRequest?: Decimal | DecimalJsLike | number | string | null
+    riskScore?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -18373,6 +22313,13 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutEmployerNestedInput
@@ -18391,6 +22338,13 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     liquidityPools?: LiquidityPoolUncheckedUpdateManyWithoutEmployerNestedInput
@@ -18468,15 +22422,28 @@ export namespace Prisma {
     NOT?: AdvanceScalarWhereInput | AdvanceScalarWhereInput[]
     id?: UuidFilter<"Advance"> | string
     employeeId?: UuidFilter<"Advance"> | string
+    employerId?: UuidFilter<"Advance"> | string
     amount?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    serviceFee?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    serviceFeePercentage?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    netAmount?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
     repaymentAmount?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    earnedToDate?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
+    availableAdvance?: DecimalFilter<"Advance"> | Decimal | DecimalJsLike | number | string
     requestDate?: DateTimeFilter<"Advance"> | Date | string
     approvalDate?: DateTimeNullableFilter<"Advance"> | Date | string | null
+    disbursementDate?: DateTimeNullableFilter<"Advance"> | Date | string | null
     paymentDate?: DateTimeNullableFilter<"Advance"> | Date | string | null
+    repaymentDate?: DateTimeNullableFilter<"Advance"> | Date | string | null
     dueDate?: DateTimeFilter<"Advance"> | Date | string
     status?: EnumEnumAdvancesStatusFilter<"Advance"> | $Enums.EnumAdvancesStatus
+    approvedBy?: UuidNullableFilter<"Advance"> | string | null
+    rejectedBy?: UuidNullableFilter<"Advance"> | string | null
+    rejectionReason?: StringNullableFilter<"Advance"> | string | null
     transactionHash?: StringNullableFilter<"Advance"> | string | null
     repaymentTransactionHash?: StringNullableFilter<"Advance"> | string | null
+    poolUtilizationAtRequest?: DecimalNullableFilter<"Advance"> | Decimal | DecimalJsLike | number | string | null
+    riskScore?: IntNullableFilter<"Advance"> | number | null
     createdAt?: DateTimeFilter<"Advance"> | Date | string
     updatedAt?: DateTimeFilter<"Advance"> | Date | string
   }
@@ -18492,6 +22459,14 @@ export namespace Prisma {
     kycReviewedAt?: Date | string | null
     kycNotes?: string | null
     salary?: Decimal | DecimalJsLike | number | string | null
+    startDate?: Date | string | null
+    daysWorked?: number
+    creditScore?: number
+    totalAdvancesTaken?: number
+    totalAdvancesRepaid?: number
+    currentAdvanceBalance?: Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: string | null
+    bankName?: string | null
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18520,6 +22495,14 @@ export namespace Prisma {
     kycReviewerId?: string | null
     kycNotes?: string | null
     salary?: Decimal | DecimalJsLike | number | string | null
+    startDate?: Date | string | null
+    daysWorked?: number
+    creditScore?: number
+    totalAdvancesTaken?: number
+    totalAdvancesRepaid?: number
+    currentAdvanceBalance?: Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: string | null
+    bankName?: string | null
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18558,6 +22541,14 @@ export namespace Prisma {
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycNotes?: NullableStringFieldUpdateOperationsInput | string | null
     salary?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    daysWorked?: IntFieldUpdateOperationsInput | number
+    creditScore?: IntFieldUpdateOperationsInput | number
+    totalAdvancesTaken?: IntFieldUpdateOperationsInput | number
+    totalAdvancesRepaid?: IntFieldUpdateOperationsInput | number
+    currentAdvanceBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18586,6 +22577,14 @@ export namespace Prisma {
     kycReviewerId?: NullableStringFieldUpdateOperationsInput | string | null
     kycNotes?: NullableStringFieldUpdateOperationsInput | string | null
     salary?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    daysWorked?: IntFieldUpdateOperationsInput | number
+    creditScore?: IntFieldUpdateOperationsInput | number
+    totalAdvancesTaken?: IntFieldUpdateOperationsInput | number
+    totalAdvancesRepaid?: IntFieldUpdateOperationsInput | number
+    currentAdvanceBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18603,6 +22602,13 @@ export namespace Prisma {
     registrationDate: Date | string
     isVerified?: boolean
     verificationDate?: Date | string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutEmployerInput
@@ -18621,6 +22627,13 @@ export namespace Prisma {
     isVerified?: boolean
     verificationDate?: Date | string | null
     verifiedBy?: string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     employees?: EmployeeUncheckedCreateNestedManyWithoutEmployerInput
@@ -18649,6 +22662,13 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutEmployerNestedInput
@@ -18667,6 +22687,13 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     employees?: EmployeeUncheckedUpdateManyWithoutEmployerNestedInput
@@ -18863,6 +22890,13 @@ export namespace Prisma {
     registrationDate: Date | string
     isVerified?: boolean
     verificationDate?: Date | string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutEmployerInput
@@ -18881,6 +22915,13 @@ export namespace Prisma {
     isVerified?: boolean
     verificationDate?: Date | string | null
     verifiedBy?: string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     employees?: EmployeeUncheckedCreateNestedManyWithoutEmployerInput
@@ -18909,6 +22950,13 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutEmployerNestedInput
@@ -18927,6 +22975,13 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     employees?: EmployeeUncheckedUpdateManyWithoutEmployerNestedInput
@@ -18941,6 +22996,13 @@ export namespace Prisma {
     registrationDate: Date | string
     isVerified?: boolean
     verificationDate?: Date | string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -18958,6 +23020,14 @@ export namespace Prisma {
     kycReviewedAt?: Date | string | null
     kycNotes?: string | null
     salary?: Decimal | DecimalJsLike | number | string | null
+    startDate?: Date | string | null
+    daysWorked?: number
+    creditScore?: number
+    totalAdvancesTaken?: number
+    totalAdvancesRepaid?: number
+    currentAdvanceBalance?: Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: string | null
+    bankName?: string | null
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18997,6 +23067,13 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutEmployerNestedInput
@@ -19014,6 +23091,13 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     employees?: EmployeeUncheckedUpdateManyWithoutEmployerNestedInput
@@ -19029,6 +23113,13 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19044,6 +23135,14 @@ export namespace Prisma {
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycNotes?: NullableStringFieldUpdateOperationsInput | string | null
     salary?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    daysWorked?: IntFieldUpdateOperationsInput | number
+    creditScore?: IntFieldUpdateOperationsInput | number
+    totalAdvancesTaken?: IntFieldUpdateOperationsInput | number
+    totalAdvancesRepaid?: IntFieldUpdateOperationsInput | number
+    currentAdvanceBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19071,6 +23170,14 @@ export namespace Prisma {
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycNotes?: NullableStringFieldUpdateOperationsInput | string | null
     salary?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    daysWorked?: IntFieldUpdateOperationsInput | number
+    creditScore?: IntFieldUpdateOperationsInput | number
+    totalAdvancesTaken?: IntFieldUpdateOperationsInput | number
+    totalAdvancesRepaid?: IntFieldUpdateOperationsInput | number
+    currentAdvanceBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19096,6 +23203,14 @@ export namespace Prisma {
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycNotes?: NullableStringFieldUpdateOperationsInput | string | null
     salary?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    daysWorked?: IntFieldUpdateOperationsInput | number
+    creditScore?: IntFieldUpdateOperationsInput | number
+    totalAdvancesTaken?: IntFieldUpdateOperationsInput | number
+    totalAdvancesRepaid?: IntFieldUpdateOperationsInput | number
+    currentAdvanceBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19181,6 +23296,13 @@ export namespace Prisma {
     isVerified?: boolean
     verificationDate?: Date | string | null
     verifiedBy?: string | null
+    tier?: $Enums.EnumEmployerTier
+    advancePercentageLimit?: number
+    autoApproveAdvances?: boolean
+    bankHistoryVerified?: boolean
+    monthsOnPlatform?: number
+    defaultRate?: Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19191,6 +23313,13 @@ export namespace Prisma {
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutEmployerNestedInput
@@ -19208,6 +23337,13 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     employees?: EmployeeUncheckedUpdateManyWithoutEmployerNestedInput
@@ -19223,6 +23359,13 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    tier?: EnumEnumEmployerTierFieldUpdateOperationsInput | $Enums.EnumEmployerTier
+    advancePercentageLimit?: IntFieldUpdateOperationsInput | number
+    autoApproveAdvances?: BoolFieldUpdateOperationsInput | boolean
+    bankHistoryVerified?: BoolFieldUpdateOperationsInput | boolean
+    monthsOnPlatform?: IntFieldUpdateOperationsInput | number
+    defaultRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAdvancesProcessed?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19240,6 +23383,14 @@ export namespace Prisma {
     kycReviewerId?: string | null
     kycNotes?: string | null
     salary?: Decimal | DecimalJsLike | number | string | null
+    startDate?: Date | string | null
+    daysWorked?: number
+    creditScore?: number
+    totalAdvancesTaken?: number
+    totalAdvancesRepaid?: number
+    currentAdvanceBalance?: Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: string | null
+    bankName?: string | null
     registrationDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19282,6 +23433,14 @@ export namespace Prisma {
     kycReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kycNotes?: NullableStringFieldUpdateOperationsInput | string | null
     salary?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    daysWorked?: IntFieldUpdateOperationsInput | number
+    creditScore?: IntFieldUpdateOperationsInput | number
+    totalAdvancesTaken?: IntFieldUpdateOperationsInput | number
+    totalAdvancesRepaid?: IntFieldUpdateOperationsInput | number
+    currentAdvanceBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19309,6 +23468,14 @@ export namespace Prisma {
     kycReviewerId?: NullableStringFieldUpdateOperationsInput | string | null
     kycNotes?: NullableStringFieldUpdateOperationsInput | string | null
     salary?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    daysWorked?: IntFieldUpdateOperationsInput | number
+    creditScore?: IntFieldUpdateOperationsInput | number
+    totalAdvancesTaken?: IntFieldUpdateOperationsInput | number
+    totalAdvancesRepaid?: IntFieldUpdateOperationsInput | number
+    currentAdvanceBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19334,6 +23501,14 @@ export namespace Prisma {
     kycReviewerId?: NullableStringFieldUpdateOperationsInput | string | null
     kycNotes?: NullableStringFieldUpdateOperationsInput | string | null
     salary?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    daysWorked?: IntFieldUpdateOperationsInput | number
+    creditScore?: IntFieldUpdateOperationsInput | number
+    totalAdvancesTaken?: IntFieldUpdateOperationsInput | number
+    totalAdvancesRepaid?: IntFieldUpdateOperationsInput | number
+    currentAdvanceBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
     registrationDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19407,60 +23582,112 @@ export namespace Prisma {
 
   export type AdvanceCreateManyEmployeeInput = {
     id?: string
+    employerId: string
     amount: Decimal | DecimalJsLike | number | string
+    serviceFee: Decimal | DecimalJsLike | number | string
+    serviceFeePercentage: Decimal | DecimalJsLike | number | string
+    netAmount: Decimal | DecimalJsLike | number | string
     repaymentAmount: Decimal | DecimalJsLike | number | string
+    earnedToDate: Decimal | DecimalJsLike | number | string
+    availableAdvance: Decimal | DecimalJsLike | number | string
     requestDate: Date | string
     approvalDate?: Date | string | null
+    disbursementDate?: Date | string | null
     paymentDate?: Date | string | null
+    repaymentDate?: Date | string | null
     dueDate: Date | string
     status?: $Enums.EnumAdvancesStatus
+    approvedBy?: string | null
+    rejectedBy?: string | null
+    rejectionReason?: string | null
     transactionHash?: string | null
     repaymentTransactionHash?: string | null
+    poolUtilizationAtRequest?: Decimal | DecimalJsLike | number | string | null
+    riskScore?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type AdvanceUpdateWithoutEmployeeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    employerId?: StringFieldUpdateOperationsInput | string
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    serviceFee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    serviceFeePercentage?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    netAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     repaymentAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    earnedToDate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    availableAdvance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     requestDate?: DateTimeFieldUpdateOperationsInput | Date | string
     approvalDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    disbursementDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    repaymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEnumAdvancesStatusFieldUpdateOperationsInput | $Enums.EnumAdvancesStatus
+    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     transactionHash?: NullableStringFieldUpdateOperationsInput | string | null
     repaymentTransactionHash?: NullableStringFieldUpdateOperationsInput | string | null
+    poolUtilizationAtRequest?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    riskScore?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AdvanceUncheckedUpdateWithoutEmployeeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    employerId?: StringFieldUpdateOperationsInput | string
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    serviceFee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    serviceFeePercentage?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    netAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     repaymentAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    earnedToDate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    availableAdvance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     requestDate?: DateTimeFieldUpdateOperationsInput | Date | string
     approvalDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    disbursementDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    repaymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEnumAdvancesStatusFieldUpdateOperationsInput | $Enums.EnumAdvancesStatus
+    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     transactionHash?: NullableStringFieldUpdateOperationsInput | string | null
     repaymentTransactionHash?: NullableStringFieldUpdateOperationsInput | string | null
+    poolUtilizationAtRequest?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    riskScore?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AdvanceUncheckedUpdateManyWithoutEmployeeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    employerId?: StringFieldUpdateOperationsInput | string
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    serviceFee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    serviceFeePercentage?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    netAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     repaymentAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    earnedToDate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    availableAdvance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     requestDate?: DateTimeFieldUpdateOperationsInput | Date | string
     approvalDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    disbursementDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    repaymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEnumAdvancesStatusFieldUpdateOperationsInput | $Enums.EnumAdvancesStatus
+    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     transactionHash?: NullableStringFieldUpdateOperationsInput | string | null
     repaymentTransactionHash?: NullableStringFieldUpdateOperationsInput | string | null
+    poolUtilizationAtRequest?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    riskScore?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

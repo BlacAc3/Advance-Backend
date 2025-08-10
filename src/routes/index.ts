@@ -4,6 +4,7 @@ import employeeRoutes from "./employee.routes";
 import employerRoutes from "./employer.routes";
 import marketerRoutes from "./marketer.routes";
 import adminRoutes from "./admin.routes";
+import advanceRoutes from "./advance.routes";
 import { employerController } from "../controllers/employer.controller";
 import path from "path";
 
@@ -27,6 +28,7 @@ export const setupRoutes = (app: Express) => {
   app.use(`/api/v1/employer`, employerRoutes);
   app.use(`/api/v1/marketer`, marketerRoutes);
   app.use("/api/v1/admin", adminRoutes);
+  app.use("/api/v1", advanceRoutes);
 
   // Root route
   app.get("/", (req, res) => {
