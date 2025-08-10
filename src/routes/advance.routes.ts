@@ -17,7 +17,7 @@ router.get(
   "/employee/advance/status",
   authenticate,
   authorize([UserRole.EMPLOYEE]),
-  employeeAdvanceController.getAdvanceStatus
+  employeeAdvanceController.getAdvanceStatus,
 );
 
 // Request an advance
@@ -25,7 +25,7 @@ router.post(
   "/employee/advance/request",
   authenticate,
   authorize([UserRole.EMPLOYEE]),
-  employeeAdvanceController.requestAdvance
+  employeeAdvanceController.requestAdvance,
 );
 
 // Get advance history
@@ -33,7 +33,7 @@ router.get(
   "/employee/advance/history",
   authenticate,
   authorize([UserRole.EMPLOYEE]),
-  employeeAdvanceController.getAdvanceHistory
+  employeeAdvanceController.getAdvanceHistory,
 );
 
 // Cancel a pending advance request
@@ -41,7 +41,7 @@ router.delete(
   "/employee/advance/:advanceId/cancel",
   authenticate,
   authorize([UserRole.EMPLOYEE]),
-  employeeAdvanceController.cancelAdvanceRequest
+  employeeAdvanceController.cancelAdvanceRequest,
 );
 
 // ============================================
@@ -53,7 +53,7 @@ router.get(
   "/employer/advances/pending",
   authenticate,
   authorize([UserRole.EMPLOYER]),
-  employerAdvanceController.getPendingAdvances
+  employerAdvanceController.getPendingAdvances,
 );
 
 // Approve an advance request
@@ -61,7 +61,7 @@ router.post(
   "/employer/advance/:requestId/approve",
   authenticate,
   authorize([UserRole.EMPLOYER]),
-  employerAdvanceController.approveAdvance
+  employerAdvanceController.approveAdvance,
 );
 
 // Reject an advance request
@@ -69,7 +69,7 @@ router.post(
   "/employer/advance/:requestId/reject",
   authenticate,
   authorize([UserRole.EMPLOYER]),
-  employerAdvanceController.rejectAdvance
+  employerAdvanceController.rejectAdvance,
 );
 
 // Get all advances for employer
@@ -77,7 +77,7 @@ router.get(
   "/employer/advances/all",
   authenticate,
   authorize([UserRole.EMPLOYER]),
-  employerAdvanceController.getAllAdvances
+  employerAdvanceController.getAllAdvances,
 );
 
 // Get advance statistics
@@ -85,7 +85,7 @@ router.get(
   "/employer/advances/statistics",
   authenticate,
   authorize([UserRole.EMPLOYER]),
-  employerAdvanceController.getAdvanceStatistics
+  employerAdvanceController.getAdvanceStatistics,
 );
 
 // Update advance settings
@@ -93,7 +93,7 @@ router.put(
   "/employer/advances/settings",
   authenticate,
   authorize([UserRole.EMPLOYER]),
-  employerAdvanceController.updateAdvanceSettings
+  employerAdvanceController.updateAdvanceSettings,
 );
 
 // ============================================
@@ -105,7 +105,7 @@ router.post(
   "/internal/payroll/process-payment",
   authenticate,
   authorize([UserRole.ADMIN]),
-  internalAdvanceController.processPayrollPayment
+  internalAdvanceController.processPayrollPayment,
 );
 
 // Process risk adjustments
@@ -113,7 +113,7 @@ router.post(
   "/internal/risk/adjustments",
   authenticate,
   authorize([UserRole.ADMIN]),
-  internalAdvanceController.processRiskAdjustments
+  internalAdvanceController.processRiskAdjustments,
 );
 
 // Process tier upgrades
@@ -121,7 +121,7 @@ router.post(
   "/internal/risk/tier-upgrade",
   authenticate,
   authorize([UserRole.ADMIN]),
-  internalAdvanceController.processTierUpgrades
+  internalAdvanceController.processTierUpgrades,
 );
 
 // Process defaulted advances
@@ -129,7 +129,7 @@ router.post(
   "/internal/advances/process-defaults",
   authenticate,
   authorize([UserRole.ADMIN]),
-  internalAdvanceController.processDefaultedAdvances
+  internalAdvanceController.processDefaultedAdvances,
 );
 
 export default router;

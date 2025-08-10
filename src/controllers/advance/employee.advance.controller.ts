@@ -30,7 +30,7 @@ export const employeeAdvanceController = {
   async getAdvanceStatus(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const userId = (req.user as TokenPayload)?.userId;
@@ -75,7 +75,7 @@ export const employeeAdvanceController = {
       const today = new Date();
       const startDate = employee.startDate || employee.registrationDate;
       const daysWorked = Math.floor(
-        (today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+        (today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
       );
 
       // Update days worked in database
@@ -110,12 +110,19 @@ export const employeeAdvanceController = {
           break;
       }
 
-      // Calculate available advance
+      // Calculate available advance. This calculation determines the maximum amount of advance an employee can request.
+      // It starts with the employee's earned income to date within the current month (earnedToDate).
+      // The available advance percentage (availableAdvancePercentage) which is determined by the employer's tier (NEW, API_VERIFIED, PLATFORM_TRUSTED)
+      //  is then applied to this earned amount.  The employer sets the advancePercentageLimit.
+      // Finally, any existing outstanding advance balance (currentAdvanceBalance) is subtracted.  This balance represents money already advanced to the employee
+      // that has not yet been repaid.
+      // The aim is to provide employees with early access to a portion of their earned salary, while mitigating risk by limiting the advance to a percentage of their earnings
+      // and accounting for any existing debts.
+
       const availableAdvance = earnedToDate
         .mul(availableAdvancePercentage)
         .div(100)
         .minus(employee.currentAdvanceBalance || 0);
-
       // Check eligibility for daily advance (after 15 days of work)
       const eligibleForDailyAdvance = daysWorked >= 15 && employer.isVerified;
 
@@ -123,7 +130,7 @@ export const employeeAdvanceController = {
       const nextSalaryDate = new Date(
         today.getFullYear(),
         today.getMonth() + 1,
-        0
+        0,
       );
 
       const response: AdvanceStatusResponse = {
@@ -133,7 +140,8 @@ export const employeeAdvanceController = {
         availableAdvance: availableAdvance.toString(),
         availableAdvancePercentage,
         employerTier: employer.tier,
-        currentAdvanceBalance: employee.currentAdvanceBalance?.toString() || "0",
+        currentAdvanceBalance:
+          employee.currentAdvanceBalance?.toString() || "0",
         eligibleForDailyAdvance,
         serviceFeePercentage,
         nextSalaryDate,
@@ -154,7 +162,7 @@ export const employeeAdvanceController = {
   async requestAdvance(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const userId = (req.user as TokenPayload)?.userId;
@@ -202,7 +210,12 @@ export const employeeAdvanceController = {
 
       // Check if employee has completed KYC
       if (!employee.termsAccepted) {
-        sendError(res, null, "Please complete KYC and accept terms before requesting an advance", 400);
+        sendError(
+          res,
+          null,
+          "Please complete KYC and accept terms before requesting an advance",
+          400,
+        );
         return;
       }
 
@@ -210,7 +223,7 @@ export const employeeAdvanceController = {
       const today = new Date();
       const startDate = employee.startDate || employee.registrationDate;
       const daysWorked = Math.floor(
-        (today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+        (today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
       );
 
       // Check if eligible for daily advance (15 days minimum)
@@ -219,7 +232,7 @@ export const employeeAdvanceController = {
           res,
           null,
           `You need to work for at least 15 days to be eligible for advances. Current days worked: ${daysWorked}`,
-          400
+          400,
         );
         return;
       }
@@ -255,6 +268,13 @@ export const employeeAdvanceController = {
       }
 
       // Calculate maximum available advance
+      // This calculation determines the maximum advance amount an employee can request.
+      // It starts with the employee's earned income to date within the current month (earnedToDate).
+      // Then, it multiplies this earned amount by the available advance percentage (availableAdvancePercentage),
+      // which is determined by the employer's tier and any employer-specific limits.
+      // Finally, it subtracts any existing outstanding advance balance (employee.currentAdvanceBalance).
+      // This ensures that the employee can only request an advance up to the allowed percentage of their earnings,
+      // taking into account any already disbursed but unpaid advances.
       const maxAvailableAdvance = earnedToDate
         .mul(availableAdvancePercentage)
         .div(100)
@@ -267,7 +287,7 @@ export const employeeAdvanceController = {
           res,
           null,
           `Requested amount exceeds available advance. Maximum available: ${maxAvailableAdvance.toString()}`,
-          400
+          400,
         );
         return;
       }
@@ -276,7 +296,10 @@ export const employeeAdvanceController = {
       const dailyLimit = earnedToDate.div(currentMonthDay);
       if (requestedAmount.gt(dailyLimit)) {
         // Increase service fee for amounts exceeding daily limit
-        serviceFeePercentage = Math.min(6, 3 + (requestedAmount.div(monthlySalary).mul(100).toNumber() * 0.1));
+        serviceFeePercentage = Math.min(
+          6,
+          3 + requestedAmount.div(monthlySalary).mul(100).toNumber() * 0.1,
+        );
       }
 
       // Calculate service fee and net amount
@@ -288,7 +311,7 @@ export const employeeAdvanceController = {
       const repaymentDate = new Date(
         today.getFullYear(),
         today.getMonth() + 1,
-        0
+        0,
       );
 
       // Check liquidity pool availability
@@ -310,9 +333,10 @@ export const employeeAdvanceController = {
         _sum: { amount: true },
       });
 
-      const totalOutstanding = outstandingAdvances._sum.amount || new Decimal(0);
+      const totalOutstanding =
+        outstandingAdvances._sum.amount || new Decimal(0);
       const availableLiquidity = new Decimal(totalPoolAmount.toString()).minus(
-        new Decimal(totalOutstanding.toString())
+        new Decimal(totalOutstanding.toString()),
       );
 
       if (requestedAmount.gt(availableLiquidity)) {
@@ -320,7 +344,7 @@ export const employeeAdvanceController = {
           res,
           null,
           "Insufficient liquidity in the pool. Please try again later or request a smaller amount.",
-          400
+          400,
         );
         return;
       }
@@ -334,13 +358,14 @@ export const employeeAdvanceController = {
         : new Decimal(0);
 
       // Calculate risk score based on employee credit score and employer tier
+      // Credit scores range from 300 to 850
       const baseRiskScore = employee.creditScore || 500;
       const tierMultiplier =
         employer.tier === EnumEmployerTier.PLATFORM_TRUSTED
           ? 1.2
           : employer.tier === EnumEmployerTier.API_VERIFIED
-          ? 1.1
-          : 1.0;
+            ? 1.1
+            : 1.0;
       const riskScore = Math.round(baseRiskScore * tierMultiplier);
 
       // Determine initial status
@@ -374,9 +399,9 @@ export const employeeAdvanceController = {
       await prisma.employee.update({
         where: { id: employee.id },
         data: {
-          currentAdvanceBalance: new Decimal(employee.currentAdvanceBalance || 0).add(
-            requestedAmount
-          ),
+          currentAdvanceBalance: new Decimal(
+            employee.currentAdvanceBalance || 0,
+          ).add(requestedAmount),
           totalAdvancesTaken: employee.totalAdvancesTaken + 1,
         },
       });
@@ -417,7 +442,7 @@ export const employeeAdvanceController = {
         requiresEmployerApproval
           ? "Advance request submitted successfully"
           : "Advance request approved successfully",
-        201
+        201,
       );
     } catch (error) {
       console.error("Error requesting advance:", error);
@@ -433,7 +458,7 @@ export const employeeAdvanceController = {
   async getAdvanceHistory(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const userId = (req.user as TokenPayload)?.userId;
@@ -503,7 +528,7 @@ export const employeeAdvanceController = {
   async cancelAdvanceRequest(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const userId = (req.user as TokenPayload)?.userId;
@@ -533,7 +558,12 @@ export const employeeAdvanceController = {
       }
 
       if (advance.employeeId !== employee.id) {
-        sendError(res, null, "Unauthorized to cancel this advance request", 403);
+        sendError(
+          res,
+          null,
+          "Unauthorized to cancel this advance request",
+          403,
+        );
         return;
       }
 
@@ -541,12 +571,7 @@ export const employeeAdvanceController = {
         advance.status !== EnumAdvancesStatus.PENDING &&
         advance.status !== EnumAdvancesStatus.PENDING_EMPLOYER_APPROVAL
       ) {
-        sendError(
-          res,
-          null,
-          "Can only cancel pending advance requests",
-          400
-        );
+        sendError(res, null, "Can only cancel pending advance requests", 400);
         return;
       }
 
@@ -563,9 +588,9 @@ export const employeeAdvanceController = {
       await prisma.employee.update({
         where: { id: employee.id },
         data: {
-          currentAdvanceBalance: new Decimal(employee.currentAdvanceBalance || 0).minus(
-            advance.amount
-          ),
+          currentAdvanceBalance: new Decimal(
+            employee.currentAdvanceBalance || 0,
+          ).minus(advance.amount),
         },
       });
 

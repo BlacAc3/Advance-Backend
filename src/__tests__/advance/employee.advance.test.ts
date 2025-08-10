@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "../../index";
 import { prisma } from "../../db/database";
-import { generateTestTokens } from "../utils/testUtils";
+import { createTestEmployer, generateTestTokens } from "../utils/testUtils";
 import {
   EnumUsersRole,
   EnumEmployerTier,
@@ -11,6 +11,7 @@ import {
 } from "../../generated/prisma";
 import { Decimal } from "@prisma/client/runtime/library";
 import bcrypt from "bcrypt";
+import { generateTokenPair } from "../../utils/jwt";
 
 describe("Employee Advance Controller Tests", () => {
   let employeeUser: any;
@@ -29,27 +30,24 @@ describe("Employee Advance Controller Tests", () => {
 
     // Create employer user and employer
     const hashedPassword = await bcrypt.hash("Test123!", 10);
-    employerUser = await prisma.user.create({
-      data: {
-        email: "employer@test.com",
-        password: hashedPassword,
-        role: EnumUsersRole.EMPLOYER,
-        walletAddress: "0x1234567890123456789012345678901234567890",
-      },
+    employer = await createTestEmployer(
+      "employer@test.com",
+      "Test123!",
+      "Test Company Ltd",
+    );
+    employerUser = await prisma.user.findUnique({
+      where: { id: employer.userId },
     });
 
-    employer = await prisma.employer.create({
+    await prisma.employer.update({
+      where: { id: employer.id },
       data: {
-        userId: employerUser.id,
-        companyName: "Test Company Ltd",
-        registrationDate: new Date(),
         isVerified: true,
         tier: EnumEmployerTier.NEW,
         advancePercentageLimit: 10,
         autoApproveAdvances: false,
       },
     });
-
     // Create employee user and employee
     employeeUser = await prisma.user.create({
       data: {
@@ -83,14 +81,8 @@ describe("Employee Advance Controller Tests", () => {
     });
 
     // Generate tokens
-    const employeeTokens = generateTestTokens({
-      id: employeeUser.id,
-      role: employeeUser.role,
-    });
-    const employerTokens = generateTestTokens({
-      id: employerUser.id,
-      role: employerUser.role,
-    });
+    const employeeTokens = await generateTokenPair(employeeUser);
+    const employerTokens = await generateTokenPair(employerUser);
     employeeToken = employeeTokens.accessToken;
     employerToken = employerTokens.accessToken;
   });
@@ -178,13 +170,13 @@ describe("Employee Advance Controller Tests", () => {
         .post("/api/v1/employee/advance/request")
         .set("Authorization", `Bearer ${employeeToken}`)
         .send({
-          advanceAmount: 25000,
+          advanceAmount: 15000,
         });
 
-      expect(response.status).toBe(201);
+      expect(response.body).toBe(201);
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveProperty("advanceId");
-      expect(response.body.data).toHaveProperty("advanceAmount", "25000");
+      expect(response.body.data).toHaveProperty("advanceAmount", "15000");
       expect(response.body.data).toHaveProperty("serviceFee");
       expect(response.body.data).toHaveProperty("netAmount");
       expect(response.body.data).toHaveProperty(
@@ -198,7 +190,7 @@ describe("Employee Advance Controller Tests", () => {
         where: { id: response.body.data.advanceId },
       });
       expect(advance).toBeTruthy();
-      expect(advance?.amount.toString()).toBe("25000");
+      expect(advance?.amount.toString()).toBe("15000");
     });
 
     it("should auto-approve for API_VERIFIED employer", async () => {

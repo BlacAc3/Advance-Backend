@@ -1,6 +1,10 @@
 import { prisma } from "../../database";
 import advanceService from "../advance";
-import { EnumUsersRole, EnumEmployerTier, EnumAdvancesStatus } from "../../../generated/prisma";
+import {
+  EnumUsersRole,
+  EnumEmployerTier,
+  EnumAdvancesStatus,
+} from "../../../generated/prisma";
 import { Decimal } from "@prisma/client/runtime/library";
 import bcrypt from "bcrypt";
 
@@ -108,21 +112,25 @@ describe("Advance Service Tests", () => {
     it("should get advance by id", async () => {
       const result = await advanceService.get({ id: advance1.id });
       expect(result).toBeTruthy();
-      expect(result?.id).toBe(advance1.id);
-      expect(result?.amount.toString()).toBe("25000");
-      expect(result?.employee).toBeTruthy();
-      expect(result?.employee.user).toBeTruthy();
+      expect((result as any).id).toBe(advance1.id);
+      expect((result as any).amount.toString()).toBe("25000");
+      expect((result as any).employee).toBeTruthy();
+      expect((result as any).employee.user).toBeTruthy();
     });
 
     it("should get advances by employeeId", async () => {
-      const results = await advanceService.get({ employeeId: employee.id });
+      const results: any = await advanceService.get({
+        employeeId: employee.id,
+      });
       expect(Array.isArray(results)).toBe(true);
       expect(results).toHaveLength(2);
       expect(results[0].employeeId).toBe(employee.id);
     });
 
     it("should get advances by employerId", async () => {
-      const results = await advanceService.get({ employerId: employer.id });
+      const results: any = await advanceService.get({
+        employerId: employer.id,
+      });
       expect(Array.isArray(results)).toBe(true);
       expect(results).toHaveLength(2);
       expect(results[0].employerId).toBe(employer.id);
@@ -130,7 +138,7 @@ describe("Advance Service Tests", () => {
 
     it("should throw error when no parameters provided", async () => {
       await expect(advanceService.get({})).rejects.toThrow(
-        "Either id, employeeId, or employerId must be provided"
+        "Either id, employeeId, or employerId must be provided",
       );
     });
   });
@@ -215,7 +223,9 @@ describe("Advance Service Tests", () => {
 
   describe("getByStatus", () => {
     it("should get advances by status", async () => {
-      const results = await advanceService.getByStatus(EnumAdvancesStatus.DISBURSED);
+      const results = await advanceService.getByStatus(
+        EnumAdvancesStatus.DISBURSED,
+      );
       expect(results).toHaveLength(1);
       expect(results[0].status).toBe(EnumAdvancesStatus.DISBURSED);
     });
@@ -223,7 +233,7 @@ describe("Advance Service Tests", () => {
     it("should get advances by status and employerId", async () => {
       const results = await advanceService.getByStatus(
         EnumAdvancesStatus.REPAID,
-        employer.id
+        employer.id,
       );
       expect(results).toHaveLength(1);
       expect(results[0].status).toBe(EnumAdvancesStatus.REPAID);
@@ -231,20 +241,26 @@ describe("Advance Service Tests", () => {
     });
 
     it("should return empty array when no matches", async () => {
-      const results = await advanceService.getByStatus(EnumAdvancesStatus.DEFAULTED);
+      const results = await advanceService.getByStatus(
+        EnumAdvancesStatus.DEFAULTED,
+      );
       expect(results).toHaveLength(0);
     });
   });
 
   describe("getOutstandingByEmployee", () => {
     it("should get outstanding advances for employee", async () => {
-      const results = await advanceService.getOutstandingByEmployee(employee.id);
+      const results = await advanceService.getOutstandingByEmployee(
+        employee.id,
+      );
       expect(results).toHaveLength(1);
       expect(results[0].status).toBe(EnumAdvancesStatus.DISBURSED);
     });
 
     it("should not include repaid advances", async () => {
-      const results = await advanceService.getOutstandingByEmployee(employee.id);
+      const results = await advanceService.getOutstandingByEmployee(
+        employee.id,
+      );
       const repaidAdvance = results.find((a: any) => a.id === advance2.id);
       expect(repaidAdvance).toBeUndefined();
     });
@@ -267,7 +283,9 @@ describe("Advance Service Tests", () => {
         },
       });
 
-      const results = await advanceService.getOutstandingByEmployee(employee.id);
+      const results = await advanceService.getOutstandingByEmployee(
+        employee.id,
+      );
       expect(results.length).toBeGreaterThanOrEqual(2);
     });
   });
@@ -320,14 +338,17 @@ describe("Advance Service Tests", () => {
       const results = await advanceService.getOverdueAdvances();
       expect(results.length).toBeGreaterThanOrEqual(1);
       const overdue = results.find(
-        (a: any) => a.dueDate < new Date() && a.status === EnumAdvancesStatus.DISBURSED
+        (a: any) =>
+          a.dueDate < new Date() && a.status === EnumAdvancesStatus.DISBURSED,
       );
       expect(overdue).toBeTruthy();
     });
 
     it("should not include repaid advances", async () => {
       const results = await advanceService.getOverdueAdvances();
-      const repaid = results.find((a: any) => a.status === EnumAdvancesStatus.REPAID);
+      const repaid = results.find(
+        (a: any) => a.status === EnumAdvancesStatus.REPAID,
+      );
       expect(repaid).toBeUndefined();
     });
   });
@@ -337,7 +358,10 @@ describe("Advance Service Tests", () => {
       const startDate = new Date("2024-01-01");
       const endDate = new Date("2024-01-10");
 
-      const results = await advanceService.getAdvancesByDateRange(startDate, endDate);
+      const results = await advanceService.getAdvancesByDateRange(
+        startDate,
+        endDate,
+      );
       expect(results).toHaveLength(1);
       expect(results[0].id).toBe(advance1.id);
     });
@@ -349,17 +373,22 @@ describe("Advance Service Tests", () => {
       const results = await advanceService.getAdvancesByDateRange(
         startDate,
         endDate,
-        employer.id
+        employer.id,
       );
       expect(results).toHaveLength(2);
-      expect(results.every((a: any) => a.employerId === employer.id)).toBe(true);
+      expect(results.every((a: any) => a.employerId === employer.id)).toBe(
+        true,
+      );
     });
 
     it("should return empty array when no matches", async () => {
       const startDate = new Date("2023-01-01");
       const endDate = new Date("2023-12-31");
 
-      const results = await advanceService.getAdvancesByDateRange(startDate, endDate);
+      const results = await advanceService.getAdvancesByDateRange(
+        startDate,
+        endDate,
+      );
       expect(results).toHaveLength(0);
     });
   });
@@ -387,7 +416,9 @@ describe("Advance Service Tests", () => {
     });
 
     it("should calculate pool utilization for specific employer", async () => {
-      const utilization = await advanceService.calculatePoolUtilization(employer.id);
+      const utilization = await advanceService.calculatePoolUtilization(
+        employer.id,
+      );
       expect(utilization.totalPool).toBe("1000000");
       expect(utilization.totalOutstanding).toBe("25000");
     });
@@ -411,7 +442,9 @@ describe("Advance Service Tests", () => {
         },
       });
 
-      const utilization = await advanceService.calculatePoolUtilization(employer.id);
+      const utilization = await advanceService.calculatePoolUtilization(
+        employer.id,
+      );
       expect(utilization.totalPool).toBe("1500000");
       expect(utilization.utilizationPercentage).toBeCloseTo(1.67, 1); // 25000/1500000 * 100
     });
@@ -422,7 +455,7 @@ describe("Advance Service Tests", () => {
       const advanceIds = [advance1.id, advance2.id];
       const result = await advanceService.bulkUpdateStatus(
         advanceIds,
-        EnumAdvancesStatus.DEFAULTED
+        EnumAdvancesStatus.DEFAULTED,
       );
 
       expect(result.count).toBe(2);
@@ -430,7 +463,9 @@ describe("Advance Service Tests", () => {
       const updated = await prisma.advance.findMany({
         where: { id: { in: advanceIds } },
       });
-      expect(updated.every((a) => a.status === EnumAdvancesStatus.DEFAULTED)).toBe(true);
+      expect(
+        updated.every((a) => a.status === EnumAdvancesStatus.DEFAULTED),
+      ).toBe(true);
     });
 
     it("should update with additional data", async () => {
@@ -443,7 +478,7 @@ describe("Advance Service Tests", () => {
       await advanceService.bulkUpdateStatus(
         advanceIds,
         EnumAdvancesStatus.REPAID,
-        updateData
+        updateData,
       );
 
       const updated = await prisma.advance.findUnique({
@@ -457,7 +492,7 @@ describe("Advance Service Tests", () => {
     it("should handle empty array", async () => {
       const result = await advanceService.bulkUpdateStatus(
         [],
-        EnumAdvancesStatus.APPROVED
+        EnumAdvancesStatus.APPROVED,
       );
       expect(result.count).toBe(0);
     });
@@ -498,7 +533,9 @@ describe("Advance Service Tests", () => {
       expect(updated.status).toBe(EnumAdvancesStatus.DISBURSED);
 
       // Check outstanding
-      const outstanding = await advanceService.getOutstandingByEmployee(employee.id);
+      const outstanding = await advanceService.getOutstandingByEmployee(
+        employee.id,
+      );
       expect(outstanding.find((a: any) => a.id === newAdvance.id)).toBeTruthy();
 
       // Repay
