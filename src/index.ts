@@ -10,7 +10,7 @@ import { setupRoutes } from "./routes";
 import { setupDatabase } from "./db/database";
 import { logger } from "./utils/logger";
 import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "../swagger-output.json"; // Correctly importing the JSON file
+import swaggerDocument from "./swagger-output.json"; // Correctly importing the JSON file
 // import web3Routes from "./routes/web3.routes"; // Keep commented as per user's code
 import authRoutes from "./routes/auth.routes"; // Keep as per user's code
 import employeeRoutes from "./routes/employee.routes"; // Keep as per user's code

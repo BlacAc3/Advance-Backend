@@ -31,10 +31,15 @@ export const internalAdvanceController = {
   async processPayrollPayment(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
-      const { employerId, payrollData, totalAmount, transactionHash }: PayrollPaymentBody = req.body;
+      const {
+        employerId,
+        payrollData,
+        totalAmount,
+        transactionHash,
+      }: PayrollPaymentBody = req.body;
 
       if (!employerId || !payrollData || !payrollData.length) {
         sendError(res, null, "Invalid payroll data", 400);
@@ -110,8 +115,12 @@ export const internalAdvanceController = {
             where: { id: employeeId },
             data: {
               currentAdvanceBalance: new Decimal(0), // Reset balance after repayment
-              totalAdvancesRepaid: employee.totalAdvancesRepaid + repaidAdvances.length,
-              creditScore: Math.min(850, (employee.creditScore || 500) + repaidAdvances.length * 10), // Improve credit score
+              totalAdvancesRepaid:
+                employee.totalAdvancesRepaid + repaidAdvances.length,
+              creditScore: Math.min(
+                850,
+                (employee.creditScore || 500) + repaidAdvances.length * 10,
+              ), // Improve credit score
             },
           });
         }
@@ -136,11 +145,15 @@ export const internalAdvanceController = {
       }
 
       // Update employer statistics
-      const totalRepaidCount = repaymentResults.reduce((sum, r) => sum + r.repaidCount, 0);
+      const totalRepaidCount = repaymentResults.reduce(
+        (sum, r) => sum + r.repaidCount,
+        0,
+      );
       await prisma.employer.update({
         where: { id: employerId },
         data: {
-          totalAdvancesProcessed: employer.totalAdvancesProcessed + totalRepaidCount,
+          totalAdvancesProcessed:
+            employer.totalAdvancesProcessed + totalRepaidCount,
         },
       });
 
@@ -155,7 +168,12 @@ export const internalAdvanceController = {
         },
       };
 
-      sendSuccess(res, response, "Payroll processed and advances repaid successfully", 200);
+      sendSuccess(
+        res,
+        response,
+        "Payroll processed and advances repaid successfully",
+        200,
+      );
     } catch (error) {
       console.error("Error processing payroll payment:", error);
       sendError(res, error, "Failed to process payroll payment", 500);
@@ -171,17 +189,23 @@ export const internalAdvanceController = {
   async processRiskAdjustments(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
-      const { type, employerId, metric, value }: RiskAdjustmentTrigger = req.body;
+      const { type, employerId, metric, value }: RiskAdjustmentTrigger =
+        req.body;
 
       const adjustments = [];
 
       switch (type) {
         case "EMPLOYER_DEFAULT_RATE": {
           if (!employerId) {
-            sendError(res, null, "Employer ID required for default rate adjustment", 400);
+            sendError(
+              res,
+              null,
+              "Employer ID required for default rate adjustment",
+              400,
+            );
             return;
           }
 
@@ -207,7 +231,9 @@ export const internalAdvanceController = {
             }),
           ]);
 
-          const defaultRate = totalAdvances > 0 ? (defaultedAdvances / totalAdvances) * 100 : 0;
+          // Calculate the default rate as a percentage. If there are no total advances, the default rate is 0.
+          const defaultRate =
+            totalAdvances > 0 ? (defaultedAdvances / totalAdvances) * 100 : 0;
 
           // If default rate exceeds threshold, adjust limits
           if (defaultRate > 5) {
@@ -281,9 +307,13 @@ export const internalAdvanceController = {
           });
 
           const totalPool = poolStats._sum.amount || new Decimal(0);
-          const totalOutstanding = outstandingAdvances._sum.amount || new Decimal(0);
+          const totalOutstanding =
+            outstandingAdvances._sum.amount || new Decimal(0);
 
           if (totalPool.gt(0)) {
+            // Calculate the pool utilization percentage.
+            // Calculate how much of the available money in the pool is currently being used for advances.
+            // This is expressed as a percentage: (Total Outstanding Advances / Total Liquidity Pool Amount) * 100
             const utilization = new Decimal(totalOutstanding.toString())
               .div(new Decimal(totalPool.toString()))
               .mul(100)
@@ -420,7 +450,12 @@ export const internalAdvanceController = {
         message: `Risk adjustments processed: ${adjustments.length} adjustments made`,
       };
 
-      sendSuccess(res, response, "Risk adjustments processed successfully", 200);
+      sendSuccess(
+        res,
+        response,
+        "Risk adjustments processed successfully",
+        200,
+      );
     } catch (error) {
       console.error("Error processing risk adjustments:", error);
       sendError(res, error, "Failed to process risk adjustments", 500);
@@ -435,7 +470,7 @@ export const internalAdvanceController = {
   async processTierUpgrades(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const upgrades = [];
@@ -478,8 +513,16 @@ export const internalAdvanceController = {
           },
         });
 
-        const repaymentRate = totalAdvances > 0 ? (repaidAdvances / totalAdvances) * 100 : 0;
-        const defaultRate = totalAdvances > 0 ? (defaultedAdvances / totalAdvances) * 100 : 0;
+        const repaymentRate =
+          totalAdvances > 0 ? (repaidAdvances / totalAdvances) * 100 : 0;
+        // Calculate the default rate as a percentage.
+        // An advance with a "DEFAULTED" status indicates that the borrower failed to repay the amount by the due date.
+        // A "REPAID" status, in contrast, means the borrower successfully fulfilled their repayment obligation.
+        // A "DISBURSED" status means the advance has been issued to the employee but hasn't reached its due date or been repaid yet.
+        // The default rate is the percentage of advances for this employer that have been marked as DEFAULTED.
+        // It's important for risk assessment as it indicates the employer's reliability in ensuring repayments.
+        const defaultRate =
+          totalAdvances > 0 ? (defaultedAdvances / totalAdvances) * 100 : 0;
 
         // Determine tier upgrade eligibility
         let newTier = employer.tier;
@@ -487,7 +530,11 @@ export const internalAdvanceController = {
 
         if (employer.tier === EnumEmployerTier.NEW) {
           // Upgrade to API_VERIFIED if bank history is verified and good performance
-          if (employer.bankHistoryVerified && repaymentRate > 95 && defaultRate < 2) {
+          if (
+            employer.bankHistoryVerified &&
+            repaymentRate > 95 &&
+            defaultRate < 2
+          ) {
             newTier = EnumEmployerTier.API_VERIFIED;
             upgraded = true;
           }
@@ -509,8 +556,12 @@ export const internalAdvanceController = {
 
         if (upgraded) {
           // Update employer tier
-          const newLimit = newTier === EnumEmployerTier.PLATFORM_TRUSTED ? 50 :
-                          newTier === EnumEmployerTier.API_VERIFIED ? 30 : 10;
+          const newLimit =
+            newTier === EnumEmployerTier.PLATFORM_TRUSTED
+              ? 50
+              : newTier === EnumEmployerTier.API_VERIFIED
+                ? 30
+                : 10;
 
           await prisma.employer.update({
             where: { id: employer.id },
@@ -526,8 +577,12 @@ export const internalAdvanceController = {
             data: {
               employerId: employer.id,
               adjustmentType: "TIER_UPGRADE",
-              previousValue: new Decimal(employer.tier === EnumEmployerTier.NEW ? 1 : 2),
-              newValue: new Decimal(newTier === EnumEmployerTier.PLATFORM_TRUSTED ? 3 : 2),
+              previousValue: new Decimal(
+                employer.tier === EnumEmployerTier.NEW ? 1 : 2,
+              ),
+              newValue: new Decimal(
+                newTier === EnumEmployerTier.PLATFORM_TRUSTED ? 3 : 2,
+              ),
               reason: `Performance metrics: Repayment ${repaymentRate.toFixed(2)}%, Default ${defaultRate.toFixed(2)}%`,
               triggerMetric: "PERFORMANCE_REVIEW",
               triggerValue: new Decimal(repaymentRate),
@@ -571,7 +626,7 @@ export const internalAdvanceController = {
   async processDefaultedAdvances(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const today = new Date();
@@ -600,7 +655,10 @@ export const internalAdvanceController = {
 
         // Update employee credit score
         const employee = advance.employee;
-        const newCreditScore = Math.max(300, (employee.creditScore || 500) - 50); // Reduce by 50 points
+        const newCreditScore = Math.max(
+          300,
+          (employee.creditScore || 500) - 50,
+        ); // Reduce by 50 points
 
         await prisma.employee.update({
           where: { id: employee.id },
@@ -612,12 +670,17 @@ export const internalAdvanceController = {
           employeeId: advance.employeeId,
           amount: advance.amount.toString(),
           dueDate: advance.dueDate,
-          daysPastDue: Math.floor((today.getTime() - advance.dueDate.getTime()) / (1000 * 60 * 60 * 24)),
+          daysPastDue: Math.floor(
+            (today.getTime() - advance.dueDate.getTime()) /
+              (1000 * 60 * 60 * 24),
+          ),
         });
       }
 
       // Update employer default rates
-      const employerIds = [...new Set(overdueAdvances.map(a => a.employerId))];
+      const employerIds = [
+        ...new Set(overdueAdvances.map((a) => a.employerId)),
+      ];
 
       for (const employerId of employerIds) {
         const [totalAdvances, defaultedCount] = await Promise.all([
@@ -630,7 +693,8 @@ export const internalAdvanceController = {
           }),
         ]);
 
-        const defaultRate = totalAdvances > 0 ? (defaultedCount / totalAdvances) * 100 : 0;
+        const defaultRate =
+          totalAdvances > 0 ? (defaultedCount / totalAdvances) * 100 : 0;
 
         await prisma.employer.update({
           where: { id: employerId },
@@ -645,7 +709,12 @@ export const internalAdvanceController = {
         timestamp: new Date(),
       };
 
-      sendSuccess(res, response, "Defaulted advances processed successfully", 200);
+      sendSuccess(
+        res,
+        response,
+        "Defaulted advances processed successfully",
+        200,
+      );
     } catch (error) {
       console.error("Error processing defaulted advances:", error);
       sendError(res, error, "Failed to process defaulted advances", 500);

@@ -176,6 +176,7 @@ describe("Advance Service Tests", () => {
         approvedBy: "approver-id",
       };
 
+      console.log(advance1.id);
       const result = await advanceService.update(advance1.id, updateData);
       expect(result.status).toBe(EnumAdvancesStatus.APPROVED);
       expect(result.approvalDate).toBeTruthy();
