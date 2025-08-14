@@ -374,7 +374,7 @@ export const employeeAdvanceController = {
         : EnumAdvancesStatus.APPROVED;
 
       // Create advance request
-      const advance = await prisma.advance.create({
+      let advance = await prisma.advance.create({
         data: {
           employeeId: employee.id,
           employerId: employer.id,
@@ -412,7 +412,7 @@ export const employeeAdvanceController = {
         // TODO: Initiate off-ramp process for bank transfer
 
         // Update advance status to disbursed (simulating instant approval)
-        await prisma.advance.update({
+        advance = await prisma.advance.update({
           where: { id: advance.id },
           data: {
             status: EnumAdvancesStatus.DISBURSED,

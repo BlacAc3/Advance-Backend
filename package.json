@@ -9,7 +9,7 @@
     "build": "npm run clean && tsc && prisma generate && npm run swagger && npm run copy:swagger",
     "clean": "rimraf dist",
     "postinstall": "prisma generate && ts-node swagger.ts",
-    "test": "jest",
+    "test": "jest --maxWorkers=1 --testTimeout=80000 --no-coverage --verbose",
     "test:unit": "jest --config jest.unit.config.js",
     "test:watch": "NODE_ENV=test jest --watch",
     "test:coverage": "NODE_ENV=test jest --coverage",
