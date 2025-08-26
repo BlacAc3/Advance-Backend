@@ -5,6 +5,7 @@ import { authenticate } from "../middleware/authMiddleware";
 import { authorize } from "../middleware/authorize";
 import { UserRole } from "../types";
 import multer from "multer";
+import { employerAdvanceController } from "../controllers/advance/employer.advance.controller";
 
 // Configure multer for payroll uploads
 const payrollUpload = multer({
@@ -34,6 +35,10 @@ const payrollUpload = multer({
 const router = express.Router();
 
 router.post("/register", employerController.employerRegister);
+
+router.use(authenticate);
+router.use(authorize([UserRole.EMPLOYER]));
+
 router.post(
   "/send-invite",
   authenticate,
@@ -82,6 +87,53 @@ router.post(
   authenticate,
   authorize([UserRole.EMPLOYER]),
   employerController.setupApiIntegration,
+);
+
+router.get(
+  "/advances/pending",
+  authenticate,
+  authorize([UserRole.EMPLOYER]),
+  employerAdvanceController.getPendingAdvances,
+);
+
+// Approve an advance request
+router.post(
+  "/advance/:requestId/approve",
+  authenticate,
+  authorize([UserRole.EMPLOYER]),
+  employerAdvanceController.approveAdvance,
+);
+
+// Reject an advance request
+router.post(
+  "/advance/:requestId/reject",
+  authenticate,
+  authorize([UserRole.EMPLOYER]),
+  employerAdvanceController.rejectAdvance,
+);
+
+// Get all advances for employer
+router.get(
+  "/advances/all",
+  authenticate,
+  authorize([UserRole.EMPLOYER]),
+  employerAdvanceController.getAllAdvances,
+);
+
+// Get advance statistics
+router.get(
+  "/advances/statistics",
+  authenticate,
+  authorize([UserRole.EMPLOYER]),
+  employerAdvanceController.getAdvanceStatistics,
+);
+
+// Update advance settings
+router.put(
+  "/advances/settings",
+  authenticate,
+  authorize([UserRole.EMPLOYER]),
+  employerAdvanceController.updateAdvanceSettings,
 );
 
 export default router;

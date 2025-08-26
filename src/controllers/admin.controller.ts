@@ -145,7 +145,7 @@ export const adminController = {
           },
         },
         orderBy: {
-          registrationDate: 'asc',
+          registrationDate: "asc",
         },
       });
 
@@ -154,6 +154,153 @@ export const adminController = {
     } catch (error) {
       console.error("Error getting employers:", error);
       res.status(500).json({ message: "Error getting employers" });
+      return;
+    }
+  },
+  async verifyEmployer(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { id } = req.params;
+      const adminId = req.user?.userId;
+
+      if (!adminId) {
+        res.status(401).json({ message: "Unauthorized: Admin ID missing" });
+        return;
+      }
+
+      const employer = await prisma.employer.findUnique({
+        where: {
+          id: id,
+        },
+      });
+
+      if (!employer) {
+        res.status(404).json({ message: "Employer not found" });
+        return;
+      }
+
+      await prisma.employer.update({
+        where: {
+          id: id,
+        },
+        data: {
+          isVerified: true,
+          verificationDate: new Date(),
+          verifiedBy: adminId,
+        },
+      });
+
+      const updatedEmployer = await prisma.employer.findUnique({
+        where: {
+          id: id,
+        },
+        include: {
+          user: true, // Include user details if needed
+        },
+      });
+
+      res.status(200).json({
+        message: "Employer verified successfully",
+        employer: updatedEmployer,
+      });
+      return;
+    } catch (error) {
+      console.error("Error verifying employer:", error);
+      res.status(500).json({ message: "Error verifying employer" });
+      return;
+    }
+  },
+  async getEmployees(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const employees = await prisma.employee.findMany({
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              role: true,
+              username: true,
+              isActive: true,
+            },
+          },
+          employer: {
+            select: {
+              id: true,
+              companyName: true,
+            },
+          },
+        },
+      });
+      res.status(200).json(employees);
+      return;
+    } catch (error) {
+      console.error("Error getting employees:", error);
+      res.status(500).json({ message: "Error getting employees" });
+      return;
+    }
+  },
+  async getAdvances(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const advances = await prisma.advance.findMany({
+        include: {
+          employee: {
+            select: {
+              id: true,
+              userId: true,
+            },
+          },
+        },
+      });
+      res.status(200).json(advances);
+      return;
+    } catch (error) {
+      console.error("Error getting advances:", error);
+      res.status(500).json({ message: "Error getting advances" });
+      return;
+    }
+  },
+  async getAdvanceDetails(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { id } = req.params;
+      const advance = await prisma.advance.findUnique({
+        where: {
+          id: id,
+        },
+        include: {
+          employee: {
+            select: {
+              id: true,
+              userId: true,
+            },
+          },
+        },
+      });
+
+      if (!advance) {
+        res.status(404).json({ message: "Advance not found" });
+        return;
+      }
+
+      res.status(200).json(advance);
+      return;
+    } catch (error) {
+      console.error("Error getting advance:", error);
+      res.status(500).json({ message: "Error getting advance" });
       return;
     }
   },

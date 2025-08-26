@@ -20,15 +20,15 @@ router.get("/invitations", adminController.getInvitations);
 
 // Employer management
 router.get("/employers", adminController.getEmployers);
-// router.put('/employers/:id/verify', adminController.verifyEmployer);
+router.put("/employers/:id/verify", adminController.verifyEmployer);
 
 // // Employee management
-// router.get('/employees', adminController.getEmployees);
+router.get("/employees", adminController.getEmployees);
 // router.put('/employees/:id/verify', adminController.verifyEmployee);
 
 // // Advance management
-// router.get('/advances', adminController.getAdvances);
-// router.get('/advances/:id', adminController.getAdvanceDetails);
+router.get("/advances", adminController.getAdvances);
+router.get("/advances/:id", adminController.getAdvanceDetails);
 // router.put('/advances/:id/status', adminController.updateAdvanceStatus);
 
 // // Platform stats

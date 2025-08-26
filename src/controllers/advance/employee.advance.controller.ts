@@ -293,9 +293,17 @@ export const employeeAdvanceController = {
       }
 
       // Check for increased fee for amounts exceeding daily limit
+      // Calculate the employee's daily earnings by dividing their earned income to date by the number of days in the current month.
       const dailyLimit = earnedToDate.div(currentMonthDay);
+      // If the requested advance amount exceeds the calculated daily limit, then the service fee percentage is increased
+      // This is implemented to discourage employees from taking very large advances early in the month.
       if (requestedAmount.gt(dailyLimit)) {
         // Increase service fee for amounts exceeding daily limit
+        // The service fee is increased, but capped at 6%.
+        // The increase is calculated based on the proportion of the requested amount relative to the monthly salary.
+        // The higher the requested amount relative to the salary, the higher the fee.
+        // Multiplying by 0.1 scales down the percentage increase, ensuring the service fee increases gradually
+        // and remains within a reasonable range relative to the monthly salary.
         serviceFeePercentage = Math.min(
           6,
           3 + requestedAmount.div(monthlySalary).mul(100).toNumber() * 0.1,

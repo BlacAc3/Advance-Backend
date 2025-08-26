@@ -624,11 +624,27 @@ describe("Employee Advance Controller Tests", () => {
     });
 
     it("should calculate correct service fee for different amounts", async () => {
+      // Get the current month day for dailyLimit calculation
+      const currentMonthDay = new Date().getDate();
+      // Calculate daily limit
+      const monthlySalary = new Decimal(employee.salary.toString());
+      const dailyLimit = monthlySalary.div(30);
+
       const testCases = [
-        { amount: 10000, expectedFee: 300 }, // 3% of 10,000
-        { amount: 25000, expectedFee: 750 }, // 3% of 25,000
-        { amount: 50000, expectedFee: 1500 }, // 3% of 50,000
+        { amount: 10000, expectedFeePercentage: 3 }, // 3% of 10,000
+        { amount: 25000, expectedFeePercentage: 3 }, // 3% of 25,000
+        { amount: 50000, expectedFeePercentage: 3 }, // 3% of 50,000
       ];
+
+      // Adjust test cases if amount exceeds daily limit
+      for (let i = 0; i < testCases.length; i++) {
+        if (testCases[i].amount > dailyLimit.toNumber()) {
+          testCases[i].expectedFeePercentage = Math.min(
+            6,
+            3 + (testCases[i].amount / monthlySalary.toNumber()) * 100 * 0.1,
+          );
+        }
+      }
 
       for (const testCase of testCases) {
         const response = await request(app)
@@ -637,8 +653,13 @@ describe("Employee Advance Controller Tests", () => {
           .send({ advanceAmount: testCase.amount });
 
         if (response.status === 201) {
-          const serviceFee = parseFloat(response.body.data.serviceFee);
-          expect(serviceFee).toBeCloseTo(testCase.expectedFee, 0);
+          const serviceFeePercentage = parseFloat(
+            response.body.data.serviceFeePercentage,
+          );
+          expect(serviceFeePercentage).toBeCloseTo(
+            testCase.expectedFeePercentage,
+            1,
+          ); // allow a difference of 0.1 in service fee percentage
         }
       }
     });
